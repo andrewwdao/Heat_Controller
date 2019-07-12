@@ -54,3 +54,6 @@ dkms.conf
 # Fortran module files
 *.mod
 *.smod
+
+#Google Drive init file
+desktop.ini
