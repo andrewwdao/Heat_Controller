@@ -3,7 +3,6 @@
   (c) Can Tho University 2019
   version 1.00 - 09/07/2019
 ---------------------------------------------------------------
-
  * ESP-IDF version: 3.2
  * Compiler version: 5.2.0
  * Arduino components version: latest
@@ -26,16 +25,27 @@
 //-------------------------------------------------------------
 // Must include the appropriate microcontroller header file here
 #include "WiFi.h" //for esp32
-
 //--------------------------------------------------------------
-// MICROCONTROLLER
+// FLOW MAPPING
 //--------------------------------------------------------------
-#define ESP32_DEVKIT_V1
-
+#define FLOW_MIN 0    //put the mininum value of your flow sensor here
+#define FLOW_MAX 100  //put the maximum value of your flow sensor here
+//--------------------------------------------------------------
+// TEMPERATURE MAPPING
+//--------------------------------------------------------------
+#define TEMP_MIN 0    //put the mininum value of your temperature sensor here
+#define TEMP_MAX 852  //put the maximum value of your temperature sensor here
 //--------------------------------------------------------------
 // ADC
 //--------------------------------------------------------------
 #include <driver/adc.h>
+#define FLOW_SEN01_PIN 36
+#define FLOW_SEN02_PIN 39
+#define TEMP_SEN01_PIN 34
+#define TEMP_SEN02_PIN 35
+#define TEMP_SEN03_PIN 32
+#define TEMP_SEN04_PIN 33
+//KALMAN FILTER PARAMETERS
 #include <SimpleKalmanFilter.h>
 #define FILTER_LAYER 3
 #define E_MEA 3     //Measurement Uncertainty - How much do we expect to our measurement vary

@@ -5,6 +5,8 @@
   ADC_2_5db: sets an attenuation of 1.34 (1V input = ADC reading of 2086).
   ADC_6db: sets an attenuation of 1.5 (1V input = ADC reading of 2975).
   ADC_11db: sets an attenuation of 3.6 (1V input = ADC reading of 3959).
+
+Stable time: ~60 second.
 */
 #include "config.h"
 SimpleKalmanFilter filter(E_MEA, E_EST, Q);
@@ -17,7 +19,7 @@ void ADC_init()
   //analogSetPinAttenuation(ADC1_0, ADC_6db);
 }//end ADC_init
 
-int ADC_read(int ADCpin)
+int ADC_read(int ADCpin, int lowVal, int maxVal)
 {
   // read the input on the corresponding analog pin:
   int senVal = analogRead(ADCpin);
@@ -25,31 +27,32 @@ int ADC_read(int ADCpin)
   for (int a=0;a<FILTER_LAYER; a++) {        // next layers (if possible)
     es_senVal = filter.updateEstimate(es_senVal);   
   }//end for
-  return es_senVal; //return the calculated value
+  int calculatedVal = map(es_senVal,0,2047,lowVal,maxVal); //map es_senVal from 0-2047 to lowVal-maxVal
+  return calculatedVal; //return the calculated value
 }//end ADC_read
 
 int flowSen01_read() {
-  return ADC_read(36);
+  return ADC_read(FLOW_SEN01_PIN,FLOW_MIN,FLOW_MAX);
 }//end flowSen01_read
 
 int flowSen02_read() {
-  return ADC_read(39);
+  return ADC_read(FLOW_SEN02_PIN,FLOW_MIN,FLOW_MAX);
 }//end flowSen02_read
 
 int tempSen01_read() {
-  return ADC_read(34);
+  return ADC_read(TEMP_SEN01_PIN,TEMP_MIN,TEMP_MAX);
 }//end tempSen01_read
 
 int tempSen02_read() {
-  return ADC_read(35);
+  return ADC_read(TEMP_SEN02_PIN,TEMP_MIN,TEMP_MAX);
 }//end tempSen02_read
 
 int tempSen03_read() {
-  return ADC_read(32);
+  return ADC_read(TEMP_SEN03_PIN,TEMP_MIN,TEMP_MAX);
 }//end tempSen03_read
 
 int tempSen04_read() {
-  return ADC_read(33);
+  return ADC_read(TEMP_SEN04_PIN,TEMP_MIN,TEMP_MAX);
 }//end tempSen04_read
 void setup() {
   Serial.begin(115200);// initialize serial communication at 115200 bits per second
@@ -57,12 +60,12 @@ void setup() {
 }
 
 void loop() { //forever loop
-  // print out the value you read:
-  Serial.println(flowSen01_read());
+//print out the value you read:
+//  Serial.println(flowSen01_read());
 //  Serial.println(flowSen02_read());
 //  Serial.println(tempSen01_read());
 //  Serial.println(tempSen02_read());
 //  Serial.println(tempSen03_read());
-//  Serial.println(tempSen04_read());
+  Serial.println(tempSen04_read());
   delay(100);        // delay in between reads for stability
 }
