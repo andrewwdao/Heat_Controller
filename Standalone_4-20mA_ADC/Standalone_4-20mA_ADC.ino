@@ -58,6 +58,11 @@ void setup() {
 
 void loop() { //forever loop
   // print out the value you read:
-  Serial.println(flowSen02_read());
+  Serial.println(flowSen01_read());
+//  Serial.println(flowSen02_read());
+//  Serial.println(tempSen01_read());
+//  Serial.println(tempSen02_read());
+//  Serial.println(tempSen03_read());
+//  Serial.println(tempSen04_read());
   delay(100);        // delay in between reads for stability
 }
