@@ -22,12 +22,18 @@ void ADC_init()
 int ADC_read(int ADCpin, int lowVal, int maxVal)
 {
   // read the input on the corresponding analog pin:
+  //if recieved signal is less than 4mA, than the sensor is off or is having some errors
+  //if recieved signal is equal or more than 4mA (~360mV ~398 ADC value), than the sensor is working probaly
   int senVal = analogRead(ADCpin);
+  //------------------------------Kalman filter applied:
   int es_senVal = filter.updateEstimate(senVal); // first layer
   for (int a=0;a<FILTER_LAYER; a++) {        // next layers (if possible)
     es_senVal = filter.updateEstimate(es_senVal);   
   }//end for
-  int calculatedVal = map(es_senVal,0,2047,lowVal,maxVal); //map es_senVal from 0-2047 to lowVal-maxVal
+  //------------------------------Kalman filter done
+  if (es_senVal<200) //if sensor is off or error
+    {return SENSOR_ERROR;} //use 200 for compensating for noises.
+  int calculatedVal = map(es_senVal,398,2047,lowVal,maxVal); //map es_senVal from 0-2047 to lowVal-maxVal
   return calculatedVal; //return the calculated value
 }//end ADC_read
 

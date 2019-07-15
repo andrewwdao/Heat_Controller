@@ -33,8 +33,8 @@
 //--------------------------------------------------------------
 // TEMPERATURE MAPPING
 //--------------------------------------------------------------
-#define TEMP_MIN -10    //put the mininum value of your temperature sensor here -10
-#define TEMP_MAX 860  //put the maximum value of your temperature sensor here +10
+#define TEMP_MIN 0    //put the mininum value of your temperature sensor here
+#define TEMP_MAX 850  //put the maximum value of your temperature sensor here
 //--------------------------------------------------------------
 // ADC
 //--------------------------------------------------------------
@@ -45,6 +45,7 @@
 #define TEMP_SEN02_PIN 35
 #define TEMP_SEN03_PIN 32
 #define TEMP_SEN04_PIN 33
+#define SENSOR_ERROR   100
 //KALMAN FILTER PARAMETERS
 #include <SimpleKalmanFilter.h>
 #define FILTER_LAYER 3
