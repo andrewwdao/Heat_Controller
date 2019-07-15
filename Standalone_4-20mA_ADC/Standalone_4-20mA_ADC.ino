@@ -5,8 +5,20 @@
   ADC_2_5db: sets an attenuation of 1.34 (1V input = ADC reading of 2086).
   ADC_6db: sets an attenuation of 1.5 (1V input = ADC reading of 2975).
   ADC_11db: sets an attenuation of 3.6 (1V input = ADC reading of 3959).
+  https://www.esp32.com/viewtopic.php?f=19&t=2881&start=10#p13739
 
-Stable time: ~60 second.
+/*------------------------------------------------------------*-
+  ADC Converter file
+  (c) Can Tho University 2019
+  version 1.00 - 15/07/2019
+---------------------------------------------------------------
+ * ESP-IDF version: 3.2
+ * Compiler version: 5.2.0
+ * Arduino components version: latest
+--------------------------------------------------------------
+
+  
+Stable time: ~25 second.
 */
 #include "config.h"
 SimpleKalmanFilter filter(E_MEA, E_EST, Q);
@@ -15,8 +27,13 @@ void ADC_init()
 {
   analogReadResolution(11); // Default of 12 is not very linear. Recommended to use 10 or 11 depending on needed resolution.
   analogSetWidth(11); //Range 0-2047
-  analogSetAttenuation(ADC_6db); // Default is 11db which is very noisy. Recommended to use 2.5 or 6.
-  //analogSetPinAttenuation(ADC1_0, ADC_6db);
+  analogSetPinAttenuation(TEMP_SEN01_PIN, ADC_6db); // Default is 11db which is very noisy. Recommended to use 2.5 or 6.
+  analogSetPinAttenuation(TEMP_SEN02_PIN, ADC_6db); // Default is 11db which is very noisy. Recommended to use 2.5 or 6.
+  analogSetPinAttenuation(TEMP_SEN03_PIN, ADC_6db); // Default is 11db which is very noisy. Recommended to use 2.5 or 6.
+  analogSetPinAttenuation(TEMP_SEN04_PIN, ADC_6db); // Default is 11db which is very noisy. Recommended to use 2.5 or 6.
+  analogSetPinAttenuation(FLOW_SEN01_PIN, ADC_11db); // Must use 11db because of the module MDCB042
+  analogSetPinAttenuation(FLOW_SEN02_PIN, ADC_11db); // Must use 11db because of the module MDCB042
+  //analogSetAttenuation(ADC_6db); // This can be used for all ADC pins, but not recommended.
 }//end ADC_init
 
 int ADC_read(int ADCpin, int lowVal, int maxVal)
@@ -27,7 +44,7 @@ int ADC_read(int ADCpin, int lowVal, int maxVal)
   int senVal = analogRead(ADCpin);
   //------------------------------Kalman filter applied:
   int es_senVal = filter.updateEstimate(senVal); // first layer
-  for (int a=0;a<FILTER_LAYER; a++) {        // next layers (if possible)
+  for (int a=1;a<FILTER_LAYER; a++) {        // next layers (if possible)
     es_senVal = filter.updateEstimate(es_senVal);   
   }//end for
   //------------------------------Kalman filter done
@@ -66,7 +83,7 @@ void setup() {
 }
 
 void loop() { //forever loop
-//print out the value you read:
+//print out the value you want:
 //  Serial.println(flowSen01_read());
 //  Serial.println(flowSen02_read());
 //  Serial.println(tempSen01_read());

@@ -13,14 +13,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////MODE CONFIGS/////////////////////////////////////////////////////////////////////
 //--------------------------------------------------------------
-// USER DEFINE
-// - SLASS OUT ANY OPTION THAT YOU DON'T WANT TO HAVE
-//--------------------------------------------------------------
-#define ESP32_DEBUG
-#define WIFI_CHANGEABLE
-#define SERIAL_OUTPUT
-//#define TASKS_MONITOR //remember to change menuconfig when this is active
-//--------------------------------------------------------------
 // MAIN LIBRARY - WILL NEED TO EDIT THIS SECTION FOR EVERY PROJECT
 //-------------------------------------------------------------
 // Must include the appropriate microcontroller header file here
@@ -45,10 +37,10 @@
 #define TEMP_SEN02_PIN 35
 #define TEMP_SEN03_PIN 32
 #define TEMP_SEN04_PIN 33
-#define SENSOR_ERROR   100
+#define SENSOR_ERROR   9999
 //KALMAN FILTER PARAMETERS
 #include <SimpleKalmanFilter.h>
-#define FILTER_LAYER 3
+#define FILTER_LAYER 2
 #define E_MEA 3     //Measurement Uncertainty - How much do we expect to our measurement vary
 #define E_EST 3     //Estimation Uncertainty - Can be initilized with the same value as e_mea since the kalman filter will adjust its value.
 #define Q     0.007 //Process Variance - usually a small number between 0.001 and 1 - how fast your measurement moves. Recommended 0.01. Should be tunned to your needs.
