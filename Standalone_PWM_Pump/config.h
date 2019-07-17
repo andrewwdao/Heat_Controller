@@ -13,7 +13,10 @@
 #define SERIAL_OUTPUT
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////MODE CONFIGS/////////////////////////////////////////////////////////////////////
-#define GRUNDFOS_UPM3_PWM
+//--------------------------------------------------------------
+// CHOOSING PUMP
+//--------------------------------------------------------------
+#define GRUNDFOS_UPM3_PWM //if using this pump, you must choose ONE profile below, slash out the others if you dont want to invite errors.
   #define PROFILE_A_HEATING
   //#define PROFILE_C_SOLAR
 //#define YONOS_PARA_ST_15/13_PWM2
@@ -23,28 +26,38 @@
 // Must include the appropriate microcontroller header file here
 #include "WiFi.h" //for esp32
 //--------------------------------------------------------------
-// CHOOSING PUMP
+// PUMP PARAMETERS
 //--------------------------------------------------------------
+//========================= GRUNDFOS UPM3 PWM PUMP =============
 #ifdef GRUNDFOS_UPM3_PWM
-  #define PWM_FREQ  500  //The square-wave PWM signal is designed for a 100 to 4,000 Hz frequency range.
+  #define PWM_FREQ  1000  //The square-wave PWM signal is designed for a 100 to 4,000 Hz frequency range.
   #ifdef PROFILE_A_HEATING
     #define MAX_SPEED           0.05*PWM_RESOLUTION   // < 10%, so 5% will be enough
     #define MIN_SPEED           0.87*PWM_RESOLUTION   // >84% / <91% --> choose 87%
     #define VAR_MAXSPEED        0.83*PWM_RESOLUTION   // <=84% --> choose 83%
     #define VAR_MINSPEED        0.11*PWM_RESOLUTION   // >10% --> choose 11%
-    #define HYSTERESIS_ON_OFF   0.93*PWM_RESOLUTION   // >91% and <95% --> choose 93%
-    #define STANDBY_MODE_OFF    0.97*PWM_RESOLUTION   // >95% and <100% --> choose 97%
+    //hysteresis area lies in between 91% to 95%
+    #define OFF_MODE            0.97*PWM_RESOLUTION   // >95% and <100% --> choose 97% (Standby mode: Off)
   #endif
   #ifdef PROFILE_C_SOLAR
     #define MAX_SPEED           0.95*PWM_RESOLUTION   // >90% and <= 100%, so 95% will be enough
     #define MIN_SPEED           0.13*PWM_RESOLUTION   // >8% / <15% --> choose 13%
     #define VAR_MAXSPEED        0.89*PWM_RESOLUTION   // <=90% --> choose 89%
     #define VAR_MINSPEED        0.16*PWM_RESOLUTION   // >15% --> choose 16%
-    #define HYSTERESIS_ON_OFF   0.07*PWM_RESOLUTION   // >5% and <8% --> choose 7%
-    #define STANDBY_MODE_OFF    0.03*PWM_RESOLUTION   // <5% --> choose 3%
+    //hysteresis area lies in between 5% to 8%
+    #define OFF_MODE            0.03*PWM_RESOLUTION   // <5% --> choose 3% (Standby mode: Off)
   #endif
 #endif
-
+//========================= YONOS PARA ST 15/13 PWM2 =============
+#ifdef YONOS_PARA_ST_15/13_PWM2
+  #define PWM_FREQ  1000  //Signal frequency: 100 Hz-5000 Hz (1000 Hz nominal).
+  #define MAX_SPEED           0.97*PWM_RESOLUTION   // >95% --> choose 97%
+  #define MIN_SPEED           0.13*PWM_RESOLUTION   // >7% and <15% pump runs at minimum speed (operation) and from 12% to 15% pump runs at minimum speed (start up) --> choose 13%
+  #define VAR_MAXSPEED        0.94*PWM_RESOLUTION   // <=95% --> choose 94%
+  #define VAR_MINSPEED        0.16*PWM_RESOLUTION   // >15% --> choose 16%
+  #define OFF_MODE            0.05*PWM_RESOLUTION   // <7% --> choose 5% (Pump stops (standby))
+#endif
+//===============================================================
 #define NO_PWM_INPUT  9999
 //--------------------------------------------------------------
 // PUMP PARAMETERS

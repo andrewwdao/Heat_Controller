@@ -1,10 +1,11 @@
 
 #include "config.h"
-
+int pump1_output = OFF_MODE;
 volatile int pwm_valueP1 = 0;
 volatile int prev_timeP1 = 0;
 volatile int pwm_freqP1  = 0;
 volatile bool gotFreqPump1 = false;
+int pump2_output = OFF_MODE;
 volatile int pwm_valueP2 = 0;
 volatile int prev_timeP2 = 0;
 volatile int pwm_freqP2  = 0;
@@ -57,69 +58,61 @@ void pump2_init() {
 }//end pump2_init
 
 void pump1_maxspeed() {
-  ledcWrite(PWM_CHANNEL_1, MAX_SPEED);
-}
-//end pump1_maxspeed
+  pump1_output = VAR_MAXSPEED; //set normal output to pseudo maximum value in case of pump_faster() function is called.
+  ledcWrite(PWM_CHANNEL_1, MAX_SPEED); //put the pump in the real maximum speed
+}//end pump1_maxspeed
 void pump1_minspeed() {
-  ledcWrite(PWM_CHANNEL_1, MIN_SPEED );
-}
-//------------------
-void pump1_varmaxspeed() {
-  ledcWrite(PWM_CHANNEL_1, VAR_MAXSPEED  );
-}
-//------------------
-void pump1_varminspeed() {
-  ledcWrite(PWM_CHANNEL_1, VAR_MINSPEED  );
-}
-//------------------
-void pump1_HYSTERESISspeed() {
-  ledcWrite(PWM_CHANNEL_1, HYSTERESIS_ON_OFF   );
-}
-//------------------
-void pump1_STANDBY_MODE_OFFspeed() {
-  ledcWrite(PWM_CHANNEL_1,STANDBY_MODE_OFF);
-}
-//------------------------
+  pump1_output = VAR_MINSPEED; //set normal output to pseudo maximum value in case of pump_slower() function is called.
+  ledcWrite(PWM_CHANNEL_1, MIN_SPEED); //put the pump in the real minimum speed
+}//end pump1_minspeed
+void pump1_faster() {
+  pump1_output += (pump1_output==VAR_MAXSPEED)?(0):(0.01); //plus 1% of duty cycle each time this function is called if maximum value is not exceeded.
+  ledcWrite(PWM_CHANNEL_1, pump1_output); //output signal to the pump
+}//end pump1_faster
+void pump1_slower() {
+  pump1_output -= (pump1_output==VAR_MINSPEED)?(0):(0.01); //plus 1% of duty cycle each time this function is called if maximum value is not exceeded.
+  ledcWrite(PWM_CHANNEL_1, pump1_output); //output signal to the pump
+}//end pump1_slower
+void pump1_OFF() {
+  ledcWrite(PWM_CHANNEL_1,OFF_MODE);
+}//end pump1_OFF
+//-----------------------------------------------------
 void pump2_maxspeed() {
-  ledcWrite(PWM_CHANNEL_2, MAX_SPEED);
-}
-//end pump1_maxspeed
+  pump2_output = VAR_MAXSPEED; //set normal output to pseudo maximum value in case of pump_faster() function is called.
+  ledcWrite(PWM_CHANNEL_2, MAX_SPEED); //put the pump in the real maximum speed
+}//end pump1_maxspeed
 void pump2_minspeed() {
-  ledcWrite(PWM_CHANNEL_2, MIN_SPEED );
-}
-//------------------
-void pump2_varmaxspeed() {
-  ledcWrite(PWM_CHANNEL_2, VAR_MAXSPEED  );
-}
-//------------------
-void pump2_varminspeed() {
-  ledcWrite(PWM_CHANNEL_2, VAR_MINSPEED  );
-}
-//------------------
-void pump2_HYSTERESISspeed() {
-  ledcWrite(PWM_CHANNEL_2, HYSTERESIS_ON_OFF   );
-}
-//------------------
-void pump2_STANDBY_MODE_OFFspeed() {
-  ledcWrite(PWM_CHANNEL_2,STANDBY_MODE_OFF);
-}
+  pump2_output = VAR_MINSPEED; //set normal output to pseudo maximum value in case of pump_slower() function is called.
+  ledcWrite(PWM_CHANNEL_2, MIN_SPEED); //put the pump in the real minimum speed
+}//end pump1_minspeed
+void pump2_faster() {
+  pump2_output += (pump2_output==VAR_MAXSPEED)?(0):(0.01); //plus 1% of duty cycle each time this function is called if maximum value is not exceeded.
+  ledcWrite(PWM_CHANNEL_2, pump2_output); //output signal to the pump
+}//end pump1_faster
+void pump2_slower() {
+  pump2_output -= (pump2_output==VAR_MINSPEED)?(0):(0.01); //plus 1% of duty cycle each time this function is called if maximum value is not exceeded.
+  ledcWrite(PWM_CHANNEL_2, pump2_output); //output signal to the pump
+}//end pump1_slower
+void pump2_OFF() {
+  ledcWrite(PWM_CHANNEL_2,OFF_MODE);
+}//end pump1_OFF
 //------------------------
 void setup(){
   Serial.begin(115200);
- pump2_init();
- // pump1_init();
-//  pump1_maxspeed();
-//pump1_minspeed() ;
-//pump1_varmaxspeed();
-//pump1_varminspeed() ;
-//pump1_HYSTERESISspeed();
-//pump1_STANDBY_MODE_OFFspeed();
-//pump2_maxspeed();
-//pump2_minspeed() ;
-//pump2_varmaxspeed();
-//pump2_varminspeed() ;
-//pump2_HYSTERESISspeed();
-pump2_STANDBY_MODE_OFFspeed();
+
+  pump1_init();
+  pump1_maxspeed();
+//  pump1_minspeed() ;
+//  pump1_faster();
+//  pump1_slower();
+//  pump1_OFF();
+
+  pump2_init();
+  pump2_maxspeed();
+//  pump2_minspeed() ;
+//  pump2_faster();
+//  pump2_slower();
+//  pump2_OFF();
 
 }
 
