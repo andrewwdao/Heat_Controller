@@ -10,6 +10,7 @@
 #ifndef _CONFIG_H
 #define _CONFIG_H
 
+#define SERIAL_OUTPUT
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////MODE CONFIGS/////////////////////////////////////////////////////////////////////
 #define GRUNDFOS_UPM3_PWM
@@ -31,7 +32,7 @@
     #define MIN_SPEED           0.87*PWM_RESOLUTION   // >84% / <91% --> choose 87%
     #define VAR_MAXSPEED        0.83*PWM_RESOLUTION   // <=84% --> choose 83%
     #define VAR_MINSPEED        0.11*PWM_RESOLUTION   // >10% --> choose 11%
-    #define HYSTERESIS_ON/OFF   0.93*PWM_RESOLUTION   // >91% and <95% --> choose 93%
+    #define HYSTERESIS_ON_OFF   0.93*PWM_RESOLUTION   // >91% and <95% --> choose 93%
     #define STANDBY_MODE_OFF    0.97*PWM_RESOLUTION   // >95% and <100% --> choose 97%
   #endif
   #ifdef PROFILE_C_SOLAR
@@ -39,11 +40,12 @@
     #define MIN_SPEED           0.13*PWM_RESOLUTION   // >8% / <15% --> choose 13%
     #define VAR_MAXSPEED        0.89*PWM_RESOLUTION   // <=90% --> choose 89%
     #define VAR_MINSPEED        0.16*PWM_RESOLUTION   // >15% --> choose 16%
-    #define HYSTERESIS_ON/OFF   0.07*PWM_RESOLUTION   // >5% and <8% --> choose 7%
+    #define HYSTERESIS_ON_OFF   0.07*PWM_RESOLUTION   // >5% and <8% --> choose 7%
     #define STANDBY_MODE_OFF    0.03*PWM_RESOLUTION   // <5% --> choose 3%
   #endif
 #endif
 
+#define NO_PWM_INPUT  9999
 //--------------------------------------------------------------
 // PUMP PARAMETERS
 //--------------------------------------------------------------
