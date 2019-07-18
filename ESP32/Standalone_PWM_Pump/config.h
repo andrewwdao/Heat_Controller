@@ -18,7 +18,7 @@
 //--------------------------------------------------------------
 #define GRUNDFOS_UPM3_PWM //if using this pump, you must choose ONE profile below, slash out the others if you dont want to invite errors.
   #define PROFILE_A_HEATING
-  //#define PROFILE_C_SOLAR
+ //#define PROFILE_C_SOLAR
 //#define YONOS_PARA_ST_15/13_PWM2
 //--------------------------------------------------------------
 // MAIN LIBRARY - WILL NEED TO EDIT THIS SECTION FOR EVERY PROJECT
@@ -34,19 +34,28 @@
   #ifdef PROFILE_A_HEATING
     #define MAX_SPEED           0.05*PWM_RESOLUTION   // < 10%, so 5% will be enough
     #define MIN_SPEED           0.87*PWM_RESOLUTION   // >84% / <91% --> choose 87%
-    #define VAR_MAXSPEED        0.83*PWM_RESOLUTION   // <=84% --> choose 83%
-    #define VAR_MINSPEED        0.11*PWM_RESOLUTION   // >10% --> choose 11%
+    #define VAR_MAXSPEED        0.82*PWM_RESOLUTION   // <=84% --> choose 82%
+    #define VAR_MINSPEED        0.12*PWM_RESOLUTION   // >10% --> choose 12%
     //hysteresis area lies in between 91% to 95%
     #define OFF_MODE            0.97*PWM_RESOLUTION   // >95% and <100% --> choose 97% (Standby mode: Off)
   #endif
   #ifdef PROFILE_C_SOLAR
     #define MAX_SPEED           0.95*PWM_RESOLUTION   // >90% and <= 100%, so 95% will be enough
     #define MIN_SPEED           0.13*PWM_RESOLUTION   // >8% / <15% --> choose 13%
-    #define VAR_MAXSPEED        0.89*PWM_RESOLUTION   // <=90% --> choose 89%
-    #define VAR_MINSPEED        0.16*PWM_RESOLUTION   // >15% --> choose 16%
+    #define VAR_MAXSPEED        0.88*PWM_RESOLUTION   // <=90% --> choose 88%
+    #define VAR_MINSPEED        0.17*PWM_RESOLUTION   // >15% --> choose 17%
     //hysteresis area lies in between 5% to 8%
     #define OFF_MODE            0.03*PWM_RESOLUTION   // <5% --> choose 3% (Standby mode: Off)
   #endif
+  //PWM feedback signal
+  #define PUMP_STANDBY          0.95
+  #define PUMP_BLOCK_ERROR      0.90
+  #define PUMP_ELECTRICAL_ERROR 0.85
+  #define PUMP_WARNING          0.75
+  #define PUMP_NORMAL           0.10
+  //Input cycle
+  #define PUMP_CYCLE   13333 //us
+  
 #endif
 //========================= YONOS PARA ST 15/13 PWM2 =============
 #ifdef YONOS_PARA_ST_15/13_PWM2
