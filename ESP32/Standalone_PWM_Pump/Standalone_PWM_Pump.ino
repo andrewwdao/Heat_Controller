@@ -1,51 +1,22 @@
 
 #include "config.h"
 int pump1_output = OFF_MODE;
-volatile uint32_t rise_timeP1 = 0;
-volatile uint32_t fall_timeP1 = 0;
+volatile uint32_t p1_pulseLength=0;
 volatile float    p1_dutyCycle = 0;
-volatile bool gotResPump1 = false;
 uint32_t p1Millis=0;
 int pump2_output = OFF_MODE;
-volatile uint32_t prev_timeP2 = 0;
-volatile uint32_t pwm_valueP2 = 0;
+volatile uint32_t p2_pulseLength=0;
 volatile float    p2_dutyCycle = 0;
-volatile bool gotResPump2 = false;
 uint32_t p2Millis=0;
 
 uint32_t Millis=0;
-
-//void pump01_rise_ISR() {
-//  attachInterrupt(PUMP1_IN_PIN, pump01_fall_ISR, FALLING);
-//  rise_timeP1 = micros();
-//}//end PWM_pump01_rise
-//
-//void pump01_fall_ISR() {
-//  attachInterrupt(PUMP1_IN_PIN, pump01_rise_ISR, RISING);
-//  fall_timeP1 = micros();
-//  gotResPump1 = true;
-//}//end PWM_pump01_fall
-//
-//void pump02_rise_ISR() {
-//  attachInterrupt(PUMP2_IN_PIN, pump02_fall_ISR, FALLING);
-//  //prev_timeP2 = xTaskGetTickCountFromISR(); //micros();
-//}//end PWM_pump02_rise
-//
-//void pump02_fall_ISR() {
-//  attachInterrupt(PUMP2_IN_PIN, pump02_rise_ISR, RISING);
-//  //p2_dutyCycle = (float)((xTaskGetTickCountFromISR()-prev_timeP2)/PUMP_CYCLE);
-//  gotResPump2 = true;
-//}//end PWM_pump02_fall
 
 void pump1_init() {
   //output pwm to pump
   ledcSetup(PWM_CHANNEL_1, PWM_FREQ, PWM_RES); // configure PWM chanel corresponding to frequency and resolution
   ledcAttachPin(PUMP1_OUT_PIN, PWM_CHANNEL_1);// attach the channel to the GPIO to be controlled
   //input pwm from pump
-  pinMode(PUMP1_IN_PIN, INPUT_PULLUP);
-//  attachInterrupt(PUMP1_IN_PIN, pump01_rise_ISR, RISING);
-//  gotResPump1 = false;
-//  p1Millis=millis();
+  pinMode(PUMP1_IN_PIN, INPUT);
 }//end pump1_init
 
 void pump2_init() {
@@ -53,10 +24,7 @@ void pump2_init() {
   ledcSetup(PWM_CHANNEL_2, PWM_FREQ, PWM_RES); // configure PWM chanel corresponding to frequency and resolution
   ledcAttachPin(PUMP2_OUT_PIN, PWM_CHANNEL_2);// attach the channel to the GPIO to be controlled
   //input pwm from pump
-  pinMode(PUMP2_IN_PIN, INPUT_PULLUP);
-//  attachInterrupt(PUMP2_IN_PIN, pump02_rise_ISR, RISING);
-//  gotResPump2 = false;
-//  p2Millis=millis();
+  pinMode(PUMP2_IN_PIN, INPUT);
 }//end pump2_init
 
 void pump1_maxspeed() {
@@ -100,27 +68,35 @@ void pump2_OFF() {
 }//end pump1_OFF
 //------------------------
 void pump1_status() {
-  if ((gotResPump1)&&((millis()-p1Millis)>1000)) {
-    
-    gotResPump1 = false;
-    p1_dutyCycle = (float)((fall_timeP1-rise_timeP1)/PUMP_CYCLE);
-    S_PRINTLN(rise_timeP1);
-    S_PRINTLN(fall_timeP1);
+    p1_pulseLength = pulseIn(PUMP1_IN_PIN, LOW, 15000);//Pin, start to count when catch a high pulse, wait for 15ms before return 0 (75Hz~13,33ms)
+    S_PRINTLN(p1_pulseLength);
+    p1_dutyCycle = ((float)p1_pulseLength/(float)PUMP_CYCLE);
     S_PRINTLN(p1_dutyCycle);
-    p1Millis = millis();
-    if (p1_dutyCycle>PUMP_STANDBY) {S_PRINTLN(F("Stand by!"));return;}
-    if (p1_dutyCycle>PUMP_BLOCK_ERROR) {S_PRINTLN(F("Error! Pump Blocked"));return;}
-    if (p1_dutyCycle>PUMP_ELECTRICAL_ERROR) {S_PRINTLN(F("Error! Electrical error!"));return;}
-    if (p1_dutyCycle>PUMP_WARNING) {S_PRINTLN(F("Pump Warning!"));return;}
-    if (p1_dutyCycle<PUMP_NORMAL) {S_PRINTLN(F("Pump in normal condition!"));return;}
-  }//end if
+    if (p1_dutyCycle>PUMP_STANDBY) {S_PRINTLN(F("pump1 Standby!"));return;}
+    if (p1_dutyCycle>PUMP_BLOCK_ERROR) {S_PRINTLN(F("pump1 Error! Pump Blocked"));return;}
+    if (p1_dutyCycle>PUMP_ELECTRICAL_ERROR) {S_PRINTLN(F("pump1 Error! Electrical error!"));return;}
+    if (p1_dutyCycle>PUMP_WARNING) {S_PRINTLN(F("Pump 1 Warning!"));return;}
+    if (p1_dutyCycle==0) {S_PRINTLN(F("pump1 No signal!"));return;}
+    if (p1_dutyCycle<PUMP_NORMAL) {S_PRINTLN(F("Pump2 in normal condition!"));return;}
 }//end pump1_status
 
+void pump2_status() {
+    p2_pulseLength = pulseIn(PUMP2_IN_PIN, LOW, 15000);//Pin, start to count when catch a high pulse, wait for 15ms before return 0 (75Hz~13,33ms)
+    S_PRINTLN(p2_pulseLength);
+    p2_dutyCycle = ((float)p2_pulseLength/(float)PUMP_CYCLE);
+    S_PRINTLN(p2_dutyCycle);
+    if (p2_dutyCycle>PUMP_STANDBY) {S_PRINTLN(F("pump2 Standby!"));return;}
+    if (p2_dutyCycle>PUMP_BLOCK_ERROR) {S_PRINTLN(F("pump2 Error! Pump Blocked"));return;}
+    if (p2_dutyCycle>PUMP_ELECTRICAL_ERROR) {S_PRINTLN(F("pump2 Error! Electrical error!"));return;}
+    if (p2_dutyCycle>PUMP_WARNING) {S_PRINTLN(F("Pump 2 Warning!"));return;}
+    if (p2_dutyCycle==0) {S_PRINTLN(F("pump2 No signal!"));return;}
+    if (p2_dutyCycle<PUMP_NORMAL) {S_PRINTLN(F("Pump2 in normal condition!"));return;}
+}//end pump1_status
 void setup(){
   Serial.begin(115200);
   Millis = millis();
   pump1_init();
-// pump2_init();
+  pump2_init();
 // pump1_maxspeed();
 //pump1_minspeed() ;
 
@@ -139,8 +115,12 @@ void setup(){
 
 void loop()
 {
-  pump1_status();
-//  if ((millis()-Millis)>1000) {
+  
+  if ((millis()-Millis)>1000) {
+    Millis=millis();
+    //pump2_status();
+    pump1_status();
+  }
 //   // pump1_slower();
 // //pump2_faster();
 //   pump1_faster();
