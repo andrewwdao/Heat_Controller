@@ -6,8 +6,6 @@
 --------------------------------------------*/ 
 #include "Nano_SD.h"
 
-
-DS3231 rtc(A4,A5);
 File Data;
 int t1,t2,t3,t4,f1,f2; // 
 
@@ -20,26 +18,15 @@ void sentSD();
 Receive data from serial and send data to SD
 **/
 void rece();
-// initial Ds3231
-void rtc_init();
 //----------------------------------------------------------
 void sentSD()
 { Time t;
   Data=SD.open("data.txt",FILE_WRITE); // create FILE data.txt
-  t=rtc.getTime();
   if(Data)
   { 
     Serial.print("Senting");
-    Data.print(t.hour);
-    Data.print(":");
-    Data.print(t.min);
-    Data.print("(");
-    Data.print(t.date);
-    Data.print("/");
-    Data.print(t.mon);
-    Data.print("/");
-    Data.print(t.year);
-    Data.print(")_T1:");
+    Data.print(RTC_getTime());
+    Data.print("_T1:");
     Data.print(t1);
     Data.print("_T2:");
     Data.print(t2);
@@ -97,11 +84,6 @@ void sentSD()
     Serial.println("don't receive ");
   
 }// end receive();
-//------------------------------------------
-  void rtc_init ()
-  {
-    rtc.begin();
-    }
 //-------------------------------------------    
  void SD_init()
  {

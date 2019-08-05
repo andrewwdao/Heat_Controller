@@ -20,22 +20,23 @@ DS3231 rtc(I2C_SDA,I2C_SCL);
 //--------------------------------------------------------------
 // FUNCTION DEFINITIONS
 //--------------------------------------------------------------
-void RTC_init ()
+bool RTC_init()
 {
     rtc.begin();
+    return true;
 }//end RTC_init
 //------------------------------------------
 String RTC_getTime()
 { 
-  String buffData="";
+  String rtcData="";
   Time t;
   t=rtc.getTime();
-  buffData += t.hour; buffData += ":";
-  buffData += t.min; buffData += "(";
-  buffData += t.date; buffData +="/";
-  buffData += t.mon; buffData += "/";
-  buffData += t.year;
-  Serial.println(buffData);
-  return buffData;
-}// end sentSD
+  rtcData += t.hour; rtcData += ":";
+  rtcData += t.min; rtcData += "(";
+  rtcData += t.date; rtcData +="/";
+  rtcData += t.mon; rtcData += "/";
+  rtcData += t.year; rtcData += ")";
+  Serial.println(rtcData);
+  return rtcData;
+}// end RTC_getTime
 #endif //__NANO_RTC_DS3231_H

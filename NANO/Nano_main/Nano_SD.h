@@ -9,10 +9,9 @@
 #include <Arduino.h>
 #include <SPI.h>
 #include <SD.h>
-#include <DS3231.h>
+#include "Nano_RTC_DS3231.h"
 
 // public function prototype 
 void rece() ;// Receive data from serial and sent to SD
-void rtc_init();// initial_rtc
 void SD_init();
 #endif // __NANO_SD_H

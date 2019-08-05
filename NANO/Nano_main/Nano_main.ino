@@ -13,12 +13,12 @@
  --------------------------------------------------------------*/
 #include "Nano_LCD.h"
 #include "Nano_SD.h"
-
+#include "Nano_RTC_DS3231.h"
 void setup() 
 {
  LCD_init();
  Serial.begin(115200);
- rtc_init();
+ RTC_init();
  SD_init();
 }// end setup
 
