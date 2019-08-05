@@ -1,8 +1,8 @@
 /*-------------------------------------------
-SD-header file
-ARDUINO NANO
-(c) Pham Thanh Tam 
-version 1.00 - 29/7/2019
+  SD CARD - header file
+  ARDUINO NANO
+  (c) Pham Thanh Tam - An Minh Dao 2019 
+  version 1.10 - 05/08/2019
 --------------------------------------------*/ 
 #include "Nano_SD.h"
 

@@ -1,8 +1,8 @@
 /*------------------------------------------------------------*-
-  LCD - functions file
+  MAIN - functions file
   ARDUINO NANO
-  (c) Pham Thanh Tam - An Minh Dao 2019
-  version 1.00 - 26/07/2019
+  (c) An Minh Dao - Pham Thanh Tam - 2019
+  version 1.30 - 05/08/2019
 ---------------------------------------------------------------
  *  PUBLIC FUNCTIONS CONTAIN:
  *  

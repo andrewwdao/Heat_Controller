@@ -1,11 +1,11 @@
 /*-------------------------------------------
-SD-header file
-ARDUINO NANO
-(c) Pham Thanh Tam 
-version 1.00 - 29/7/2019
---------------------------------------------*/
-#ifndef  NANO_SD 
-#define NANO_SD
+  SD CARD - header file
+  ARDUINO NANO
+  (c) Pham Thanh Tam - An Minh Dao 2019 
+  version 1.10 - 05/08/2019
+--------------------------------------------*/ 
+#ifndef  __NANO_SD_H 
+#define  __NANO_SD_H
 #include <Arduino.h>
 #include <SPI.h>
 #include <SD.h>
@@ -15,4 +15,4 @@ version 1.00 - 29/7/2019
 void rece() ;// Receive data from serial and sent to SD
 void rtc_init();// initial_rtc
 void SD_init();
-#endif // NANO_SD
+#endif // __NANO_SD_H
