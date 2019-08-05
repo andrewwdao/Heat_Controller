@@ -10,8 +10,19 @@
 #include <SPI.h>
 #include <SD.h>
 #include "Nano_RTC_DS3231.h"
+//#include "config.h"
 
-// public function prototype 
-void rece() ;// Receive data from serial and sent to SD
-void SD_init();
+// ------ Public constants ------------------------------------
+
+// ------ Public function prototypes --------------------------
+/**
+Initialize SD card
+**/
+bool SD_init();
+/**
+Collect the data from serial port if existed and send to SD
+**/
+void getFromMaster();
+// ------ Public variable -------------------------------------
+
 #endif // __NANO_SD_H

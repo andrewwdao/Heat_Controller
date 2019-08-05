@@ -1,16 +1,11 @@
 /*------------------------------------------------------------*-
   LCD - functions file
   ARDUINO NANO
-  (c) Pham Thanh Tam - An Minh Dao 2019
+  (c) An Minh Dao - Pham Thanh Tam 2019
   version 1.20 - 05/08/2019
----------------------------------------------------------------
- *  PUBLIC FUNCTIONS CONTAIN:
- *  
- *  
- *  PRIVATE FUNCTIONS CONTAIN:
- *  
- * 
- --------------------------------------------------------------*/
+---------------------------------------------------------------*/
+#ifndef __NANO_LCD_CPP
+#define __NANO_LCD_CPP
 #include "Nano_LCD.h"
 
 // ------ Private constants -----------------------------------
@@ -83,6 +78,7 @@ void LCD_display() {
 	  case ERROR: 		{break;}
 	}//end switch
 }//end LCD_display
+//--------------------------------
 int buttonRead()
 {
 	int adc_buttons=analogRead(BUTTON_PIN);
@@ -109,6 +105,7 @@ int buttonRead()
     }
 	return ERROR; //error
 }//end buttonRead
+//--------------------------------
 void LCD_menu()
 {
  //------------------------------Display user interface------------------
@@ -241,7 +238,7 @@ void PIDdisplay_editor()
 	}//end switch
 	return;
   }//PIDdisplay_editor
-
+//--------------------------------
 void LCD_flow()
 { 
     //------------------------------Display user interface------------------
@@ -286,6 +283,7 @@ void LCD_flow()
 	}//end switch
 	return;
 }// end LCD_flow()
+//--------------------------------
 void LCD_temp()
 {
   //------------------------------Display user interface------------------
@@ -339,3 +337,5 @@ void LCD_temp()
 	}//end switch
 	return;
 }// end LCD_temp
+//--------------------------------
+#endif //_NANO_LCD_CPP
