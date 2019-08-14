@@ -16,9 +16,9 @@
 float previous_error = 0;
 uint32_t lastTime = millis();
 //PID constants:
-int kp = 9.1;
-int ki = 0.3;
-int kd = 1.8;
+float kp = 2.4;
+float ki = 1.3;
+float kd = 0.8;
 // ------ PUBLIC variable definitions -------------------------
 
 //--------------------------------------------------------------
@@ -26,10 +26,10 @@ int kd = 1.8;
 //--------------------------------------------------------------
 float PIDcal(int setVal,int realVal) {
   float elapsedTime, timePrev;
-  int PID_value = 0;
-  int PID_p = 0;    
-  int PID_i = 0;
-  int PID_d = 0;
+  float PID_value = 0;
+  float PID_p = 0;    
+  float PID_i = 0;
+  float PID_d = 0;
   //We calculate the error between the setpoint and the real value
   float PID_error = setVal - realVal;
   //Calculate the P value
@@ -46,16 +46,26 @@ float PIDcal(int setVal,int realVal) {
   //Final total PID value is the sum of P + I + D
   PID_value = PID_p + PID_i + PID_d;
 
-  //We define PID range between 0 and 1000
-  if(PID_value < 0)   {PID_value = 0;}
-  if(PID_value > 1000){PID_value = 1000;}
+  //We define PID range between -1000 and 1000
+  if(PID_value < -100){PID_value = -100;}
+  if (PID_value > 100){PID_value = 100;}
   //Remember to store the previous error for next loop.
   previous_error = PID_error;  
 
-  return (PID_value/100000); //to make return value goes from 0.01 to 1
+  return (PID_value/1000); //to make return value goes from -0.1 to 0.1
 }//end PID_cal
 
-void setup() {}
-void loop() {}
+float setValue = 4;
+float startingVal = 0;
+void setup() {
+  Serial.begin(115200);
+  
+  }
+void loop() {
+  //Serial.println(PIDcal(setValue,startingVal));
+  startingVal += PIDcal(setValue,startingVal);
+  Serial.println(startingVal);
+  delay(100);
+  }
 
 #endif //__ESP32_PID_CPP
