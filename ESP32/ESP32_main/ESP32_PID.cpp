@@ -3,10 +3,14 @@
   ESP32 DEVKIT V1
   (c) An Minh Dao 2019
   version 1.00 - 14/08/2019
----------------------------------------------------------------*/
+---------------------------------------------------------------
+ * ESP-IDF version: 3.2
+ * Compiler version: 5.2.0
+ * Arduino components version: latest
+--------------------------------------------------------------*/
 #ifndef __ESP32_PID_CPP
 #define __ESP32_PID_CPP
-#include "PID.h"
+#include "ESP32_PID.h"
 
 // ------ Private constants -----------------------------------
 
@@ -24,6 +28,30 @@ float kd = 0.8;
 //--------------------------------------------------------------
 // FUNCTION DEFINITIONS
 //--------------------------------------------------------------
+float PID_Kp_read() {
+  return kp;
+}//end PID_Kp_read
+//------------------------------------
+float PID_Ki_read() {
+  return ki;
+}//end PID_Ki_read
+//------------------------------------
+float PID_Kd_read() {
+  return kd;
+}//end PID_Kd_read
+//------------------------------------
+void PID_Kp_write(float PIDval) {
+  kp = PIDval;
+}//end PID_Kp_write
+//------------------------------------
+void PID_Ki_write(float PIDval) {
+  ki = PIDval;
+}//end PID_Ki_write
+//------------------------------------
+void PID_Kd_write(float PIDval) {
+  kd = PIDval;
+}//end PID_Kd_write
+//------------------------------------
 float PIDcal(int setVal,int realVal) {
   float elapsedTime, timePrev;
   float PID_value = 0;
@@ -54,18 +82,5 @@ float PIDcal(int setVal,int realVal) {
 
   return (PID_value/1000); //to make return value goes from -0.1 to 0.1
 }//end PID_cal
-
-float setValue = 80;
-float startingVal = 0;
-void setup() {
-  Serial.begin(115200);
-  
-  }
-void loop() {
-  //Serial.println(PIDcal(setValue,startingVal));
-  startingVal += PIDcal(setValue,startingVal);
-  Serial.println(startingVal);
-  delay(100);
-  }
 
 #endif //__ESP32_PID_CPP

@@ -18,9 +18,9 @@ Set new time if the time is wrong - only works once - fix the time directly insi
 **/
 void set_time();
 // ------ Private variables -----------------------------------
-
-// ------ PUBLIC variable definitions -------------------------
 DS3231 rtc(I2C_SDA,I2C_SCL);
+// ------ PUBLIC variable definitions -------------------------
+
 //--------------------------------------------------------------
 // FUNCTION DEFINITIONS
 //--------------------------------------------------------------

@@ -1,5 +1,22 @@
+/*------------------------------------------------------------*-
+  PWM pump controller - functions file
+  ESP32 DEVKIT V1
+  (c) An Minh Dao 2019
+  version 1.00 - 14/08/2019
+---------------------------------------------------------------
+ * ESP-IDF version: 3.2
+ * Compiler version: 5.2.0
+ * Arduino components version: latest
+--------------------------------------------------------------*/
+#ifndef __ESP32_PWM_PUMP_CPP
+#define __ESP32_PWM_PUMP_CPP
+#include "ESP32_PWM_Pump.h"
 
-#include "config.h"
+// ------ Private constants -----------------------------------
+
+// ------ Private function prototypes -------------------------
+
+// ------ Private variables -----------------------------------
 int pump1_output = OFF_MODE;
 volatile uint32_t p1_pulseLength=0;
 volatile float    p1_dutyCycle = 0;
@@ -8,9 +25,12 @@ int pump2_output = OFF_MODE;
 volatile uint32_t p2_pulseLength=0;
 volatile float    p2_dutyCycle = 0;
 uint32_t p2Millis=0;
-
 uint32_t Millis=0;
+// ------ PUBLIC variable definitions -------------------------
 
+//--------------------------------------------------------------
+// FUNCTION DEFINITIONS
+//--------------------------------------------------------------
 void pump1_init() {
   //output pwm to pump
   ledcSetup(PWM_CHANNEL_1, PWM_FREQ, PWM_RES); // configure PWM chanel corresponding to frequency and resolution
@@ -18,7 +38,7 @@ void pump1_init() {
   //input pwm from pump
   pinMode(PUMP1_IN_PIN, INPUT);
 }//end pump1_init
-
+//------------------------------------
 void pump2_init() {
   //output pwm to pump
   ledcSetup(PWM_CHANNEL_2, PWM_FREQ, PWM_RES); // configure PWM chanel corresponding to frequency and resolution
@@ -26,47 +46,7 @@ void pump2_init() {
   //input pwm from pump
   pinMode(PUMP2_IN_PIN, INPUT);
 }//end pump2_init
-
-void pump1_maxspeed() {
-  pump1_output = VAR_MAXSPEED; //set normal output to pseudo maximum value in case of pump_faster() function is called.
-  ledcWrite(PWM_CHANNEL_1, MAX_SPEED); //put the pump in the real maximum speed
-}//end pump1_maxspeed
-void pump1_minspeed() {
-  pump1_output = VAR_MINSPEED; //set normal output to pseudo maximum value in case of pump_slower() function is called.
-  ledcWrite(PWM_CHANNEL_1, MIN_SPEED); //put the pump in the real minimum speed
-}//end pump1_minspeed
-void pump1_faster(float valPump) { //valPump goes from 0.01 to 1 (1% to 100%)
-  pump1_output += (pump1_output>=(VAR_MAXSPEED-1))?(0):(valPump)*PWM_RESOLUTION; //plus 1% of duty cycle each time this function is called if maximum value is not exceeded.
-  ledcWrite(PWM_CHANNEL_1, pump1_output); //output signal to the pump
-}//end pump1_faster
-void pump1_slower(float valPump) {//valPump goes from 0.01 to 1 (1% to 100%)
-  pump1_output -= (pump1_output<=(VAR_MINSPEED+1))?(0):(valPump)*PWM_RESOLUTION; //plus 1% of duty cycle each time this function is called if maximum value is not exceeded.
-  ledcWrite(PWM_CHANNEL_1, pump1_output); //output signal to the pump
-}//end pump1_slower
-void pump1_OFF() {
-  ledcWrite(PWM_CHANNEL_1,OFF_MODE);
-}//end pump1_OFF
-//-----------------------------------------------------
-void pump2_maxspeed() {
-  pump2_output = VAR_MAXSPEED; //set normal output to pseudo maximum value in case of pump_faster() function is called.
-  ledcWrite(PWM_CHANNEL_2, MAX_SPEED); //put the pump in the real maximum speed
-}//end pump1_maxspeed
-void pump2_minspeed() {
-  pump2_output = VAR_MINSPEED; //set normal output to pseudo maximum value in case of pump_slower() function is called.
-  ledcWrite(PWM_CHANNEL_2, MIN_SPEED); //put the pump in the real minimum speed
-}//end pump1_minspeed
-void pump2_faster() {
-  pump2_output += (pump2_output>=(VAR_MAXSPEED-1))?(0):(0.01)*PWM_RESOLUTION; //plus 1% of duty cycle each time this function is called if maximum value is not exceeded.
-  ledcWrite(PWM_CHANNEL_2, pump2_output); //output signal to the pump
-}//end pump1_faster
-void pump2_slower() {
-  pump2_output -= (pump2_output<=(VAR_MINSPEED+1))?(0):(0.01)*PWM_RESOLUTION; //plus 1% of duty cycle each time this function is called if maximum value is not exceeded.
-  ledcWrite(PWM_CHANNEL_2, pump2_output); //output signal to the pump
-}//end pump1_slower
-void pump2_OFF() {
-  ledcWrite(PWM_CHANNEL_2,OFF_MODE);
-}//end pump1_OFF
-//------------------------
+//------------------------------------
 void pump1_status() {
     p1_pulseLength = pulseIn(PUMP1_IN_PIN, LOW, 15000);//Pin, start to count when catch a high pulse, wait for 15ms before return 0 (75Hz~13,33ms)
     S_PRINTLN(p1_pulseLength);
@@ -79,7 +59,7 @@ void pump1_status() {
     if (p1_dutyCycle==0) {S_PRINTLN(F("pump1 No signal!"));return;}
     if (p1_dutyCycle<PUMP_NORMAL) {S_PRINTLN(F("Pump2 in normal condition!"));return;}
 }//end pump1_status
-
+//------------------------------------
 void pump2_status() {
     p2_pulseLength = pulseIn(PUMP2_IN_PIN, LOW, 15000);//Pin, start to count when catch a high pulse, wait for 15ms before return 0 (75Hz~13,33ms)
     S_PRINTLN(p2_pulseLength);
@@ -92,43 +72,53 @@ void pump2_status() {
     if (p2_dutyCycle==0) {S_PRINTLN(F("pump2 No signal!"));return;}
     if (p2_dutyCycle<PUMP_NORMAL) {S_PRINTLN(F("Pump2 in normal condition!"));return;}
 }//end pump1_status
-void setup(){
-  Serial.begin(115200);
-  Millis = millis();
-  pump1_init();
-  pump2_init();
-// pump1_maxspeed();
-//pump1_minspeed() ;
-
-//pump1_faster();
-//pump1_slower();
-//  pump1_OFF();
-
-  
-// pump2_maxspeed();
-//pump2_minspeed() ;
-//pump2_faster();
-//  pump2_slower();
-//  pump2_OFF();
-
-}
-
-void loop()
-{
-  
-  if ((millis()-Millis)>1000) {
-    Millis=millis();
-    //pump2_status();
-    pump1_status();
-  }
-//   // pump1_slower();
-// //pump2_faster();
-//   pump1_faster();
-//  //  pump2_slower();
-//  delay(1000);
-//  pump1_slower();
-//     Millis=millis();
-//    S_PRINTLN("Hello2");
-//  }
-
-}
+//------------------------------------
+void pump1_maxspeed() {
+  pump1_output = VAR_MAXSPEED; //set normal output to pseudo maximum value in case of pump_faster() function is called.
+  ledcWrite(PWM_CHANNEL_1, MAX_SPEED); //put the pump in the real maximum speed
+}//end pump1_maxspeed
+//-----------------------------------------------------
+void pump2_maxspeed() {
+  pump2_output = VAR_MAXSPEED; //set normal output to pseudo maximum value in case of pump_faster() function is called.
+  ledcWrite(PWM_CHANNEL_2, MAX_SPEED); //put the pump in the real maximum speed
+}//end pump1_maxspeed
+//------------------------------------
+void pump1_minspeed() {
+  pump1_output = VAR_MINSPEED; //set normal output to pseudo maximum value in case of pump_slower() function is called.
+  ledcWrite(PWM_CHANNEL_1, MIN_SPEED); //put the pump in the real minimum speed
+}//end pump1_minspeed
+//------------------------------------
+void pump2_minspeed() {
+  pump2_output = VAR_MINSPEED; //set normal output to pseudo maximum value in case of pump_slower() function is called.
+  ledcWrite(PWM_CHANNEL_2, MIN_SPEED); //put the pump in the real minimum speed
+}//end pump1_minspeed
+//------------------------------------
+void pump1_faster(float valPump) { //valPump goes from 0.01 to 1 (1% to 100%)
+  pump1_output += (pump1_output>=(VAR_MAXSPEED-1))?(0):(valPump)*PWM_RESOLUTION; //plus 1% of duty cycle each time this function is called if maximum value is not exceeded.
+  ledcWrite(PWM_CHANNEL_1, pump1_output); //output signal to the pump
+}//end pump1_faster
+//------------------------------------
+void pump2_faster() {
+  pump2_output += (pump2_output>=(VAR_MAXSPEED-1))?(0):(0.01)*PWM_RESOLUTION; //plus 1% of duty cycle each time this function is called if maximum value is not exceeded.
+  ledcWrite(PWM_CHANNEL_2, pump2_output); //output signal to the pump
+}//end pump1_faster
+//------------------------------------
+void pump1_slower(float valPump) {//valPump goes from 0.01 to 1 (1% to 100%)
+  pump1_output -= (pump1_output<=(VAR_MINSPEED+1))?(0):(valPump)*PWM_RESOLUTION; //plus 1% of duty cycle each time this function is called if maximum value is not exceeded.
+  ledcWrite(PWM_CHANNEL_1, pump1_output); //output signal to the pump
+}//end pump1_slower
+//------------------------------------
+void pump2_slower() {
+  pump2_output -= (pump2_output<=(VAR_MINSPEED+1))?(0):(0.01)*PWM_RESOLUTION; //plus 1% of duty cycle each time this function is called if maximum value is not exceeded.
+  ledcWrite(PWM_CHANNEL_2, pump2_output); //output signal to the pump
+}//end pump1_slower
+//------------------------------------
+void pump1_OFF() {
+  ledcWrite(PWM_CHANNEL_1,OFF_MODE);
+}//end pump1_OFF
+//------------------------------------
+void pump2_OFF() {
+  ledcWrite(PWM_CHANNEL_2,OFF_MODE);
+}//end pump1_OFF
+//------------------------
+#endif //__ESP32_PWM_PUMP_CPP

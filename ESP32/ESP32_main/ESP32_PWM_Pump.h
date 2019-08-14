@@ -1,14 +1,17 @@
 /*------------------------------------------------------------*-
-  PWM Configuration file
-  (c) Can Tho University 2019
-  version 1.00 - 17/07/2019
+  PWM pump controller - functions file
+  ESP32 DEVKIT V1
+  (c) An Minh Dao 2019
+  version 1.00 - 14/08/2019
 ---------------------------------------------------------------
  * ESP-IDF version: 3.2
  * Compiler version: 5.2.0
  * Arduino components version: latest
 --------------------------------------------------------------*/
-#ifndef _CONFIG_H
-#define _CONFIG_H
+#ifndef __ESP32_PWM_PUMP_H
+#define __ESP32_PWM_PUMP_H
+#include <WiFi.h> //for esp32
+//#include "config.h"
 
 #define SERIAL_OUTPUT
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -20,11 +23,10 @@
   #define PROFILE_A_HEATING
  //#define PROFILE_C_SOLAR
 //#define YONOS_PARA_ST_15/13_PWM2
-//--------------------------------------------------------------
-// MAIN LIBRARY - WILL NEED TO EDIT THIS SECTION FOR EVERY PROJECT
-//-------------------------------------------------------------
-// Must include the appropriate microcontroller header file here
-#include "WiFi.h" //for esp32
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// ------ Public constants ------------------------------------
 //--------------------------------------------------------------
 // PUMP PARAMETERS
 //--------------------------------------------------------------
@@ -84,6 +86,65 @@
 
 #define PWM_RES 13 // 13 bit resolution = 2^13-1 = 8191 propotion
 #define PWM_RESOLUTION  8191 // 2^13-1
+// ------ Public function prototypes --------------------------
+/**
+Initialize Pump1
+**/
+void pump1_init();
+/**
+Initialize Pump2
+**/
+void pump2_init();
+/**
+Pump1 current Status
+**/
+void pump1_status();
+/**
+Pump2 current Status
+**/
+void pump2_status();
+/**
+Put Pump1 in maxspeed
+**/
+void pump1_maxspeed();
+/**
+Put Pump2 in maxspeed
+**/
+void pump2_maxspeed();
+/**
+Put Pump1 in minspeed
+**/
+void pump1_minspeed();
+/**
+Put Pump2 in minspeed
+**/
+void pump2_minspeed();
+/**
+Make Pump1 faster (in % but not exceed the limit percentage of the pump)
+**/
+void pump1_faster(float);
+/**
+Make Pump2 faster (in % but not exceed the limit percentage of the pump)
+**/
+void pump2_faster(float);
+/**
+Make Pump1 slower (in % but not exceed the limit percentage of the pump)
+**/
+void pump1_slower(float);
+/**
+Make Pump2 slower (in % but not exceed the limit percentage of the pump)
+**/
+void pump2_slower(float);
+/**
+Turn OFF Pump1
+**/
+void pump1_OFF();
+/**
+Turn OFF Pump2
+**/
+void pump2_OFF();
+// ------ Public variable -------------------------------------
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef ESP32_DEBUG // When this is active, every log will be execute.
@@ -130,4 +191,4 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#endif //_CONFIG_H
+#endif //__ESP32_PWM_PUMP_H

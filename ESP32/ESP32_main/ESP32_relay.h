@@ -1,52 +1,37 @@
+/*------------------------------------------------------------*-
+  RELAY configuration - header file
+  ESP32 DEVKIT V1
+  (c) An Minh Dao 2019
+  version 1.00 - 14/08/2019
+---------------------------------------------------------------
+ * ESP-IDF version: 3.2
+ * Compiler version: 5.2.0
+ * Arduino components version: latest
+--------------------------------------------------------------*/
+#ifndef __ESP32_RELAY_H
+#define __ESP32_RELAY_H
+#include <WiFi.h> //for esp32
+//#include "config.h"
 
-#define clk 18
-#define str 5
-#define data595 4
+// ------ Public constants ------------------------------------
 
-void hc595 (unsigned int d );
+// ------ Public function prototypes --------------------------
+/**
+Initialize relay
+**/
+void relay_init();
+/**
+Configure relay 01
+**/
+void relay01(bool);
+/**
+Configure relay 02
+**/
+void relay02(bool);
+/**
+Configure relay 03
+**/
+void relay03(bool);
+// ------ Public variable -------------------------------------
 
-void setup() {
- pinMode (clk,OUTPUT);
- pinMode (str, OUTPUT);
- pinMode (data595, OUTPUT);
-
-}
-
-void loop() {
-  hc595(5);
-
-
-}
-
-//---------Chuong Trinh con-------------
-/*
- * ON 1=>1
- * ON 2=>2
- * ON 3=>4
- */
-void hc595 (unsigned int d ) 
-{
- unsigned int t=0x80;
- digitalWrite (str,LOW); 
-// shiftOut(data595, clk, LSBFIRST, d) ;
-for (int i=0;i<8;i++)
-{
-if ((d&0x80)==0x80)
-{
-  digitalWrite(data595,LOW);
-  }// end if
-  else
-  {
-    digitalWrite(data595,HIGH);
-    } //end else 
- d=d<<1;
- digitalWrite(clk,LOW);
- delay(10);
- digitalWrite(clk,HIGH);
-   
-}// end for 
-digitalWrite (str,HIGH);
-delay(10);
-digitalWrite (str,LOW);  
-
-  }// end hc595
+#endif //__ESP32_RELAY_H

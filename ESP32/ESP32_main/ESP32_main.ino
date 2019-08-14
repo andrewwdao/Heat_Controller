@@ -1,22 +1,28 @@
 /*------------------------------------------------------------*-
   MAIN - functions file
-  ARDUINO NANO
-  (c) An Minh Dao - Pham Thanh Tam - 2019
-  version 1.30 - 05/08/2019
----------------------------------------------------------------*/
-#include "Nano_LCD.h"
-#include "Nano_SD.h"
-#include "Nano_RTC_DS3231.h"
+  ESP32 DEVKIT V1
+  (c) An Minh Dao - 2019
+  version 1.00 - 14/08/2019
+---------------------------------------------------------------
+ * ESP-IDF version: 3.2
+ * Compiler version: 5.2.0
+ * Arduino components version: latest
+--------------------------------------------------------------*/
+#include "ESP32_ADC.h"
+#include "ESP32_PID.h"
+#include "ESP32_PWM_Pump.h"
+#include "ESP32_UART.h"
+#include "ESP32_relay.h"
 void setup() 
 {
-  Serial.begin(115200);
-  LCD_init();
-  RTC_init();
-  SD_init();
+  //UART_init();
+  ADC_init();
+  pump1_init();
+  pump2_init();
+  relay_init();
 }// end setup
 
 void loop() 
 {
- LCD_display();
- getFromMaster();
+
 }//end loop
