@@ -35,12 +35,12 @@ void pump1_minspeed() {
   pump1_output = VAR_MINSPEED; //set normal output to pseudo maximum value in case of pump_slower() function is called.
   ledcWrite(PWM_CHANNEL_1, MIN_SPEED); //put the pump in the real minimum speed
 }//end pump1_minspeed
-void pump1_faster() {
-  pump1_output += (pump1_output>=(VAR_MAXSPEED-1))?(0):(0.01)*PWM_RESOLUTION; //plus 1% of duty cycle each time this function is called if maximum value is not exceeded.
+void pump1_faster(int valPump) { //valPump goes from 0.01 to 1 (1% to 100%)
+  pump1_output += (pump1_output>=(VAR_MAXSPEED-1))?(0):(valPump)*PWM_RESOLUTION; //plus 1% of duty cycle each time this function is called if maximum value is not exceeded.
   ledcWrite(PWM_CHANNEL_1, pump1_output); //output signal to the pump
 }//end pump1_faster
-void pump1_slower() {
-  pump1_output -= (pump1_output<=(VAR_MINSPEED+1))?(0):(0.01)*PWM_RESOLUTION; //plus 1% of duty cycle each time this function is called if maximum value is not exceeded.
+void pump1_slower(int valPump) {//valPump goes from 0.01 to 1 (1% to 100%)
+  pump1_output -= (pump1_output<=(VAR_MINSPEED+1))?(0):(valPump)*PWM_RESOLUTION; //plus 1% of duty cycle each time this function is called if maximum value is not exceeded.
   ledcWrite(PWM_CHANNEL_1, pump1_output); //output signal to the pump
 }//end pump1_slower
 void pump1_OFF() {
