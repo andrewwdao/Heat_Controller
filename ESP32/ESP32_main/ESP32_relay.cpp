@@ -13,9 +13,9 @@
 #include "ESP32_relay.h"
 
 // ------ Private constants -----------------------------------
-#define CLK_595   18
-#define STR_595   5
-#define DATA_595  4
+#define CLOCK_PIN   18
+#define LATCH_PIN   5
+#define DATA_PIN  4
 
 // ------ Private function prototypes -------------------------
 /**
@@ -23,51 +23,39 @@ Send byte to the HC595
 **/
 void HC595_sendByte(uint16_t);
 // ------ Private variables -----------------------------------
-
+uint8_t sendData=0;
 // ------ PUBLIC variable definitions -------------------------
 
 //--------------------------------------------------------------
 // FUNCTION DEFINITIONS
 //--------------------------------------------------------------
 void relay_init() {
-  pinMode(CLK_595,OUTPUT);
-  pinMode(STR_595,OUTPUT);
-  pinMode(DATA_595,OUTPUT);
+  pinMode(LATCH_PIN, OUTPUT);
+  pinMode(CLOCK_PIN, OUTPUT);
+  pinMode(DATA_PIN, OUTPUT);
 }//end relay_init
 //------------------------------------------
-void HC595_sendByte(uint16_t d) {
-  unsigned int t=0x80;
-  digitalWrite(STR_595,LOW); 
-  // shiftOut(data595, clk, LSBFIRST, d) ;
-  for (int i=0;i<8;i++)
-  {
-    if ((d&0x80)==0x80){
-      digitalWrite(DATA_595,LOW);
-    } else {
-      digitalWrite(DATA_595,HIGH);
-    } //end if else 
-    d=d<<1;
-    digitalWrite(CLK_595,LOW);
-    delay(10);
-    digitalWrite(CLK_595,HIGH);  
-  }// end for 
-  digitalWrite (STR_595,HIGH);
-  delay(10);
-  digitalWrite (STR_595,LOW);
+void HC595_sendByte(uint8_t Data) {
+  digitalWrite(LATCH_PIN, LOW); //make sure the relay status don't change while you're sending in bits
+  shiftOut(DATA_PIN, CLOCK_PIN, MSBFIRST, Data); //Data send to the 74HC595
+  digitalWrite(LATCH_PIN, HIGH);//take the latch pin high so the relay status will be updated  
 }//end HC595_sendByte
 //------------------------------------------
 void relay01(bool Status) {
-  if (Status) {HC595_sendByte(1);}
-  else        {HC595_sendByte(0);}
+  if (Status) {sendData|=0x02;}
+  else        {sendData&=~0x02;}
+  HC595_sendByte(sendData);
 }//end relay01
 //------------------------------------------
 void relay02(bool Status) {
-  if (Status) {HC595_sendByte(2);}
-  else        {HC595_sendByte(0);}
+  if (Status) {sendData|=0x04;}
+  else        {sendData&=~0x04;}
+  HC595_sendByte(sendData);
 }//end relay02
 //------------------------------------------
 void relay03(bool Status) {
-  if (Status) {HC595_sendByte(4);}
-  else        {HC595_sendByte(0);}
+  if (Status) {sendData|=0x08;}
+  else        {sendData&=~0x08;}
+  HC595_sendByte(sendData);
 }//end relay03
 #endif //__ESP32_RELAY_CPP
