@@ -1,6 +1,6 @@
 /*-------------------------------------------------------------
-  RTC DS3231 - header file
-  ARDUINO NANO
+  ADC Converter - header file
+  ESP32 DEVKIT V1
   (c) An Minh Dao - 2019 
   version 1.00 - 14/08/2019
 ---------------------------------------------------------------

@@ -28,7 +28,7 @@ Stable time: ~25 second.
 
 // ------ Private function prototypes -------------------------
 /**
-RRead value of the ADC 
+Read value of the ADC 
 **/
 int ADC_read(int,int,int);
 // ------ Private variables -----------------------------------
