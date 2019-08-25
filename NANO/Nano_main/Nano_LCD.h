@@ -14,6 +14,7 @@
 #define __NANO_LCD_H
 #include <Arduino.h>
 #include <LiquidCrystal_I2C.h>
+#include "Nano_UART.h"
 //#include "config.h"
 
 // ------ Public constants ------------------------------------
@@ -27,7 +28,10 @@ void LCD_init();
 LCD display function
 */
 void LCD_display();
-
+/**
+Change Value temp and flow to display on the LCD
+*/
+void changeVal(uint16_t,uint16_t,uint16_t,uint16_t,uint16_t,uint16_t);
 // ------ Public variable -------------------------------------
 
 #endif //_NANO_LCD_H

@@ -247,6 +247,7 @@ void PIDdisplay_editor()
 	  }
 	  case BUT_CONFIRM: 
 	  {
+      PIDsendToMaster(PID); //send new PID vals to master
 		  currentState=MAIN_STATE;
       LCDpointer=1;lcd.clear();
 		  return;//back
@@ -327,6 +328,7 @@ void TempEditor()
     }
     case BUT_CONFIRM: 
     { 
+      sTempSendToMaster(sTemp); //send the set temperature to master
       currentState=MAIN_STATE;
       LCDpointer=1;lcd.clear();
       return;
@@ -384,6 +386,7 @@ void FlowEditor()
     }
     case BUT_CONFIRM: 
     {
+      sFlowSendToMaster(sFlow); //send the set flow to master
       currentState= MAIN_STATE;
       LCDpointer=1;lcd.clear();
       return;
@@ -464,5 +467,15 @@ void LCD_temp()
   }//end switch
   return;
 }// end LCD_temp
+//----------------------------
+void changeVal(uint16_t mt1,uint16_t mt2,uint16_t mt3,uint16_t mt4,uint16_t mf1,uint16_t mf2) //Change Value temp and flow to display on the LCD
+{
+  Temp[0]=mt1;
+  Temp[1]=mt2;
+  Temp[2]=mt3;
+  Temp[3]=mt4;
+  flow[0]=mf1;
+  flow[1]=mf2;
+}// end changeVal
 //----------------------------
 #endif //__NANO_LCD_CPP

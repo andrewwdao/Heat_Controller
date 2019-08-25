@@ -31,7 +31,7 @@ void UART_init()
 {
   if( Serial.available()) //if something appear in the serial monitor
   { 
-    int t1,t2,t3,t4,f1,f2;
+    uint16_t t1,t2,t3,t4,f1,f2;
     String buff1="",buff2="",buff3="",buff4="",rec="";
     rec=Serial.readString();
     t1=rec.indexOf("t",0); //search for initial signal - t for temperature
@@ -58,13 +58,31 @@ void UART_init()
       buff2=rec.substring(f2+1);  //get the string out
       f1=buff1.toInt(); //flow1
       f2=buff2.toInt(); //flow2
-      //save it to the SD card
-      sendSD(t1,t2,t3,t4,f1,f2);
+      
+      changeVal(t1,t2,t3,t4,f1,f2); //change it in the LCD screen
+      sendSD(t1,t2,t3,t4,f1,f2);//save it to the SD card
     } else // no exist signal "t" and "f" at the same time
     {
       D_PRINTLN(F("Not recognized command!"));
     }// end if else
   }// end if
-}// end masterGet
+}// end getFromMaster
+void PIDsendToMaster(float* Mpid) {
+  char Smes[30];
+  snprintf(Smes,30,"p|%d.%d|%d.%d|%d.%d",(int)*Mpid,(int)((*Mpid)*10)-((int)*Mpid)*10,(int)*(Mpid+1),(int)((*(Mpid+1))*10)-((int)*(Mpid+1))*10,(int)*(Mpid+2),(int)((*(Mpid+2))*10)-((int)*(Mpid+2))*10);
+  Serial.println(Smes);
+}//end PIDsendToMaster
+//--------------------------------
+void sTempSendToMaster(uint16_t* Mtemp) {
+  char Smes[30];
+  sprintf(Smes,"st|%d|%d|%d|%d",*(Mtemp),*(Mtemp+1),*(Mtemp+2),*(Mtemp+3));
+  Serial.println(Smes);
+}
+//--------------------------------
+void sFlowSendToMaster(uint16_t* Mflow) {
+  char Smes[30];
+  sprintf(Smes,"sf|%d|%d",*(Mflow),*(Mflow+1));
+  Serial.println(Smes);
+}
 //--------------------------------
 #endif // __NANO_SD_CPP

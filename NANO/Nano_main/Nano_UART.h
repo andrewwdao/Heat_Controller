@@ -8,6 +8,7 @@
 #define  __NANO_UART_H
 #include <Arduino.h>
 #include "Nano_SD.h"
+#include "Nano_LCD.h"
 #include "debugConfig.h"
 //#include "config.h"
 
@@ -22,6 +23,18 @@ void UART_init();
 Collect the data from serial port if existed and send to SD
 **/
 void getFromMaster();
+/**
+Send PID data to master
+**/
+void PIDsendToMaster(float*);
+/**
+Send temperature data to master
+**/
+void sTempSendToMaster(uint16_t*);
+/**
+Send flow data to master
+**/
+void sFlowSendToMaster(uint16_t*);
 // ------ Public variable -------------------------------------
 
 #endif // __NANO_UART_H

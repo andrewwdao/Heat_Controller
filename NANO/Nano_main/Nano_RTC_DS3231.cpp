@@ -41,7 +41,7 @@ String RTC_getTime()
   rtcData += t.date; rtcData +="/";
   rtcData += t.mon; rtcData += "/";
   rtcData += t.year; rtcData += ")";
-  Serial.println(rtcData);
+  D_PRINTLN(rtcData);
   return rtcData;
 }// end RTC_getTime
 //------------------------------------

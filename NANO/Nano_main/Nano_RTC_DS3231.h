@@ -8,6 +8,7 @@
 #define _NANO_RTC_DS3231_H
 #include <Arduino.h>
 #include <DS3231.h>
+#include "debugConfig.h"
 //#include "config.h"
 
 // ------ Public constants ------------------------------------
