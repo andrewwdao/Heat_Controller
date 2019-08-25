@@ -1,7 +1,7 @@
 /*-------------------------------------------
-  RTC DS3231 - function file
+  RTC - header file
   ARDUINO NANO
-  (c) An Minh Dao - Pham Thanh Tam 2019 
+  (c) Pham Thanh Tam - An Minh Dao 2019 
   version 1.10 - 05/08/2019
 --------------------------------------------*/ 
 #ifndef  __NANO_RTC_DS3231_H 
@@ -11,23 +11,19 @@
 // ------ Private constants -----------------------------------
 #define I2C_SDA A4
 #define I2C_SCL A5
-
 // ------ Private function prototypes -------------------------
-/**
-Set new time if the time is wrong - only works once - fix the time directly inside the function
-**/
-void set_time();
-// ------ Private variables -----------------------------------
-DS3231 rtc(I2C_SDA,I2C_SCL);
-// ------ PUBLIC variable definitions -------------------------
 
+// ------ Private variables -----------------------------------
+
+// ------ PUBLIC variable definitions -------------------------
+DS3231 rtc(I2C_SDA,I2C_SCL);
 //--------------------------------------------------------------
 // FUNCTION DEFINITIONS
 //--------------------------------------------------------------
 bool RTC_init()
 {
     rtc.begin();
-    set_time(); //set new time if the time is wrong - only works once - fix the time directly inside the function
+    set_time();
     return true;
 }//end RTC_init
 //------------------------------------------
@@ -49,11 +45,10 @@ void set_time()
 { 
   Time t;
   t=rtc.getTime();
-  if ((t.date==1)&(t.mon==1)&(t.year==2000))
+   if ((t.date==1)&(t.mon==1)&(t.year==2000)&(t.min==18)&(t.hour==0))
  {
-	rtc.setDate(5,8,2019); 
-	rtc.setTime(19,56,0);
- }//end if
-}//end set_time
-//--------------------------------
+  rtc.setDate(5,8,2019); 
+  rtc.setTime(19,56,0);
+ }
+}
 #endif //__NANO_RTC_DS3231_H

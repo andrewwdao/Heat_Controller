@@ -1,11 +1,18 @@
 /*------------------------------------------------------------*-
   LCD - functions file
   ARDUINO NANO
-  (c) An Minh Dao - Pham Thanh Tam 2019
+  (c) Pham Thanh Tam - An Minh Dao 2019
   version 1.20 - 05/08/2019
----------------------------------------------------------------*/
-#ifndef __NANO_LCD_CPP
-#define __NANO_LCD_CPP
+---------------------------------------------------------------
+ *  PUBLIC FUNCTIONS CONTAIN:
+ *  
+ *  
+ *  PRIVATE FUNCTIONS CONTAIN:
+ *  
+ * 
+ --------------------------------------------------------------*/
+#ifndef  __NANO_LCD_CPP 
+#define  __NANO_LCD_CPP
 #include "Nano_LCD.h"
 
 // ------ Private constants -----------------------------------
@@ -25,7 +32,9 @@ typedef enum {
 	MAIN_STATE,
 	PID_STATE,
 	TEMP_STATE,
-	FLOW_STATE
+	FLOW_STATE,
+  SET_TEMP,
+  SET_FLOW,
 } LCDstate;
 // ------ Private function prototypes -------------------------
 /**
@@ -48,14 +57,25 @@ void LCD_temp();
 User interface for the water flow monitoring
 */
 void LCD_flow();
+/**
+ *User interface for the temperature calibration
+ */
+void TempEditor();
+/**
+ *User interface for the flow calibration
+ */
+void FlowEditor();
+ 
 // ------ Private variables -----------------------------------
 int currentState=MAIN_STATE;
-// cac bien b_5,adc_buttons,c dùng trong cac ham PIDdisplay,LCD(),PIDdisplay_editor() vi no lien quan voi nhau nen de bien toan cuc
+
 bool PIDchange=false;
 int LCDpointer=1;
-int Temp[4];// an array that saves temperature T1 to T4 correspondingly
-int flow[2]={100,200};// an array that saves flow sensor values correspondingly
-float PID[3];// an array that saves kp,ki,kd correspondingly
+uint16_t Temp[4]={0,0,0,0};// an array that saves temperature T1 to T4 correspondingly
+uint16_t sTemp[4]={0,495,0,100};// an array that saves the user-set temperature T1 to T4 correspondingly
+uint16_t flow[2]={0,0};// an array that saves flow sensor values correspondingly
+uint16_t sFlow[2]={0,100};// an array that saves the user-set flow values correspondingly
+float PID[3]={0,0,0};// an array that saves kp,ki,kd correspondingly
 // ------ PUBLIC variable definitions -------------------------
 LiquidCrystal_I2C lcd(LCD_ADRESS, LCD_WIDTH, LCD_HEIGHT);
 
@@ -75,10 +95,11 @@ void LCD_display() {
 	  case PID_STATE: 	{PIDdisplay_editor();break;}
 	  case TEMP_STATE: 	{LCD_temp();break;}
 	  case FLOW_STATE: 	{LCD_flow();break;}
-	  case ERROR: 		{break;}
+    case SET_TEMP:    {TempEditor(); break;}
+    case SET_FLOW:    {FlowEditor(); break;}
+	  case ERROR: 		  {break;}
 	}//end switch
 }//end LCD_display
-//--------------------------------
 int buttonRead()
 {
 	int adc_buttons=analogRead(BUTTON_PIN);
@@ -96,80 +117,84 @@ int buttonRead()
 		return BUT_CONFIRM;
 	}
 	if(adc_buttons>300& adc_buttons<500) //button 4
-    { 
+  { 
 		return BUT_RIGHT;
-    }
+  }
 	if (adc_buttons >=500 & adc_buttons<800)  //button 5
 	{
 		return BUT_UP;
-    }
+  }
 	return ERROR; //error
 }//end buttonRead
 //--------------------------------
 void LCD_menu()
 {
  //------------------------------Display user interface------------------
-//	lcd.clear();
-	lcd.setCursor(1,0); lcd.print("1.PID");
-	lcd.setCursor(9,0); lcd.print("2.TEMP");
-	lcd.setCursor(1,1); lcd.print("3.FLOW");
-  lcd.setCursor(6,0);lcd.print("  ");
-  lcd.setCursor(15,0);lcd.print(" ");
-  lcd.setCursor(7,1);lcd.print("         ");
+	lcd.setCursor(1,0); lcd.print("PID");
+	lcd.setCursor(6,0); lcd.print("TEMP");
+	lcd.setCursor(6,1); lcd.print("FLOW");
+  lcd.setCursor(11,0);lcd.print("sTEMP");
+  lcd.setCursor(11,1);lcd.print("sFLOW");
   
-	if(LCDpointer==1)
-	{
-		lcd.setCursor(0,0); lcd.print(">");
-		lcd.setCursor(8,0); lcd.print(" ");
-		lcd.setCursor(0,1); lcd.print(" ");
-	}//end if
-	if(LCDpointer==2)
-	{
-		lcd.setCursor(0,0); lcd.print(" ");
-		lcd.setCursor(8,0); lcd.print(">");
-		lcd.setCursor(0,1); lcd.print(" ");
-	}//end if
-	if(LCDpointer==3)
-	{
-		lcd.setCursor(0,0); lcd.print(" ");
-		lcd.setCursor(8,0); lcd.print(" ");
-		lcd.setCursor(0,1); lcd.print(">");
-	}//end if
+	if (LCDpointer==1) {
+		lcd.setCursor(0,0);   lcd.print(">");
+		lcd.setCursor(5,0);   lcd.print(" ");
+    lcd.setCursor(5,1);   lcd.print(" ");
+		lcd.setCursor(10,0);  lcd.print(" ");
+    lcd.setCursor(10,1);  lcd.print(" ");
+	} else if(LCDpointer==2) {
+    lcd.setCursor(0,0);   lcd.print(" ");
+    lcd.setCursor(5,0);   lcd.print(">");
+    lcd.setCursor(5,1);   lcd.print(" ");
+    lcd.setCursor(10,0);  lcd.print(" ");
+    lcd.setCursor(10,1);  lcd.print(" ");
+	} else if(LCDpointer==3) {
+    lcd.setCursor(0,0);   lcd.print(" ");
+    lcd.setCursor(5,0);   lcd.print(" ");
+    lcd.setCursor(5,1);   lcd.print(">");
+    lcd.setCursor(10,0);  lcd.print(" ");
+    lcd.setCursor(10,1);  lcd.print(" ");
+	} else if(LCDpointer==4)  {
+    lcd.setCursor(0,0);   lcd.print(" ");
+    lcd.setCursor(5,0);   lcd.print(" ");
+    lcd.setCursor(5,1);   lcd.print(" ");
+    lcd.setCursor(10,0);  lcd.print(">");
+    lcd.setCursor(10,1);  lcd.print(" ");
+  } else if(LCDpointer==5)  {
+    lcd.setCursor(0,0);   lcd.print(" ");
+    lcd.setCursor(5,0);   lcd.print(" ");
+    lcd.setCursor(5,1);   lcd.print(" ");
+    lcd.setCursor(10,0);  lcd.print(" ");
+    lcd.setCursor(10,1);  lcd.print(">");
+  }//end if else
  //----------------------------------------------------------------------
  
 	switch (buttonRead()) {
 	  case BUT_UP: 
 	  {
-		break;
+      if(LCDpointer<2)  LCDpointer=5;
+      else              LCDpointer--;
+		  break;
 	  }
 	  case BUT_DOWN: 
 	  {
-		break;
+      if(LCDpointer>4)  LCDpointer=1;
+      else              LCDpointer++;
+		  break;
 	  }
-	  case BUT_RIGHT: 
-	  {
-		if(LCDpointer>2) 	LCDpointer=1;
-		else				LCDpointer++;
-		break;
-	  }
-	  case BUT_LEFT: 
-	  {
-		if(LCDpointer<2)	LCDpointer=3;
-        else				LCDpointer--;
-		break; 
-	  }
+	  case BUT_RIGHT: {break;}
+	  case BUT_LEFT:  {break;}
 	  case BUT_CONFIRM: 
 	  {
-		switch (LCDpointer) {
-		  case 1: 	{currentState=PID_STATE; LCDpointer=1;return;}
-		  case 2:	{currentState=TEMP_STATE;LCDpointer=1;return;}
-		  case 3:	{currentState=FLOW_STATE;LCDpointer=1;return;}
-		}
+		  switch (LCDpointer) {
+		    case 1: {currentState=PID_STATE;LCDpointer=1;lcd.clear();return;}
+		    case 2:	{currentState=TEMP_STATE;LCDpointer=1;lcd.clear();return;}
+		    case 3:	{currentState=FLOW_STATE;LCDpointer=1;lcd.clear();return;}
+        case 4: {currentState=SET_TEMP; LCDpointer=1;lcd.clear();return;}
+        case 5: {currentState=SET_FLOW; LCDpointer=1;lcd.clear();return;}
+		  }//end switch case
 	  }
-	  case ERROR:
-	  {
-		break;
-	  }
+	  case ERROR:     {break;}
 	}//end switch
 	return;
 }//end LCD_menu
@@ -177,165 +202,270 @@ void LCD_menu()
 void PIDdisplay_editor()
 {
 	//------------------------------Display user interface------------------
-//	lcd.clear();
-  	lcd.setCursor(1,0);lcd.print("Kp:");
-    lcd.setCursor(4,0);lcd.print(PID[0]);
-    lcd.setCursor(9,0);lcd.print("Ki:");
-    lcd.setCursor(12,0);lcd.print(PID[1]);
-    lcd.setCursor(1,1);lcd.print("Kd:");
-    lcd.setCursor(4,1);lcd.print(PID[2]); 
-	if(LCDpointer==1)
-	{
+  lcd.setCursor(1,0);lcd.print("Kp:");
+  lcd.setCursor(4,0);lcd.print(PID[0]);
+  lcd.setCursor(9,0);lcd.print("Ki:");
+  lcd.setCursor(12,0);lcd.print(PID[1]);
+  lcd.setCursor(1,1);lcd.print("Kd:");
+  lcd.setCursor(4,1);lcd.print(PID[2]); 
+//  lcd.setCursor(8,1);lcd.print("        "); 
+	
+	if  (LCDpointer==1) {
 		lcd.setCursor(0,0); lcd.print(">");
 		lcd.setCursor(8,0); lcd.print(" ");
 		lcd.setCursor(0,1); lcd.print(" ");
-	}//end if
-	if(LCDpointer==2)
-	{
+	} else if(LCDpointer==2)  {
 		lcd.setCursor(0,0); lcd.print(" ");
 		lcd.setCursor(8,0); lcd.print(">");
 		lcd.setCursor(0,1); lcd.print(" ");
-	}//end if
-	if(LCDpointer==3)
-	{
+	} else if(LCDpointer==3)  {
 		lcd.setCursor(0,0); lcd.print(" ");
 		lcd.setCursor(8,0); lcd.print(" ");
 		lcd.setCursor(0,1); lcd.print(">");
 	}//end if
-    //----------------------------------------------------------------------
+  //----------------------------------------------------------------------
 
 	switch (buttonRead()) {
-	  case BUT_DOWN: 
-	  {
-		PID[LCDpointer-1]-=0.1;
-		break;
-	  }
 	  case BUT_UP: 
+    {
+      if(LCDpointer<2)  LCDpointer=3;
+      else              LCDpointer--;
+      break;
+    }
+    case BUT_DOWN: 
 	  {
-		PID[LCDpointer-1]+=0.1;
-		break;
+		  if(LCDpointer>2)   LCDpointer=1;
+      else              LCDpointer++;
+      break;
 	  }
 	  case BUT_RIGHT: 
 	  {
-		if(LCDpointer>2) 	LCDpointer=1;
-		else				LCDpointer++;
-		break;
+		  PID[LCDpointer-1]+=0.1;
+      break;
 	  }
 	  case BUT_LEFT: 
 	  {
-		if(LCDpointer<2)	LCDpointer=3;
-        else				LCDpointer--;
-		break; 
+		  PID[LCDpointer-1]-=(PID[LCDpointer-1]<=0)?(0):(0.1);
+      break;
 	  }
 	  case BUT_CONFIRM: 
 	  {
-		currentState=MAIN_STATE;return;//back
+		  currentState=MAIN_STATE;
+      LCDpointer=1;lcd.clear();
+		  return;//back
 	  }
 	  case ERROR:
 	  {
-		break;
+		  break;
 	  }
 	}//end switch
 	return;
-  }//PIDdisplay_editor
-//--------------------------------
+}//PIDdisplay_editor
+//----------------------------
+void TempEditor()
+{
+  //------------------------------Display user interface------------------
+  lcd.setCursor(1,0);  lcd.print("T1:");
+  lcd.setCursor(4,0);  lcd.print(sTemp[0]);
+  lcd.setCursor(9,0);  lcd.print("T3:");
+  lcd.setCursor(12,0); lcd.print(sTemp[2]);
+  lcd.setCursor(1,1);  lcd.print("T2:");
+  lcd.setCursor(4,1);  lcd.print(sTemp[1]);
+  lcd.setCursor(9,1);  lcd.print("T4:");
+  lcd.setCursor(12,1); lcd.print(sTemp[3]);
+  if (sTemp[0]<10) {lcd.setCursor(5,0); lcd.print(" ");} 
+  if (sTemp[2]<10) {lcd.setCursor(13,0); lcd.print(" ");}
+  if (sTemp[1]<10) {lcd.setCursor(5,1); lcd.print(" ");} 
+  if (sTemp[3]<10) {lcd.setCursor(13,1); lcd.print(" ");}
+  if (sTemp[0]<100) {lcd.setCursor(6,0); lcd.print(" ");}
+  if (sTemp[2]<100) {lcd.setCursor(14,0); lcd.print(" ");}
+  if (sTemp[1]<100) {lcd.setCursor(6,1); lcd.print(" ");}
+  if (sTemp[3]<100) {lcd.setCursor(14,1); lcd.print(" ");} 
+  if (LCDpointer==1)  {
+    lcd.setCursor(0,0); lcd.print(">");
+    lcd.setCursor(8,0); lcd.print(" ");
+    lcd.setCursor(0,1); lcd.print(" ");
+    lcd.setCursor(8,1); lcd.print(" ");
+  } else if(LCDpointer==2) {
+    lcd.setCursor(0,0); lcd.print(" ");
+    lcd.setCursor(8,0); lcd.print(" ");
+    lcd.setCursor(0,1); lcd.print(">");
+    lcd.setCursor(8,1); lcd.print(" ");
+  } else if(LCDpointer==3) {
+    lcd.setCursor(0,0); lcd.print(" ");
+    lcd.setCursor(8,0); lcd.print(">");
+    lcd.setCursor(0,1); lcd.print(" ");
+    lcd.setCursor(8,1); lcd.print(" ");
+  } else if(LCDpointer==4) {
+    lcd.setCursor(0,0); lcd.print(" ");
+    lcd.setCursor(8,0); lcd.print(" ");
+    lcd.setCursor(0,1); lcd.print(" ");
+    lcd.setCursor(8,1); lcd.print(">");
+  }//end if else
+  if ( LCDpointer>4) LCDpointer=1; 
+  //----------------------------------------------------------------------
+  
+ switch (buttonRead()){
+    case BUT_UP:  
+    {
+      if (LCDpointer<2) LCDpointer=4;
+      else              LCDpointer--;
+      break;
+    }
+    case BUT_DOWN:  
+    {
+      if(LCDpointer>3)  LCDpointer=1;
+      else              LCDpointer++;
+      break;
+    }
+    case BUT_RIGHT: 
+    {
+      sTemp[LCDpointer-1]+=(sTemp[LCDpointer-1]>=500)?(0):(1);
+      break;
+    }
+    case BUT_LEFT:  
+    {
+      sTemp[LCDpointer-1]-=(sTemp[LCDpointer-1]<=0)?(0):(1);
+      break;
+    }
+    case BUT_CONFIRM: 
+    { 
+      currentState=MAIN_STATE;
+      LCDpointer=1;lcd.clear();
+      return;
+    }
+    case ERROR: 
+    {
+      break;
+    }
+  }//end switch
+  return;
+}//end TempEditor
+//----------------------------  
+void FlowEditor()
+{
+  lcd.setCursor(1,0); lcd.print("FlowPulse1:");
+  lcd.setCursor(12,0); lcd.print(sFlow[0]);
+  lcd.setCursor(1,1); lcd.print("FlowPulse2:");
+  lcd.setCursor(12,1); lcd.print(sFlow[1]);
+  if (sFlow[0]<10)   {lcd.setCursor(13,0); lcd.print(" ");}
+  if (sFlow[1]<10)   {lcd.setCursor(13,1); lcd.print(" ");}
+  if (sFlow[0]<100)  {lcd.setCursor(14,0); lcd.print(" ");}
+  if (sFlow[1]<100)  {lcd.setCursor(14,1); lcd.print(" ");}  
+  if(LCDpointer==1) {
+   lcd.setCursor(0,0); lcd.print(">");
+   lcd.setCursor(0,1); lcd.print(" ");
+  } else if( LCDpointer==2) {
+   lcd.setCursor(0,0); lcd.print(" ");
+   lcd.setCursor(0,1); lcd.print(">");
+  }//end if else
+  if (LCDpointer>2) LCDpointer==1;
+  
+  switch ( buttonRead())
+  {
+    case BUT_UP:  
+    {
+      if(LCDpointer>1)    LCDpointer=1;
+      else                LCDpointer++;
+      break;
+    }  
+    case BUT_DOWN:  
+    {
+      if(LCDpointer<2)    LCDpointer=2;
+      else                LCDpointer--;
+      break;
+    }
+    case BUT_RIGHT: 
+    {
+      sFlow[LCDpointer-1]+=(sFlow[LCDpointer-1]>=500)?(0):(1);
+      break;
+    } 
+    case BUT_LEFT:  
+    {
+      sFlow[LCDpointer-1]-=(sFlow[LCDpointer-1]<=0)?(0):(1);
+      break;
+    }
+    case BUT_CONFIRM: 
+    {
+      currentState= MAIN_STATE;
+      LCDpointer=1;lcd.clear();
+      return;
+    }
+    case ERROR: 
+    {
+      break;
+    }
+  }// end switch  
+  return;
+}// end FlowEditor
+//----------------------------
 void LCD_flow()
 { 
-    //------------------------------Display user interface------------------
- 
-	lcd.setCursor(0,0); lcd.print("FlowPulse1:");
-	lcd.setCursor(11,0); lcd.print(flow[0]);
-	lcd.setCursor(14,0); lcd.print("Hz");
-	lcd.setCursor(0,1); lcd.print("FlowPulse2:");
-	lcd.setCursor(11,1); lcd.print(flow[1]);
-	lcd.setCursor(14,1); lcd.print("Hz");
-  if(flow[0]==0)
-  {lcd.setCursor(12,0); lcd.print("  ");}
-  if(flow[1]==0)
-  {lcd.setCursor(12,1); lcd.print("  ");}
+  //------------------------------Display user interface------------------
+  lcd.setCursor(0,0); lcd.print("FlowPulse1:");
+  lcd.setCursor(11,0); lcd.print(flow[0]);
+  lcd.setCursor(14,0); lcd.print("Hz");
+  lcd.setCursor(0,1); lcd.print("FlowPulse2:");
+  lcd.setCursor(11,1); lcd.print(flow[1]);
+  lcd.setCursor(14,1); lcd.print("Hz");
+  if(flow[0]<10)  {lcd.setCursor(12,0); lcd.print(" ");}
+  if(flow[1]<10)  {lcd.setCursor(12,1); lcd.print(" ");}
+  if(flow[0]<100) {lcd.setCursor(13,0); lcd.print(" ");}
+  if(flow[1]<100) {lcd.setCursor(13,1); lcd.print(" ");}
   //----------------------------------------------------------------------
  
-	switch (buttonRead()) {
-	  case BUT_LEFT: 
-	  {
-		break;
-	  }
-	  case BUT_RIGHT: 
-	  {
-		break;
-	  }
-	  case BUT_UP: 
-	  {
-		break;
-	  }
-	  case BUT_DOWN: 
-	  {
-		break; 
-	  }
-	  case BUT_CONFIRM: 
-	  {
-		currentState=MAIN_STATE;return;//back
-	  }
-	  case ERROR:
-	  {
-		break;
-	  }
-	}//end switch
-	return;
+  switch (buttonRead()) {
+    case BUT_LEFT:  {break;}
+    case BUT_RIGHT: {break;}
+    case BUT_UP:    {break;}
+    case BUT_DOWN:  {break;}
+    case BUT_CONFIRM: 
+    {
+      currentState=MAIN_STATE;
+      LCDpointer=1;lcd.clear();
+      return;//back
+    }
+    case ERROR:     {break;}
+  }//end switch
+  return;
 }// end LCD_flow()
-//--------------------------------
+//----------------------------
 void LCD_temp()
 {
   //------------------------------Display user interface------------------
-
-	lcd.setCursor(0,0); lcd.print("T1:");
-	lcd.setCursor(3,0); lcd.print(Temp[0]);
-	lcd.setCursor(5,0); lcd.print("oC");
-	lcd.setCursor(9,0); lcd.print("T2:");
-	lcd.setCursor(12,0); lcd.print(Temp[1]);
-	lcd.setCursor(14,0); lcd.print("oC");
-	lcd.setCursor(0,1); lcd.print("T3:");
-	lcd.setCursor(3,1); lcd.print(Temp[2]);
-	lcd.setCursor(5,1); lcd.print("oC");
-	lcd.setCursor(9,1); lcd.print("T4:");
-	lcd.setCursor(12,1); lcd.print(Temp[3]);
-	lcd.setCursor(14,1); lcd.print("oC");
-  lcd.setCursor(8,0); lcd.print(" ");
-  if(Temp[0]==0)
-  {lcd.setCursor(4,0); lcd.print(" ");}
-  if(Temp[1]==0)
-  {lcd.setCursor(13,0); lcd.print(" ");}
-  if(Temp[2]==0)
-  {lcd.setCursor(4,1); lcd.print(" ");} 
+  lcd.setCursor(0,0); lcd.print("T1:");
+  lcd.setCursor(3,0); lcd.print(Temp[0]);
+  lcd.setCursor(9,0); lcd.print("T3:");
+  lcd.setCursor(12,0); lcd.print(Temp[2]);
+  lcd.setCursor(0,1); lcd.print("T2:");
+  lcd.setCursor(3,1); lcd.print(Temp[1]);
+  lcd.setCursor(9,1); lcd.print("T4:");
+  lcd.setCursor(12,1); lcd.print(Temp[3]);
+  
+  if (Temp[0]<10) {lcd.setCursor(4,0); lcd.print(" ");} 
+  if (Temp[2]<10) {lcd.setCursor(13,0); lcd.print(" ");}
+  if (Temp[1]<10) {lcd.setCursor(4,1); lcd.print(" ");} 
+  if (Temp[3]<10) {lcd.setCursor(13,1); lcd.print(" ");}
+  if (Temp[0]<100) {lcd.setCursor(5,0); lcd.print(" ");}
+  if (Temp[2]<100) {lcd.setCursor(14,0); lcd.print(" ");}
+  if (Temp[1]<100) {lcd.setCursor(5,1); lcd.print(" ");}
+  if (Temp[3]<100) {lcd.setCursor(14,1); lcd.print(" ");} 
   //----------------------------------------------------------------------
  
-	switch (buttonRead()) {
-	  case BUT_LEFT: 
-	  {
-		break;
-	  }
-	  case BUT_RIGHT: 
-	  {
-		break;
-	  }
-	  case BUT_UP: 
-	  {
-		break;
-	  }
-	  case BUT_DOWN: 
-	  {
-		break; 
-	  }
-	  case BUT_CONFIRM: 
-	  {
-		currentState=MAIN_STATE;return;//back
-	  }
-	  case ERROR:
-	  {
-		break;
-	  }
-	}//end switch
-	return;
+  switch (buttonRead()) {
+    case BUT_LEFT:  {break;}
+    case BUT_RIGHT: {break;}
+    case BUT_UP:    {break;}
+    case BUT_DOWN:  {break;}
+    case BUT_CONFIRM: 
+    {
+      currentState=MAIN_STATE;
+      LCDpointer=1;lcd.clear();
+      return;//back
+    }
+    case ERROR:     {break;}
+  }//end switch
+  return;
 }// end LCD_temp
-//--------------------------------
-#endif //_NANO_LCD_CPP
+//----------------------------
+#endif //__NANO_LCD_CPP
