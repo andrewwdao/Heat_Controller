@@ -7,9 +7,10 @@
 #include "Nano_LCD.h"
 #include "Nano_SD.h"
 #include "Nano_RTC_DS3231.h"
+#include "Nano_UART.h"
 void setup() 
 {
-  Serial.begin(115200);
+  UART_init();
   LCD_init();
   RTC_init();
   SD_init();

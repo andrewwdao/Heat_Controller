@@ -27,7 +27,7 @@ DS3231 rtc(I2C_SDA,I2C_SCL);
 bool RTC_init()
 {
     rtc.begin();
-    set_time(); //set new time if the time is wrong - only works once - fix the time directly inside the function
+    //set_time(); //set new time if the time is wrong - only works once - fix the time directly inside the function
     return true;
 }//end RTC_init
 //------------------------------------------
@@ -51,8 +51,8 @@ void set_time()
   t=rtc.getTime();
   if ((t.date==1)&(t.mon==1)&(t.year==2000))
  {
-  rtc.setDate(5,8,2019); 
-  rtc.setTime(19,56,0);
+  rtc.setDate(25,8,2019); 
+  rtc.setTime(15,32,0);
  }//end if
 }//end set_time
 //--------------------------------

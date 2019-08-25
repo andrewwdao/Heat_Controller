@@ -1,15 +1,13 @@
 /*-------------------------------------------
-  SD CARD - header file
+  UART - header file
   ARDUINO NANO
-  (c) Pham Thanh Tam - An Minh Dao 2019 
-  version 1.10 - 05/08/2019
+  (c) An Minh Dao - Pham Thanh Tam 2019 
+  version 1.10 - 25/08/2019
 --------------------------------------------*/ 
-#ifndef  __NANO_SD_H 
-#define  __NANO_SD_H
+#ifndef  __NANO_UART_H 
+#define  __NANO_UART_H
 #include <Arduino.h>
-#include <SPI.h>
-#include <SD.h>
-#include "Nano_RTC_DS3231.h"
+#include "Nano_SD.h"
 #include "debugConfig.h"
 //#include "config.h"
 
@@ -17,13 +15,13 @@
 
 // ------ Public function prototypes --------------------------
 /**
-Initialize SD card
+Initialize UART
 **/
-bool SD_init();
+void UART_init();
 /**
-Send data to SD as: temp1, temp2, temp3, temp4, flow1, flow2
+Collect the data from serial port if existed and send to SD
 **/
-void sendSD(int,int,int,int,int,int);
+void getFromMaster();
 // ------ Public variable -------------------------------------
 
-#endif // __NANO_SD_H
+#endif // __NANO_UART_H
