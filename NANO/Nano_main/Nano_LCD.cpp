@@ -50,14 +50,6 @@ User interface for the PID calibration
 */
 void PIDdisplay_editor();
 /**
-User interface for the temperature monitoring
-*/
-void LCD_temp();
-/**
-User interface for the water flow monitoring
-*/
-void LCD_flow();
-/**
  *User interface for the temperature calibration
  */
 void TempEditor();
@@ -65,20 +57,25 @@ void TempEditor();
  *User interface for the flow calibration
  */
 void FlowEditor();
- 
+/**
+User interface for the temperature monitoring
+*/
+void LCD_temp();
+/**
+User interface for the water flow monitoring
+*/
+void LCD_flow();
 // ------ Private variables -----------------------------------
 int currentState=MAIN_STATE;
-
 bool PIDchange=false;
 int LCDpointer=1;
 uint16_t Temp[4]={0,0,0,0};// an array that saves temperature T1 to T4 correspondingly
-uint16_t sTemp[4]={0,495,0,100};// an array that saves the user-set temperature T1 to T4 correspondingly
+uint16_t sTemp[4]={0,0,0,0};// an array that saves the user-set temperature T1 to T4 correspondingly
 uint16_t flow[2]={0,0};// an array that saves flow sensor values correspondingly
-uint16_t sFlow[2]={0,100};// an array that saves the user-set flow values correspondingly
+uint16_t sFlow[2]={0,0};// an array that saves the user-set flow values correspondingly
 float PID[3]={0,0,0};// an array that saves kp,ki,kd correspondingly
 // ------ PUBLIC variable definitions -------------------------
 LiquidCrystal_I2C lcd(LCD_ADRESS, LCD_WIDTH, LCD_HEIGHT);
-
 //--------------------------------------------------------------
 // FUNCTION DEFINITIONS
 //--------------------------------------------------------------
@@ -100,6 +97,7 @@ void LCD_display() {
 	  case ERROR: 		  {break;}
 	}//end switch
 }//end LCD_display
+//--------------------------------
 int buttonRead()
 {
 	int adc_buttons=analogRead(BUTTON_PIN);
@@ -208,7 +206,6 @@ void PIDdisplay_editor()
   lcd.setCursor(12,0);lcd.print(PID[1]);
   lcd.setCursor(1,1);lcd.print("Kd:");
   lcd.setCursor(4,1);lcd.print(PID[2]); 
-//  lcd.setCursor(8,1);lcd.print("        "); 
 	
 	if  (LCDpointer==1) {
 		lcd.setCursor(0,0); lcd.print(">");
