@@ -21,5 +21,5 @@ void setup()
 void loop() 
 {
  LCD_display();
- getFromMaster();
+ UART_getFromMaster();
 }//end loop

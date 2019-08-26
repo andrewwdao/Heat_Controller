@@ -26,7 +26,7 @@ void UART_isMasterReady();
 /**
 Collect the data from serial port if existed and send to SD
 **/
-void getFromMaster();
+void UART_getFromMaster();
 /**
 Send PID data to master
 **/

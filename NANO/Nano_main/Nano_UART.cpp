@@ -41,7 +41,7 @@ void UART_isMasterReady() {
   }//end while
 }//end UART_masterReady
 //------------------------------------------------------------
- void getFromMaster() //command: t|T1|T2|T3|T4_f|F1|F2
+ void UART_getFromMaster() //command: t|T1|T2|T3|T4_f|F1|F2
 {
   if( Serial.available()) //if something appear in the serial monitor
   { 
