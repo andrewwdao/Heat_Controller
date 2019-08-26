@@ -84,6 +84,9 @@ void LCD_init()
 	currentState=MAIN_STATE;
 	lcd.init();
 	lcd.backlight();
+  lcd.clear();
+  lcd.setCursor(0,0); lcd.print("SYSTEM STARTING");
+  lcd.setCursor(7,1); lcd.print("...");
 }//end LCD_init
 //--------------------------------
 void LCD_display() {
@@ -128,7 +131,7 @@ int buttonRead()
 void LCD_menu()
 {
  //------------------------------Display user interface------------------
-	lcd.setCursor(1,0); lcd.print("PID");
+	lcd.setCursor(1,0); lcd.print("PID ");
 	lcd.setCursor(6,0); lcd.print("TEMP");
 	lcd.setCursor(6,1); lcd.print("FLOW");
   lcd.setCursor(11,0);lcd.print("sTEMP");

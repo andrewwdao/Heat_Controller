@@ -27,6 +27,20 @@ void UART_init()
   Serial.begin(115200);
 }
 //------------------------------------------------------------
+void UART_masterReady() {
+  bool notReady=true;
+  while (notReady) {
+     if( Serial.available()) //if something appear in the serial monitor
+     { 
+        String buff=Serial.readString();
+        Serial.println(buff);
+        if (buff==AUTHORIZED_KEY) {
+          notReady = false;
+        }//end if
+      }//end if
+  }//end while
+}//end UART_masterReady
+//------------------------------------------------------------
  void getFromMaster() //command: t|T1|T2|T3|T4_f|F1|F2
 {
   if( Serial.available()) //if something appear in the serial monitor

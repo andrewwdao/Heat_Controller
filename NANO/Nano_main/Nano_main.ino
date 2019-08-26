@@ -14,6 +14,8 @@ void setup()
   LCD_init();
   RTC_init();
   SD_init();
+  
+  UART_masterReady();
 }// end setup
 
 void loop() 
