@@ -22,7 +22,7 @@ void UART_init();
 /**
 confirm from UART that master is ready or not
 **/
-void UART_masterReady();
+void UART_isMasterReady();
 /**
 Collect the data from serial port if existed and send to SD
 **/

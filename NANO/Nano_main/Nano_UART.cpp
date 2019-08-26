@@ -27,7 +27,7 @@ void UART_init()
   Serial.begin(115200);
 }
 //------------------------------------------------------------
-void UART_masterReady() {
+void UART_isMasterReady() {
   bool notReady=true;
   while (notReady) {
      if( Serial.available()) //if something appear in the serial monitor
