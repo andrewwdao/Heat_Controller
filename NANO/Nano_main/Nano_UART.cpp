@@ -1,5 +1,5 @@
 /*-------------------------------------------
-  UART - header file
+  UART - functions file
   ARDUINO NANO
   (c) An Minh Dao - Pham Thanh Tam 2019 
   version 1.10 - 25/08/2019
@@ -99,4 +99,4 @@ void sFlowSendToMaster(uint16_t* Mflow) {
   Serial.println(Smes);
 }
 //--------------------------------
-#endif // __NANO_SD_CPP
+#endif // __NANO_UART_CPP
