@@ -42,30 +42,24 @@ void UART_getFromSlave() {// p|Kp|Ki|Kd or t|T1|T2|T3|T4 or f|F1|F2
     char charBuf = Serial.read();
     if (charBuf=='p') {
       uint16_t p1,p2,p3;
-      float fKp,fKi,fKd;
       String bKp="",bKi="",bKd="",rec="";
       rec=Serial.readString();
       p1=rec.indexOf("|",0); //search for initial signal
       if (p1>=0) { //has the correct signal
         //pid parameters
-        p1=rec.indexOf("|",0);    //position of temp1
-        p2=rec.indexOf("|",p1+1); //position of temp2
-        p3=rec.indexOf("|",p2+1); //position of temp3
+        p1=rec.indexOf("|",0);    //position of Kp
+        p2=rec.indexOf("|",p1+1); //position of Ki
+        p3=rec.indexOf("|",p2+1); //position of Kd
         bKp=rec.substring(p1+1,p2);//get the string out
         bKi=rec.substring(p2+1,p3);//get the string out
         bKd=rec.substring(p3+1);//get the string out
-        fKp=bKp.toFloat(); //temp1
-        fKi=bKi.toFloat(); //temp2
-        fKd=bKd.toFloat(); //temp3
-        Serial.println(fKp);
-        Serial.println(fKi);
-        Serial.println(fKd);
+        NVS_PID_write(bKp.toFloat(),bKi.toFloat(),bKd.toFloat());
+        D_PRINTLN(F("PID saved!"));
       } else {
          D_PRINTLN(F("Not recognized command!"));
       }// end if else
     } else if (charBuf=='t') {
       uint16_t t1,t2,t3,t4;
-      int fT1,fT2,fT3,fT4;
       String bT1="",bT2="",bT3="",bT4="",rec="";
       rec=Serial.readString();
       t1=rec.indexOf("|",0); //search for initial signal
@@ -79,20 +73,14 @@ void UART_getFromSlave() {// p|Kp|Ki|Kd or t|T1|T2|T3|T4 or f|F1|F2
         bT2=rec.substring(t2+1,t3);//get the string out
         bT3=rec.substring(t3+1,t4);//get the string out
         bT4=rec.substring(t4+1);   //get the string out
-        fT1=bT1.toInt(); //temp1
-        fT2=bT2.toInt(); //temp2
-        fT3=bT3.toInt(); //temp3
-        fT4=bT4.toInt(); //temp4
-        Serial.println(fT1);
-        Serial.println(fT2);
-        Serial.println(fT3);
-        Serial.println(fT4);
+        NVS_Temp_write(bT1.toInt(),bT2.toInt(),bT3.toInt(),bT4.toInt());
+        D_PRINTLN(F("Temp saved!"));
+        
       } else {
          D_PRINTLN(F("Not recognized command!"));
       }// end if else
     } else if (charBuf=='f') {
       uint16_t f1,f2;
-      int fF1,fF2;
       String bF1="",bF2="", rec="";
       rec=Serial.readString();
       f1=rec.indexOf("|",0); //search for initial signal
@@ -102,10 +90,8 @@ void UART_getFromSlave() {// p|Kp|Ki|Kd or t|T1|T2|T3|T4 or f|F1|F2
         f2=rec.indexOf("|",f1+1); //position of temp2
         bF1=rec.substring(f1+1,f2);//get the string out
         bF2=rec.substring(f2+1);//get the string out
-        fF1=bF1.toInt(); //flow1
-        fF2=bF2.toInt(); //flow2
-        Serial.println(fF1);
-        Serial.println(fF2);
+        NVS_Flow_write(bF1.toInt(),bF2.toInt());
+        D_PRINTLN(F("Flow saved!"));
       } else {
          D_PRINTLN(F("Not recognized command!"));
       }// end if else 

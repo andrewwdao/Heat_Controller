@@ -1,29 +1,12 @@
 /*------------------------------------------------------------*-
-  RAM usage of the RTC module DS3231 (AT24C32) - header file
-  ESP32 CORE0 - PROTOCOL CORE
+  NVS - non volatile system - header file
+  ESP32 DEVKIT V1
   (c) An Minh Dao 2019
-  version 1.00 - 13/02/2019
+  version 1.00 - 27/08/2019
 ---------------------------------------------------------------
- *  IC: AT24C32
- *  Share space and battery with IC RTC DS3231
- *  Data will be maintained as long as the battery is alive
- *  Available RAM: 32kB
- *  Address start from 0 to 32768 (an address coresponding to a byte)
- *  Communication: I2C
- *  ESP32 GPIO:
- *      SDA:21
- *      SCL:22
- * 
- *  PUBLIC FUNCTIONS CONTAIN:
- *  void RAM_write(unsigned int RAMaddress, byte data); //write in 1 byte
- *  void RAM_page_write(unsigned int RAMaddress, byte* RAMdata, byte RAMlength); //write an array, should be less than 30 bytes
- *  byte RAM_read(unsigned int RAMaddress); //read in 1 byte
- *  void RAM_page_read(unsigned int RAMaddress, byte* RAMbuffer, byte RAMlength); //read an array, should be less than 30 bytes
- *  
- *  PRIVATE FUNCTIONS CONTAIN:
- * 
- * 
- *  CAUTION: must include config.h
+ * ESP-IDF version: 3.2
+ * Compiler version: 5.2.0
+ * Arduino components version: latest
 --------------------------------------------------------------*/
 #ifndef _ESP32_NVS_H
 #define _ESP32_NVS_H
@@ -36,19 +19,54 @@
 // ------ Public constants ------------------------------------
 
 // ------ Public function prototypes --------------------------
-void NVS_system_write(SystemState);
-SystemState NVS_system_read();
-
-bool NVS_AExMode_read();
-void NVS_AExMode_write(bool Emode);
-
-void NVS_WIFIdata_write(String, String);
-void NVS_WIFIdata_delete();
-String NVS_wifiSSID_read();
-String NVS_wifiPASS_read();
-
-void   NVS_WebAP_write(String);
-String NVS_WebAP_read();
+/**
+Write PID parameters to the NVS
+**/
+void NVS_PID_write(float,float,float);
+/**
+Read PID parameters: Kp
+**/
+float NVS_read_Kp();
+/**
+Read PID parameters: Ki
+**/
+float NVS_read_Ki();
+/**
+Read PID parameters: Kd
+**/
+float NVS_read_Kd();
+/**
+Write the set temperatures to the NVS
+**/
+void NVS_Temp_write(int,int,int,int);
+/**
+Read the set Temperature
+**/
+int NVS_read_T1();
+/**
+Read the set Temperature
+**/
+int NVS_read_T2();
+/**
+Read the set Temperature
+**/
+int NVS_read_T3();
+/**
+Read the set Temperature
+**/
+int NVS_read_T4();
+/**
+Write the set flow values to the NVS
+**/
+void NVS_Flow_write(int,int);
+/**
+Read the set Flow
+**/
+int NVS_read_F1();
+/**
+Read the set Flow
+**/
+int NVS_read_F2();
 // ------ Public variable -------------------------------------
 
 #endif //_ESP32_NVS_H
