@@ -7,36 +7,29 @@
 #ifndef  __ESP32_UART_H 
 #define  __ESP32_UART_H
 #include <Arduino.h>
+#include "ESP32_ADC.h"
 #include "debugConfig.h"
 //#include "config.h"
 
 // ------ Public constants ------------------------------------
-#define AUTHORIZED_KEY "kmaster ready! 070497\r\n"
+#define AUTHORIZED_KEY "master ready! 070497\r\n"
 // ------ Public function prototypes --------------------------
 /**
 Initialize UART
 **/
 void UART_init();
 /**
-Send confirmation to UART when master is ready
+Send signal to the slave when master is ready
 **/
 void UART_masterReady();
 /**
-Collect the data from serial port if existed and send to SD
+Send current temp and flow values to slave to display to the LCD
 **/
-void UART_getFromMaster();
+void UART_sendToSlave();
 /**
-Send PID data to master
+Get the PID parameters, or the set temperatures, or the set flow sensor values from the slave
 **/
-void PIDsendToMaster(float*);
-/**
-Send temperature data to master
-**/
-void sTempSendToMaster(uint16_t*);
-/**
-Send flow data to master
-**/
-void sFlowSendToMaster(uint16_t*);
+void UART_getFromSlave();
 // ------ Public variable -------------------------------------
 
 #endif // __ESP32_UART_H

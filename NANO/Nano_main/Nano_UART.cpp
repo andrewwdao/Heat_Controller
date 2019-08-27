@@ -82,21 +82,21 @@ void UART_isMasterReady() {
     }// end if else
   }// end if
 }// end getFromMaster
-void PIDsendToMaster(float* Mpid) {
+void PIDsendToMaster(float* Mpid) { //p|Kp|Ki|Kd
   char Smes[30];
   snprintf(Smes,30,"p|%d.%d|%d.%d|%d.%d",(int)*Mpid,(int)((*Mpid)*10)-((int)*Mpid)*10,(int)*(Mpid+1),(int)((*(Mpid+1))*10)-((int)*(Mpid+1))*10,(int)*(Mpid+2),(int)((*(Mpid+2))*10)-((int)*(Mpid+2))*10);
   Serial.println(Smes);
 }//end PIDsendToMaster
 //--------------------------------
-void sTempSendToMaster(uint16_t* Mtemp) {
+void sTempSendToMaster(uint16_t* Mtemp) { //t|T1|T2|T3|T4
   char Smes[30];
-  sprintf(Smes,"st|%d|%d|%d|%d",*(Mtemp),*(Mtemp+1),*(Mtemp+2),*(Mtemp+3));
+  sprintf(Smes,"t|%d|%d|%d|%d",*(Mtemp),*(Mtemp+1),*(Mtemp+2),*(Mtemp+3));
   Serial.println(Smes);
 }
 //--------------------------------
-void sFlowSendToMaster(uint16_t* Mflow) {
+void sFlowSendToMaster(uint16_t* Mflow) { //f|F1|F2
   char Smes[30];
-  sprintf(Smes,"sf|%d|%d",*(Mflow),*(Mflow+1));
+  sprintf(Smes,"f|%d|%d",*(Mflow),*(Mflow+1));
   Serial.println(Smes);
 }
 //--------------------------------

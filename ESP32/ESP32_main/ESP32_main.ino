@@ -35,5 +35,7 @@ void setup()
 void loop() 
 {
   MQTT_maintain();
-
+  //UART_sendToSlave();
+  UART_getFromSlave();
+  //delay(500);
 }//end loop
