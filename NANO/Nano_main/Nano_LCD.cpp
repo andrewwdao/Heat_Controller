@@ -481,4 +481,16 @@ void changeVal(uint16_t mt1,uint16_t mt2,uint16_t mt3,uint16_t mt4,uint16_t mf1,
   flow[1]=mf2;
 }// end changeVal
 //----------------------------
+void changeSetVal(float* vPID,uint16_t* vTemp,uint16_t* vFlow) {
+  *PID = *vPID;         //Kp
+  *(PID+1) = *(vPID+1); //Ki
+  *(PID+2) = *(vPID+2); //Kd
+  *sTemp = *vTemp;          //T1
+  *(sTemp+1) = *(vTemp+1);  //T2
+  *(sTemp+2) = *(vTemp+2);  //T3
+  *(sTemp+3) = *(vTemp+3);  //T4
+  *sFlow = *vFlow;          //F1
+  *(sFlow+1) = *(vFlow+1);  //F2
+}//end changeSetVal
+//----------------------------
 #endif //__NANO_LCD_CPP

@@ -32,6 +32,10 @@ void LCD_display();
 Change Value temp and flow to display on the LCD
 */
 void changeVal(uint16_t,uint16_t,uint16_t,uint16_t,uint16_t,uint16_t);
+/**
+Change Set Value: PID parameters, temp and flow to display on the LCD
+*/
+void changeSetVal(float*,uint16_t*,uint16_t*);
 // ------ Public variable -------------------------------------
 
 #endif //_NANO_LCD_H

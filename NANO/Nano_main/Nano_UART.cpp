@@ -34,6 +34,24 @@ void UART_isMasterReady() {
         if (Serial.read()=='k') {
           String buff=Serial.readString();
           if (buff==AUTHORIZED_KEY) {
+            Serial.println(F("Give me the set values"));
+            while (notReady) {
+              if( Serial.available()) {//if something appear in the serial monitor
+                if (Serial.read()=='s') {
+                  uint16_t t1,t2,t3,t4;
+                  float mpid[3]={0,0,0};
+                  uint16_t mtemp[4]={0,0,0,0};
+                  uint16_t mflow[2]={0,0};
+                  String mKp="",mKi="",mKd="",mT1="",mT2="",mT3="",mT4="",mF1="",mF2="",rec="";
+                  rec=Serial.readString();
+                  t1 = rec.indexOf("|",0); //search for initial signal
+                } mpid[0]
+                  
+                  if (buff==AUTHORIZED_KEY) {
+            Serial.println(F("Give me the set values"));
+            notReady = false;
+            return;
+          }//end if
             notReady = false;
             return;
           }//end if
