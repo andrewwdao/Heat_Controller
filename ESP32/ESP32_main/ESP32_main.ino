@@ -18,18 +18,18 @@
 ///////////////////////////////////////MAIN FUNCTION/////////////////////////////////////
 void setup() 
 {
-  Serial.begin(115200);
-  //UART_init();
+  UART_init();
   ADC_init();
   pump1_init();
   pump2_init();
   relay_init();
   MQTT_init();
 
-    publishNow(temp01,134,RETAIN,"Temp01 Failed!","Temp01 updated!");
-    publishNow(temp02,216,RETAIN,"Temp02 Failed!","Temp02 updated!");
-    publishNow(temp03,368,RETAIN,"Temp03 Failed!","Temp03 updated!");
-    publishNow(temp04,489,RETAIN,"Temp04 Failed!","Temp04 updated!");
+  UART_masterReady();
+    //publishNow(temp01,134,RETAIN,"Temp01 Failed!","Temp01 updated!");
+    //publishNow(temp02,216,RETAIN,"Temp02 Failed!","Temp02 updated!");
+    //publishNow(temp03,368,RETAIN,"Temp03 Failed!","Temp03 updated!");
+    //publishNow(temp04,489,RETAIN,"Temp04 Failed!","Temp04 updated!");
 }// end setup
 
 void loop() 

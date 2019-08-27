@@ -11,16 +11,16 @@
 //#include "config.h"
 
 // ------ Public constants ------------------------------------
-#define AUTHORIZED_KEY "master ready! 070497"
+#define AUTHORIZED_KEY "kmaster ready! 070497\r\n"
 // ------ Public function prototypes --------------------------
 /**
 Initialize UART
 **/
 void UART_init();
 /**
-confirm from UART that master is ready or not
+Send confirmation to UART when master is ready
 **/
-void UART_isMasterReady();
+void UART_masterReady();
 /**
 Collect the data from serial port if existed and send to SD
 **/

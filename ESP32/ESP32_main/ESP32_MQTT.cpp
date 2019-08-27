@@ -19,11 +19,11 @@
 /**
 Begin the Wifi 
 **/
-void Wifi_begin();
+bool Wifi_begin();
 /**
 Connect to the MQTT broker 
 **/
-void MQTT_connect();
+bool MQTT_connect();
 // ------ Private variables -----------------------------------
 uint32_t lastmillis;
 // ------ PUBLIC variable definitions -------------------------
@@ -41,27 +41,27 @@ Adafruit_MQTT_Publish temp04 = Adafruit_MQTT_Publish(&mqtt,TEMP4_FEED,MQTT_QOS_0
 // FUNCTION DEFINITIONS
 //--------------------------------------------------------------
 void MQTT_init() {
-  Wifi_begin();
-  mqtt.will (LWT_TOPIC, LWT_PAYLOAD, MQTT_QOS_1, LWT_RETAIN); //Set up last will
-  //mqtt.subscribe(&cmd1); // Set up MQTT subscriptions.
-
-  MQTT_connect();
-  lastmillis = millis();
-  publishNow(availability,"online",RETAIN,"Status Failed to update!","Status updated!");
-
+  if (Wifi_begin()) {
+    mqtt.will (LWT_TOPIC, LWT_PAYLOAD, MQTT_QOS_1, LWT_RETAIN); //Set up last will
+    //mqtt.subscribe(&cmd1); // Set up MQTT subscriptions.
+    if (MQTT_connect()) {
+      lastmillis = millis();
+      publishNow(availability,"online",RETAIN,"Status Failed to update!","Status updated!");
+    }//end if
+  }//end if
   pinMode(LED_BUILTIN,OUTPUT);
   digitalWrite(LED_BUILTIN,LOW);
 }//end MQTT_init
 //------------------------------------------
 void MQTT_maintain() {//keep the MQTT connection
-    MQTT_connect(); //LED indicator integrated
-
-    // Adjust PING time in seconds in Adafruit_MQTT.h:  
-    //#define MQTT_CONN_KEEPALIVE 60 --> Default to 1 minutes.
-    if (((millis()-lastmillis)>PING_WAIT)) {//wait for PING_WAIT msecond before ping the server to keep the mqtt connection alive
-      char pingCount=0;
-      while (! mqtt.ping()) {if(pingCount++>PING_TIMES) mqtt.disconnect();return;}// if ping PING_TIMES times and failed then disconnect
-      lastmillis = millis(); //ping sucess
+    if (MQTT_connect()) { //LED indicator integrated
+      // Adjust PING time in seconds in Adafruit_MQTT.h:  
+      //#define MQTT_CONN_KEEPALIVE 60 --> Default to 1 minutes.
+      if (((millis()-lastmillis)>PING_WAIT)) {//wait for PING_WAIT msecond before ping the server to keep the mqtt connection alive
+        char pingCount=0;
+        while (! mqtt.ping()) {if(pingCount++>PING_TIMES) mqtt.disconnect();return;}// if ping PING_TIMES times and failed then disconnect
+        lastmillis = millis(); //ping sucess
+      }//end if
     }//end if
 }//end MQTT_maintain
 //------------------------------------------
@@ -77,38 +77,52 @@ void publishNow(Adafruit_MQTT_Publish topicPub,int MQTTmessage, bool retained, c
   if (pub<(PUB_RETRIES)) {Serial.println(F(sucess));}
 }//end publishNow
 //------------------------------------------
-void Wifi_begin() {
+bool Wifi_begin() {
   // Connect to WiFi access point.
   Serial.println(); Serial.println();
   Serial.print(F("Connecting to "));
   Serial.print(WLAN_SSID);
 
   WiFi.begin(WLAN_SSID, WLAN_PASS);
-  
-  while (WiFi.status() != WL_CONNECTED) {
+  char waitTimes=0;
+  while ((WiFi.status() != WL_CONNECTED)&&(waitTimes++<10)) {
     delay(500);
     Serial.print(F("."));
   }//endif
-  
-  Serial.println(F("WiFi connected"));
-  Serial.println(F("IP address: "));Serial.println(WiFi.localIP());
-  Serial.println();
+  if (waitTimes<10) {
+    Serial.println(F("WiFi connected"));
+    Serial.println(F("IP address: "));Serial.println(WiFi.localIP());
+    Serial.println();
+    return true;
+  } else {
+    Serial.println(F("Wifi failed!")); Serial.println();
+    return false;
+  }//end if else
+  return false;
 }//end wifi begin
 //------------------------------------------
-void MQTT_connect() {// Ensure the connection to the MQTT server is alive (this will make the first connection and automatically reconnect when disconnected).
-  //LED INDICATOR INTEGRATED INSIDE
-  if (mqtt.connected()) {digitalWrite(LED_BUILTIN,HIGH);return;} // Stop if already connected, turn on indicating LED
+bool MQTT_connect() {// Ensure the connection to the MQTT server is alive (this will make the first connection and automatically reconnect when disconnected).
+  if (WiFi.status() == WL_CONNECTED) { //if wifi is connected
+    if (mqtt.connected()) {digitalWrite(LED_BUILTIN,HIGH);return true;} // Stop if already connected, turn on indicating LED
 
-  digitalWrite(LED_BUILTIN,LOW); //if not connected, indicate by a LED
-  Serial.println(F("Connecting to MQTT... "));
-  int8_t ret;
-  while ((ret = mqtt.connect()) != 0)  {         // connect will return 0 for connected
-    Serial.println(mqtt.connectErrorString(ret));
-    Serial.println(F("Retrying MQTT connection in 3 seconds..."));
-    mqtt.disconnect();
-    delay(3000);  // wait 3 seconds
-  }//end while
-  Serial.println(F("MQTT Connected!"));
+    digitalWrite(LED_BUILTIN,LOW); //if not connected, indicate by a LED
+    Serial.println(F("Connecting to MQTT... "));
+    int8_t ret, waitTimes;
+    while (((ret = mqtt.connect()) != 0)&&(waitTimes++<3))  {         // connect will return 0 for connected
+      Serial.println(mqtt.connectErrorString(ret));
+      Serial.println(F("Retrying MQTT connection in 3 seconds..."));
+      mqtt.disconnect();
+      delay(3000);  // wait 3 seconds
+    }//end while
+    if (waitTimes<3) {
+      Serial.println(F("MQTT Connected!"));Serial.println();
+      return true;
+    } else {
+      Serial.println(F("MQTT failed!")); Serial.println();
+      return false;
+    }//end if else
+  }//end if
+  return false;
 }//end MQTT connect
 //------------------------------------------
 #endif //__ESP32_MQTT_CPP

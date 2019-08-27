@@ -24,20 +24,21 @@
 //--------------------------------------------------------------
 void UART_init()
 {
-  Serial.begin(115200);
+  Serial.begin(57600);
 }
 //------------------------------------------------------------
 void UART_isMasterReady() {
   bool notReady=true;
   while (notReady) {
-     if( Serial.available()) //if something appear in the serial monitor
-     { 
-        String buff=Serial.readString();
-        Serial.println(buff);
-        if (buff==AUTHORIZED_KEY) {
-          notReady = false;
+     if( Serial.available()) {//if something appear in the serial monitor
+        if (Serial.read()=='k') {
+          String buff=Serial.readString();
+          if (buff==AUTHORIZED_KEY) {
+            notReady = false;
+            return;
+          }//end if
         }//end if
-      }//end if
+     }//end if
   }//end while
 }//end UART_masterReady
 //------------------------------------------------------------
