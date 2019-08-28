@@ -13,7 +13,7 @@
 //#include "config.h"
 
 // ------ Public constants ------------------------------------
-#define AUTHORIZED_KEY "master ready! 070497"
+#define AUTHORIZED_KEY "master ready! 070497\r\n"
 // ------ Public function prototypes --------------------------
 /**
 Initialize UART

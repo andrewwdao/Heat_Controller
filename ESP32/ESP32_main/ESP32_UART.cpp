@@ -30,6 +30,21 @@ void UART_init()
 void UART_masterReady() {
   Serial.print('k');
   Serial.print(AUTHORIZED_KEY);
+  char Smes[60];
+  snprintf(Smes,60,"s|%f|%f|%f|%d|%d|%d|%d|%d|%d",NVS_read_Kp(),NVS_read_Ki(),NVS_read_Kd(),NVS_read_F1(),NVS_read_F2(),NVS_read_T1(),NVS_read_T2(),NVS_read_T3(),NVS_read_T4());
+  Serial.println(Smes);
+  while (1) {
+    while (Serial.available()){
+      if (Serial.read()=='U') {
+        String buff = Serial.readString();
+        if (buff=="pdated!\r\n") {
+          return;
+        }//end if
+      }//end if
+    }//end while
+    Serial.println(Smes); //resend if no confirmation was received
+    delay(3000);
+  }//end while
 }//end UART_masterReady
 //------------------------------------------------------------
  void UART_sendToSlave() {//command: t|T1|T2|T3|T4_f|F1|F2
@@ -86,8 +101,8 @@ void UART_getFromSlave() {// p|Kp|Ki|Kd or t|T1|T2|T3|T4 or f|F1|F2
       f1=rec.indexOf("|",0); //search for initial signal
       if (f1>=0) { //has the correct signal
         //set flow values
-        f1=rec.indexOf("|",0);    //position of temp1
-        f2=rec.indexOf("|",f1+1); //position of temp2
+        f1=rec.indexOf("|",0);    //position of flow1
+        f2=rec.indexOf("|",f1+1); //position of flow2
         bF1=rec.substring(f1+1,f2);//get the string out
         bF2=rec.substring(f2+1);//get the string out
         NVS_Flow_write(bF1.toInt(),bF2.toInt());

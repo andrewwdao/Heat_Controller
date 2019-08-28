@@ -34,10 +34,10 @@ void UART_isMasterReady() {
         if (Serial.read()=='k') {
           String buff=Serial.readString();
           if (buff==AUTHORIZED_KEY) {
-            Serial.println(F("Give me the set values"));
+            D_PRINTLN(F("Give me the set values"));
             while (notReady) {
               if( Serial.available()) {//if something appear in the serial monitor
-                if (Serial.read()=='s') {
+                if (Serial.read()=='s') { //s|Kp|Ki|Kd|F1|F2|T1|T2|T3|T4
                   uint16_t t1,t2,t3,t4;
                   float mpid[3]={0,0,0};
                   uint16_t mtemp[4]={0,0,0,0};
@@ -45,15 +45,45 @@ void UART_isMasterReady() {
                   String mKp="",mKi="",mKd="",mT1="",mT2="",mT3="",mT4="",mF1="",mF2="",rec="";
                   rec=Serial.readString();
                   t1 = rec.indexOf("|",0); //search for initial signal
-                } mpid[0]
-                  
-                  if (buff==AUTHORIZED_KEY) {
-            Serial.println(F("Give me the set values"));
-            notReady = false;
-            return;
-          }//end if
-            notReady = false;
-            return;
+                  if (t1>=0) { //has the correct signal
+                  //set pid - flow values - temperature
+                    t1=rec.indexOf("|",0);    //position of Kp
+                    t2=rec.indexOf("|",t1+1); //position of Ki
+                    t3=rec.indexOf("|",t2+1); //position of Kd
+                    t4=rec.indexOf("|",t3+1); //position of flow1
+                    mKp=rec.substring(t1+1,t2);//get the string out
+                    mKi=rec.substring(t2+1,t3);//get the string out
+                    mKd=rec.substring(t3+1,t4);//get the string out
+                    t1=rec.indexOf("|",t4+1); //position of flow2
+                    t2=rec.indexOf("|",t1+1); //position of temp1
+                    mF1=rec.substring(t4+1,t1);//get the string out
+                    mF2=rec.substring(t1+1,t2);//get the string out
+                    t3=rec.indexOf("|",t2+1); //position of temp2
+                    t4=rec.indexOf("|",t3+1); //position of temp3
+                    t1=rec.indexOf("|",t4+1); //position of temp4
+                    mT1=rec.substring(t2+1,t3);//get the string out
+                    mT2=rec.substring(t3+1,t4);//get the string out
+                    mT3=rec.substring(t4+1,t1);//get the string out
+                    mT4=rec.substring(t1+1);   //get the string out
+                    mpid[0] = mKp.toFloat(); //Kp
+                    mpid[1] = mKi.toFloat(); //Ki
+                    mpid[2] = mKd.toFloat(); //Kd
+                    mtemp[0] = mT1.toInt(); //T1
+                    mtemp[1] = mT2.toInt(); //T2
+                    mtemp[2] = mT3.toInt(); //T3
+                    mtemp[3] = mT4.toInt(); //T4
+                    mflow[0] = mF1.toInt(); //Flow1
+                    mflow[1] = mF2.toInt(); //Flow2
+                    changeSetVal(mpid,mtemp,mflow);
+                    Serial.print(F("Updated!\r\n"));
+                    notReady=false;
+                    return;
+                  } else {
+                    D_PRINTLN(F("Not recognized command!"));
+                  }// end if else 
+                }//end if
+              }//end if
+            }//end while
           }//end if
         }//end if
      }//end if
