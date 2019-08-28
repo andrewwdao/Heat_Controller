@@ -9,7 +9,7 @@
  --------------------------------------------*/ 
 #ifndef  __ESP32_UART_H 
 #define  __ESP32_UART_H
-#include <Arduino.h>
+#include <WiFi.h>
 #include "ESP32_ADC.h"
 #include "ESP32_NVS.h"
 #include "debugConfig.h"

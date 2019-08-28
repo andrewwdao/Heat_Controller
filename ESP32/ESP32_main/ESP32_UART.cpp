@@ -31,12 +31,34 @@ void UART_init()
 }
 //------------------------------------------------------------
 void UART_masterReady() {
-  Serial.print('k');
+  Serial.print('K');
   Serial.print(AUTHORIZED_KEY);
+  bool not_authorized = true;
+  uint32_t lastmillis = millis();
+  while (not_authorized) { //while not authorized yet
+    if ((millis()-lastmillis)>3000) { //only happend once every 3s
+        Serial.print('K');
+        Serial.print(AUTHORIZED_KEY);
+        lastmillis = millis();
+    }//end if
+    while (Serial.available()){
+      if (Serial.read()=='U') {
+        String buff = Serial.readString();
+        if (buff=="pdated!") {
+          not_authorized=false;
+        }//end if
+      }//end if
+    }//end while
+  }//end while
   char Smes[60];
-  snprintf(Smes,60,"s|%f|%f|%f|%d|%d|%d|%d|%d|%d",NVS_read_Kp(),NVS_read_Ki(),NVS_read_Kd(),NVS_read_F1(),NVS_read_F2(),NVS_read_T1(),NVS_read_T2(),NVS_read_T3(),NVS_read_T4());
+  snprintf(Smes,60,"S|%f|%f|%f|%d|%d|%d|%d|%d|%d",NVS_read_Kp(),NVS_read_Ki(),NVS_read_Kd(),NVS_read_F1(),NVS_read_F2(),NVS_read_T1(),NVS_read_T2(),NVS_read_T3(),NVS_read_T4());
   Serial.println(Smes);
+  lastmillis = millis();
   while (1) {
+    if ((millis()-lastmillis)>3000) { //only happend once every 3s
+        Serial.println(Smes); //resend if no confirmation was received
+        lastmillis = millis();
+    }//end if
     while (Serial.available()){
       if (Serial.read()=='U') {
         String buff = Serial.readString();
@@ -45,20 +67,18 @@ void UART_masterReady() {
         }//end if
       }//end if
     }//end while
-    Serial.println(Smes); //resend if no confirmation was received
-    delay(3000);
   }//end while
 }//end UART_masterReady
 //------------------------------------------------------------
  void UART_sendToSlave() {//command: t|T1|T2|T3|T4_f|F1|F2
   char Smes[60];
-  snprintf(Smes,60,"t|%d|%d|%d|%d_f|%d|%d",tempSen01_read(),tempSen02_read(),tempSen03_read(),tempSen04_read(),flowSen01_read(),flowSen02_read());
+  snprintf(Smes,60,"T|%d|%d|%d|%d_f|%d|%d",tempSen01_read(),tempSen02_read(),tempSen03_read(),tempSen04_read(),flowSen01_read(),flowSen02_read());
   Serial.println(Smes);
 }// end UART_sendToSlave
 void UART_getFromSlave() {// p|Kp|Ki|Kd or t|T1|T2|T3|T4 or f|F1|F2
   if( Serial.available()) {//if something appear in the serial monitor
     char charBuf = Serial.read();
-    if (charBuf=='p') {
+    if (charBuf=='P') {
       uint16_t p1,p2,p3;
       String bKp="",bKi="",bKd="",rec="";
       rec=Serial.readString();
@@ -72,11 +92,11 @@ void UART_getFromSlave() {// p|Kp|Ki|Kd or t|T1|T2|T3|T4 or f|F1|F2
         bKi=rec.substring(p2+1,p3);//get the string out
         bKd=rec.substring(p3+1);//get the string out
         NVS_PID_write(bKp.toFloat(),bKi.toFloat(),bKd.toFloat());
-        D_PRINTLN(F("PID saved!"));
+        D_PRINTLN(F("pid saved!"));
       } else {
          D_PRINTLN(F("Not recognized command!"));
       }// end if else
-    } else if (charBuf=='t') {
+    } else if (charBuf=='T') {
       uint16_t t1,t2,t3,t4;
       String bT1="",bT2="",bT3="",bT4="",rec="";
       rec=Serial.readString();
@@ -92,12 +112,12 @@ void UART_getFromSlave() {// p|Kp|Ki|Kd or t|T1|T2|T3|T4 or f|F1|F2
         bT3=rec.substring(t3+1,t4);//get the string out
         bT4=rec.substring(t4+1);   //get the string out
         NVS_Temp_write(bT1.toInt(),bT2.toInt(),bT3.toInt(),bT4.toInt());
-        D_PRINTLN(F("Temp saved!"));
+        D_PRINTLN(F("temp saved!"));
         
       } else {
          D_PRINTLN(F("Not recognized command!"));
       }// end if else
-    } else if (charBuf=='f') {
+    } else if (charBuf=='F') {
       uint16_t f1,f2;
       String bF1="",bF2="", rec="";
       rec=Serial.readString();
@@ -109,7 +129,7 @@ void UART_getFromSlave() {// p|Kp|Ki|Kd or t|T1|T2|T3|T4 or f|F1|F2
         bF1=rec.substring(f1+1,f2);//get the string out
         bF2=rec.substring(f2+1);//get the string out
         NVS_Flow_write(bF1.toInt(),bF2.toInt());
-        D_PRINTLN(F("Flow saved!"));
+        D_PRINTLN(F("flow saved!"));
       } else {
          D_PRINTLN(F("Not recognized command!"));
       }// end if else 

@@ -12,7 +12,6 @@
 #define __ESP32_PID_H
 #include <WiFi.h>
 
-
 // ------ Public constants ------------------------------------
 
 // ------ Public function prototypes --------------------------

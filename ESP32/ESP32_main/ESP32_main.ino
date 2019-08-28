@@ -48,6 +48,9 @@ void loop()
   UART_getFromSlave();
   
   //UART_sendToSlave();
+  relay01(ON);
+//  relay03(OFF);
+  delay(3000);
+  //relay01(OFF);
 
-  //delay(500);
 }//end loop

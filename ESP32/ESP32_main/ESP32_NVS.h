@@ -11,11 +11,9 @@
 #ifndef _ESP32_NVS_H
 #define _ESP32_NVS_H
 #include "config.h"
-//#include "pins.h"
 #include "Preferences.h" // this library save in NVS - non volatile storage memory (in flash! not EEPROM, perfect!)
 #include <nvs.h>
 #include <nvs_flash.h>
-//#include "C1_SD_Card.h"
 // ------ Public constants ------------------------------------
 
 // ------ Public function prototypes --------------------------

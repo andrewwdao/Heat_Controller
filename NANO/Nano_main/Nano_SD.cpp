@@ -23,10 +23,10 @@ bool SD_init()
 {
   if (!SD.begin(10)) 
  {
-    D_PRINTLN(F("initialization failed!"));
+    D_PRINTLN(F("sd initialization failed!"));
     return false;
  }
-  D_PRINTLN(F("initialization done."));
+  D_PRINTLN(F("sd initialization done."));
   return true;
 }
 //----------------------------------------------------------
@@ -36,7 +36,7 @@ void sendSD(int temp1,int temp2,int temp3,int temp4, int flow1,int flow2)
   File Data=SD.open("data.txt",FILE_WRITE); // create FILE data.txt
   if(Data)
   { 
-    D_PRINTLN(F("Saving..."));
+    D_PRINTLN(F("saving..."));
     Data.print(RTC_getTime());
     Data.print("_T1:");Data.print(temp1);
     Data.print("_T2:");Data.print(temp2);
@@ -45,9 +45,9 @@ void sendSD(int temp1,int temp2,int temp3,int temp4, int flow1,int flow2)
     Data.print("_F1:");Data.print(flow1);
     Data.print("_F2:");Data.print(flow2);
     Data.print("\r\n");
-    D_PRINTLN(F("Done."));
+    D_PRINTLN(F("done."));
     } else {
-    D_PRINTLN(F("Error"));
+    D_PRINTLN(F("error"));
   }//end if else
   Data.close();
 }// end sendSD

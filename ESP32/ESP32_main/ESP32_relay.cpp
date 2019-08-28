@@ -33,6 +33,8 @@ void relay_init() {
   pinMode(LATCH_PIN, OUTPUT);
   pinMode(CLOCK_PIN, OUTPUT);
   pinMode(DATA_PIN, OUTPUT);
+  //shiftOut(DATA_PIN, CLOCK_PIN, MSBFIRST, 0xFF); //Data send to the 74HC595
+  relay01(OFF);relay02(OFF);relay03(OFF);
 }//end relay_init
 //------------------------------------------
 void HC595_sendByte(uint8_t Data) {

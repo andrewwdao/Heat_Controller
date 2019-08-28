@@ -14,8 +14,8 @@
 //#include "config.h"
 
 // ------ Public constants ------------------------------------
-#define ON  true
-#define OFF false
+#define ON  false
+#define OFF true
 // ------ Public function prototypes --------------------------
 /**
 Initialize relay
