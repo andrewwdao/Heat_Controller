@@ -3,13 +3,6 @@
   ARDUINO NANO
   (c) Pham Thanh Tam - An Minh Dao 2019
   version 1.20 - 05/08/2019
----------------------------------------------------------------
- *  PUBLIC FUNCTIONS CONTAIN:
- *  
- *  
- *  PRIVATE FUNCTIONS CONTAIN:
- *  
- * 
  --------------------------------------------------------------*/
 #ifndef  __NANO_LCD_CPP 
 #define  __NANO_LCD_CPP

@@ -3,7 +3,10 @@
   ARDUINO NANO
   (c) An Minh Dao - Pham Thanh Tam 2019 
   version 1.10 - 25/08/2019
---------------------------------------------*/ 
+----------------------------------------------
+ * All test function used with UART to USB has
+ * to be in "No line ending" mode
+ --------------------------------------------*/ 
 #ifndef  __NANO_UART_CPP
 #define  __NANO_UART_CPP
 #include "Nano_UART.h"
@@ -75,7 +78,7 @@ void UART_isMasterReady() {
                     mflow[0] = mF1.toInt(); //Flow1
                     mflow[1] = mF2.toInt(); //Flow2
                     changeSetVal(mpid,mtemp,mflow);
-                    Serial.print(F("Updated!\r\n"));
+                    Serial.print(F("Updated!"));
                     notReady=false;
                     return;
                   } else {

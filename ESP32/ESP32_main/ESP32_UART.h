@@ -3,7 +3,10 @@
   ESP32 DEVKIT V1
   (c) An Minh Dao - Pham Thanh Tam 2019 
   version 1.10 - 26/08/2019
---------------------------------------------*/ 
+----------------------------------------------
+ * All test function used with UART to USB has
+ * to be in "No line ending" mode
+ --------------------------------------------*/ 
 #ifndef  __ESP32_UART_H 
 #define  __ESP32_UART_H
 #include <Arduino.h>
@@ -13,7 +16,7 @@
 //#include "config.h"
 
 // ------ Public constants ------------------------------------
-#define AUTHORIZED_KEY "master ready! 070497\r\n"
+#define AUTHORIZED_KEY "master ready! 070497"
 // ------ Public function prototypes --------------------------
 /**
 Initialize UART
