@@ -15,7 +15,7 @@
 #include "ESP32_relay.h"
 #include "ESP32_MQTT.h"
 #include "ESP32_NVS.h"
-
+#include "ESP32_FET.h"
 ///////////////////////////////////////MAIN FUNCTION/////////////////////////////////////
 void setup() 
 {
@@ -46,11 +46,28 @@ void loop()
 {
   MQTT_maintain();
   UART_getFromSlave();
-  
+
+  mainRoutine();
   //UART_sendToSlave();
-  relay01(ON);
+  //relay01(ON);
 //  relay03(OFF);
-  delay(3000);
   //relay01(OFF);
 
 }//end loop
+
+void mainRoutine() {
+  if (tempSen01_read()<50) { //if T_Collector< 50 celcius degree
+    pump1_OFF();
+  }//end if
+  if (tempSen01_read()>60) { //if T_Collector>60 and 
+    if ((tempSen02_read()>80)|(tempSen03_read()>50)) { //(T_Buffer1>80 or T_Buffer2>50) --> slower
+      pump1_slower(PIDcal(NVS_read_T2(),tempSen02_read())); //setval - realval
+    }//end if
+    if ((tempSen02_read()<80)&(tempSen03_read()>50)) { //(T_Buffer1<80 and T_Buffer2>50) --> slower
+      pump1_slower(PIDcal(NVS_read_T2(),tempSen02_read())); //setval - realval
+    }//end if
+    if ((tempSen02_read()<80)&(tempSen03_read()<50)) { //(T_Buffer1<80 and T_Buffer2<50) --> higher
+      pump1_faster(PIDcal(NVS_read_T2(),tempSen02_read())); //setval - realval
+    }//end if
+  }//end if
+}//end mainRoutine

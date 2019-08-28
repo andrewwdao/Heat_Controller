@@ -37,6 +37,7 @@ void pump1_init() {
   ledcAttachPin(PUMP1_OUT_PIN, PWM_CHANNEL_1);// attach the channel to the GPIO to be controlled
   //input pwm from pump
   pinMode(PUMP1_IN_PIN, INPUT);
+   pump1_output = VAR_MINSPEED;
 }//end pump1_init
 //------------------------------------
 void pump2_init() {
@@ -45,6 +46,7 @@ void pump2_init() {
   ledcAttachPin(PUMP2_OUT_PIN, PWM_CHANNEL_2);// attach the channel to the GPIO to be controlled
   //input pwm from pump
   pinMode(PUMP2_IN_PIN, INPUT);
+   pump2_output = VAR_MINSPEED;
 }//end pump2_init
 //------------------------------------
 void pump1_status() {

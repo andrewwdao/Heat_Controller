@@ -42,7 +42,7 @@ float PID_Kd_write();
 /**
 PID calculation, return value from 0.01 to 1.
 */
-void PIDcal();
+float PIDcal(int,int);
 // ------ Public variable -------------------------------------
 
 #endif //__ESP32_PID_H
