@@ -41,7 +41,7 @@ void NVS_PID_write(float kp,float ki,float kd) {
 float NVS_read_Kp() {
     Preferences preferences; /* create an instance of Preferences library */
     preferences.begin("PID", true);/* Start a namespace "WifiInfo",in Read-Write mode: set second parameter to false. Note: Namespace name is limited to 15 chars */
-    bool hasState = preferences.getBool("validPID", false);
+    bool hasState = preferences.getBool("validPID", false); //false is the default value
 	  if (hasState) {
 		  float currentKp = preferences.getFloat("Kp",0);
       preferences.end();

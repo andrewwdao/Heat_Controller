@@ -14,10 +14,7 @@
 // ------ Private constants -----------------------------------
 
 // ------ Private function prototypes -------------------------
-/**
 
-**/
-//void sendSD(int,int,int,int,int,int);
 // ------ Private variables -----------------------------------
 
 // ------ PUBLIC variable definitions -------------------------
@@ -72,7 +69,7 @@ void UART_masterReady() {
 //------------------------------------------------------------
  void UART_sendToSlave() {//command: t|T1|T2|T3|T4_f|F1|F2
   char Smes[60];
-  snprintf(Smes,60,"T|%d|%d|%d|%d_f|%d|%d",tempSen01_read(),tempSen02_read(),tempSen03_read(),tempSen04_read(),flowSen01_read(),flowSen02_read());
+  snprintf(Smes,60,"T|%d|%d|%d|%d_F|%d|%d",tempSen01_read(),tempSen02_read(),tempSen03_read(),tempSen04_read(),flowSen01_read(),flowSen02_read());
   Serial.println(Smes);
 }// end UART_sendToSlave
 void UART_getFromSlave() {// p|Kp|Ki|Kd or t|T1|T2|T3|T4 or f|F1|F2

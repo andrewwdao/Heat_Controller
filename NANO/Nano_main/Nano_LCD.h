@@ -3,13 +3,10 @@
   ARDUINO NANO
   (c) Pham Thanh Tam - An Minh Dao 2019
   version 1.00 - 26/07/2019
----------------------------------------------------------------
- *  PUBLIC FUNCTIONS CONTAIN:
- * 
- *  PRIVATE FUNCTIONS CONTAIN:
- * 
- *  CAUTION: must include config.h
---------------------------------------------------------------*/
+ --------------------------------------------------------------
+ * Have to change the ADC in every power supply if buttons do not work
+ * Also need to turn the LCD potentiometer if the LCD is too dark
+ -------------------------------------------------------------- */
 #ifndef __NANO_LCD_H
 #define __NANO_LCD_H
 #include <Arduino.h>

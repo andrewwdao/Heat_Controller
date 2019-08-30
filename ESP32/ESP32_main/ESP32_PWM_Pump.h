@@ -21,8 +21,8 @@
 // CHOOSING PUMP
 //--------------------------------------------------------------
 #define GRUNDFOS_UPM3_PWM //if using this pump, you must choose ONE profile below, slash out the others if you dont want to invite errors.
-  #define PROFILE_A_HEATING
- //#define PROFILE_C_SOLAR
+  //#define PROFILE_A_HEATING
+ #define PROFILE_C_SOLAR
 //#define YONOS_PARA_ST_15/13_PWM2
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

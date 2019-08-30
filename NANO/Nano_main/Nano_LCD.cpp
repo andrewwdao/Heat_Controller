@@ -3,7 +3,10 @@
   ARDUINO NANO
   (c) Pham Thanh Tam - An Minh Dao 2019
   version 1.20 - 05/08/2019
- --------------------------------------------------------------*/
+ --------------------------------------------------------------
+ * Have to change the ADC in every power supply if buttons do not work
+ * Also need to turn the LCD potentiometer if the LCD is too dark
+ -------------------------------------------------------------- */
 #ifndef  __NANO_LCD_CPP 
 #define  __NANO_LCD_CPP
 #include "Nano_LCD.h"
@@ -98,23 +101,23 @@ int buttonRead()
 {
 	int adc_buttons=analogRead(BUTTON_PIN);
 	delay(150); //debounce
-	if(adc_buttons<50) //button 1
+	if(adc_buttons<50) //button 1 --have to change this in every power supply if buttons do not work
 	{
 		return BUT_LEFT;
 	}
-	if(adc_buttons>50& adc_buttons<200) //button 2
+	if(adc_buttons>50& adc_buttons<150) //button 2 --have to change this in every power supply if buttons do not work
 	{
 		return BUT_DOWN;
 	}
-	if(adc_buttons>200& adc_buttons<300) //button 3
-	{
+	if(adc_buttons>170& adc_buttons<400) //button 3 --have to change this in every power supply if buttons do not work
+  {
 		return BUT_CONFIRM;
 	}
-	if(adc_buttons>300& adc_buttons<500) //button 4
+	if(adc_buttons>410& adc_buttons<600) //button 4 --have to change this in every power supply if buttons do not work
   { 
 		return BUT_RIGHT;
   }
-	if (adc_buttons >=500 & adc_buttons<800)  //button 5
+	if (adc_buttons >=750 & adc_buttons<900)  //button 5 --have to change this in every power supply if buttons do not work
 	{
 		return BUT_UP;
   }
@@ -125,6 +128,7 @@ void LCD_menu()
 {
  //------------------------------Display user interface------------------
 	lcd.setCursor(1,0); lcd.print("PID ");
+  //lcd.setCursor(1,1); lcd.print(analogRead(BUTTON_PIN));lcd.print("    ");  <-- this line used for determine the ADC value when power suppy changes
 	lcd.setCursor(6,0); lcd.print("TEMP");
 	lcd.setCursor(6,1); lcd.print("FLOW");
   lcd.setCursor(11,0);lcd.print("sTEMP");
