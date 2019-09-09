@@ -59,7 +59,7 @@ void pump1_status() {
     if (p1_dutyCycle>PUMP_ELECTRICAL_ERROR) {S_PRINTLN(F("pump1 Error! Electrical error!"));return;}
     if (p1_dutyCycle>PUMP_WARNING) {S_PRINTLN(F("Pump 1 Warning!"));return;}
     if (p1_dutyCycle==0) {S_PRINTLN(F("pump1 No signal!"));return;}
-    if (p1_dutyCycle<PUMP_NORMAL) {S_PRINTLN(F("Pump2 in normal condition!"));return;}
+    if (p1_dutyCycle<PUMP_NORMAL) {S_PRINTLN(F("Pump1 in normal condition!"));return;}
 }//end pump1_status
 //------------------------------------
 void pump2_status() {

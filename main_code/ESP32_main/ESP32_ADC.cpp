@@ -32,7 +32,10 @@ Read value of the ADC
 **/
 int ADC_read(int,int,int);
 // ------ Private variables -----------------------------------
-SimpleKalmanFilter filter(E_MEA, E_EST, Q);
+SimpleKalmanFilter filter1(E_MEA, E_EST, Q);
+SimpleKalmanFilter filter2(E_MEA, E_EST, Q);
+SimpleKalmanFilter filter3(E_MEA, E_EST, Q);
+SimpleKalmanFilter filter4(E_MEA, E_EST, Q);
 // ------ PUBLIC variable definitions -------------------------
 
 //--------------------------------------------------------------
@@ -51,23 +54,23 @@ void ADC_init()
   //analogSetAttenuation(ADC_6db); // This can be used for all ADC pins, but not recommended.
 }//end ADC_init
 //------------------------------------------
-int ADC_read(int ADCpin, int lowVal, int maxVal)
-{
-  // read the input on the corresponding analog pin:
-  //if recieved signal is less than 4mA, than the sensor is off or is having some errors
-  //if recieved signal is equal or more than 4mA (~360mV ~398 ADC value), than the sensor is working probaly
-  int senVal = analogRead(ADCpin);
-  //------------------------------Kalman filter applied:
-  int es_senVal = filter.updateEstimate(senVal); // first layer
-  for (int a=1;a<FILTER_LAYER; a++) {        // next layers (if possible)
-    es_senVal = filter.updateEstimate(es_senVal);   
-  }//end for
-  //------------------------------Kalman filter done
-  if (es_senVal<200) //if sensor is off or error
-    {return SENSOR_ERROR;} //use 200 for compensating for noises.
-  int calculatedVal = map(es_senVal,398,2047,lowVal,maxVal); //map es_senVal from 0-2047 to lowVal-maxVal
-  return calculatedVal; //return the calculated value
-}//end ADC_read
+//int ADC_read(int ADCpin, int lowVal, int maxVal)
+//{
+//  // read the input on the corresponding analog pin:
+//  //if recieved signal is less than 4mA, than the sensor is off or is having some errors
+//  //if recieved signal is equal or more than 4mA (~360mV ~398 ADC value), than the sensor is working probaly
+//  int senVal = analogRead(ADCpin);
+//  //------------------------------Kalman filter applied:
+//  int es_senVal = filter.updateEstimate(senVal); // first layer
+//  for (int a=1;a<FILTER_LAYER; a++) {        // next layers (if possible)
+//    es_senVal = filter.updateEstimate(es_senVal);   
+//  }//end for
+//  //------------------------------Kalman filter done
+//  if (es_senVal<200) //if sensor is off or error
+//    {return SENSOR_ERROR;} //use 200 for compensating for noises.
+//  int calculatedVal = map(es_senVal,398,2047,lowVal,maxVal); //map es_senVal from 0-2047 to lowVal-maxVal
+//  return calculatedVal; //return the calculated value
+//}//end ADC_read
 //------------------------------------------
 int flowSen01_read() {
   return ADC_read(FLOW_SEN01_PIN,FLOW_MIN,FLOW_MAX);
@@ -78,19 +81,47 @@ int flowSen02_read() {
 }//end flowSen02_read
 //------------------------------------------
 int tempSen01_read() {
-  return ADC_read(TEMP_SEN01_PIN,TEMP_MIN,TEMP_MAX);
+   int a1 = analogRead(TEMP_SEN01_PIN);
+  //------------------------------Kalman filter applied:
+  int es_senVal1 = filter1.updateEstimate(a1); // first layer
+  for (int a=1;a<FILTER_LAYER; a++) {        // next layers (if possible)
+    int es_senVal1 = filter1.updateEstimate(es_senVal1);   
+  }//end for
+  int t1=(0.389*es_senVal1)-133.46;
+  return t1;
 }//end tempSen01_read
 //------------------------------------------
 int tempSen02_read() {
-  return ADC_read(TEMP_SEN02_PIN,TEMP_MIN,TEMP_MAX);
+   int a2 = analogRead(TEMP_SEN02_PIN);
+  //------------------------------Kalman filter applied:
+  int es_senVal2 = filter2.updateEstimate(a2); // first layer
+  for (int a=1;a<FILTER_LAYER; a++) {        // next layers (if possible)
+    es_senVal2 = filter2.updateEstimate(es_senVal2);   
+  }//end for
+  int t2=(0.389*es_senVal2)-133.46;
+  return t2;
 }//end tempSen02_read
 //------------------------------------------
 int tempSen03_read() {
-  return ADC_read(TEMP_SEN03_PIN,TEMP_MIN,TEMP_MAX);
+   int a3 = analogRead(TEMP_SEN03_PIN);
+  //------------------------------Kalman filter applied:
+  int es_senVal3 = filter3.updateEstimate(a3); // first layer
+  for (int a=1;a<FILTER_LAYER; a++) {        // next layers (if possible)
+    es_senVal3 = filter3.updateEstimate(es_senVal3);   
+  }//end for
+  int t3=(0.389*es_senVal3)-133.46;
+  return t3;
 }//end tempSen03_read
 //------------------------------------------
 int tempSen04_read() {
-  return ADC_read(TEMP_SEN04_PIN,TEMP_MIN,TEMP_MAX);
+   int a4 = analogRead(TEMP_SEN04_PIN);
+  //------------------------------Kalman filter applied:
+  int es_senVal4 = filter4.updateEstimate(a4); // first layer
+  for (int a=1;a<FILTER_LAYER; a++) {        // next layers (if possible)
+    es_senVal4 = filter4.updateEstimate(es_senVal4);   
+  }//end for
+  int t4=(0.389*es_senVal4)-133.46;
+  return t4;
 }//end tempSen04_read
 //------------------------------------------
 #endif //__ESP32_ADC_CPP
