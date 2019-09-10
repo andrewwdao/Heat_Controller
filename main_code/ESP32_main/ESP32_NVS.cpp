@@ -28,13 +28,13 @@
 //--------------------------------------------------------------
 // WARNING: address is a page address, 6-bit end will wrap around
 // also, data can be maximum of about 30 bytes
-void NVS_PID_write(float kp,float ki,float kd) {
+void NVS_PID_write(float nkp,float nki,float nkd) {
     Preferences preferences; /* create an instance of Preferences library */
     preferences.begin("PID", false);/* Start a namespace "WifiInfo",in Read-Write mode: set second parameter to false. Note: Namespace name is limited to 15 chars */
     preferences.putBool("validPID", true);
-    preferences.putFloat("Kp", kp);
-    preferences.putFloat("Ki", ki);
-    preferences.putFloat("Kd", kd);
+    preferences.putFloat("Kp", nkp);
+    preferences.putFloat("Ki", nki);
+    preferences.putFloat("Kd", nkd);
     preferences.end();
 }//end NVS_system_write
 //------------------------------------------

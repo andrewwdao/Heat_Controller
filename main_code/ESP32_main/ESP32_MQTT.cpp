@@ -32,25 +32,56 @@ Adafruit_MQTT_Client mqtt(&client, SERVER, PORT, CLIENT_ID, USERNAME, PASS); // 
 //PUBLISH
 //NEEDED TO BE QOS0, SO WE CAN USE OUR QOS1 FUNCTION
 Adafruit_MQTT_Publish availability = Adafruit_MQTT_Publish(&mqtt,LWT_TOPIC,MQTT_QOS_0);
+Adafruit_MQTT_Publish pub_kp = Adafruit_MQTT_Publish(&mqtt,KP_FEED,MQTT_QOS_0);
+Adafruit_MQTT_Publish pub_ki = Adafruit_MQTT_Publish(&mqtt,KI_FEED,MQTT_QOS_0);
+Adafruit_MQTT_Publish pub_kd = Adafruit_MQTT_Publish(&mqtt,KD_FEED,MQTT_QOS_0);
 Adafruit_MQTT_Publish temp01 = Adafruit_MQTT_Publish(&mqtt,TEMP1_FEED,MQTT_QOS_0);
 Adafruit_MQTT_Publish temp02 = Adafruit_MQTT_Publish(&mqtt,TEMP2_FEED,MQTT_QOS_0);
 Adafruit_MQTT_Publish temp03 = Adafruit_MQTT_Publish(&mqtt,TEMP3_FEED,MQTT_QOS_0);
 Adafruit_MQTT_Publish temp04 = Adafruit_MQTT_Publish(&mqtt,TEMP4_FEED,MQTT_QOS_0);
-
+Adafruit_MQTT_Publish pub_pump1pwm = Adafruit_MQTT_Publish(&mqtt,PUMP1PWM_FEED,MQTT_QOS_0);
+Adafruit_MQTT_Publish pub_pump2pwm = Adafruit_MQTT_Publish(&mqtt,PUMP2PWM_FEED,MQTT_QOS_0);
+Adafruit_MQTT_Publish pub_relay01 = Adafruit_MQTT_Publish(&mqtt,RELAY01_FEED,MQTT_QOS_0);
+Adafruit_MQTT_Publish pub_relay02 = Adafruit_MQTT_Publish(&mqtt,RELAY02_FEED,MQTT_QOS_0);
+Adafruit_MQTT_Publish pub_relay03 = Adafruit_MQTT_Publish(&mqtt,RELAY03_FEED,MQTT_QOS_0);
+//SUBCRIBE
+Adafruit_MQTT_Subscribe sub_kp = Adafruit_MQTT_Subscribe(&mqtt,KP_FEED,MQTT_QOS_1);
+Adafruit_MQTT_Subscribe sub_ki = Adafruit_MQTT_Subscribe(&mqtt,KI_FEED,MQTT_QOS_1);
+Adafruit_MQTT_Subscribe sub_kd = Adafruit_MQTT_Subscribe(&mqtt,KD_FEED,MQTT_QOS_1);
+Adafruit_MQTT_Subscribe sub_pump1pwm = Adafruit_MQTT_Subscribe(&mqtt,PUMP1PWM_FEED,MQTT_QOS_1);
+Adafruit_MQTT_Subscribe sub_pump2pwm = Adafruit_MQTT_Subscribe(&mqtt,PUMP2PWM_FEED,MQTT_QOS_1);
+Adafruit_MQTT_Subscribe sub_relay01 = Adafruit_MQTT_Subscribe(&mqtt,RELAY01_FEED,MQTT_QOS_1);
+Adafruit_MQTT_Subscribe sub_relay02 = Adafruit_MQTT_Subscribe(&mqtt,RELAY02_FEED,MQTT_QOS_1);
+Adafruit_MQTT_Subscribe sub_relay03 = Adafruit_MQTT_Subscribe(&mqtt,RELAY03_FEED,MQTT_QOS_1);
 //--------------------------------------------------------------
 // FUNCTION DEFINITIONS
 //--------------------------------------------------------------
 void MQTT_init() {
   if (Wifi_begin()) {
     mqtt.will (LWT_TOPIC, LWT_PAYLOAD, MQTT_QOS_1, LWT_RETAIN); //Set up last will
-    //mqtt.subscribe(&cmd1); // Set up MQTT subscriptions.
+    mqtt.subscribe(&sub_kp); // Set up MQTT subscriptions.
+    mqtt.subscribe(&sub_ki); // Set up MQTT subscriptions.
+    mqtt.subscribe(&sub_kd); // Set up MQTT subscriptions.
+    mqtt.subscribe(&sub_pump1pwm); // Set up MQTT subscriptions.
+    mqtt.subscribe(&sub_pump2pwm); // Set up MQTT subscriptions.
+    mqtt.subscribe(&sub_relay01); // Set up MQTT subscriptions.
+    mqtt.subscribe(&sub_relay02); // Set up MQTT subscriptions.
+    mqtt.subscribe(&sub_relay03); // Set up MQTT subscriptions.
+    
     if (MQTT_connect()) {
       lastmillis = millis();
-      publishNow(availability,"online",RETAIN,"Status Failed to update!","Status updated!");
+      publishNow(availability,"online",RETAIN,"Status Failed!","Status updated!");
+      delay(300);
+      publishNow(pub_kp,NVS_read_Kp(),RETAIN,"Kp Failed!","Kp updated!");
+      delay(300);
+      publishNow(pub_ki,NVS_read_Ki(),RETAIN,"Ki Failed!","Ki updated!");
+      delay(300);
+      publishNow(pub_kd,NVS_read_Kd(),RETAIN,"Kd Failed!","Kd updated!");
     }//end if
   }//end if
-  pinMode(LED_BUILTIN,OUTPUT);
-  digitalWrite(LED_BUILTIN,LOW);
+  xSemaphoreGive(baton);
+  //pinMode(LED_BUILTIN,OUTPUT);
+  //digitalWrite(LED_BUILTIN,LOW);
 }//end MQTT_init
 //------------------------------------------
 void MQTT_maintain() {//keep the MQTT connection
@@ -65,6 +96,77 @@ void MQTT_maintain() {//keep the MQTT connection
     }//end if
 }//end MQTT_maintain
 //------------------------------------------
+void MQTT_subscribe() {
+   if (WiFi.status() == WL_CONNECTED) {
+      MQTT_connect();
+      //SUBCRIBE:
+      // this is our 'wait for incoming subscription packets' busy subloop. Max is 15 subs at a time, change at Adafruit_MQTT.h, #define MAXSUBSCRIPTIONS 15
+      Adafruit_MQTT_Subscribe *subscription;                  
+      while ((subscription = mqtt.readSubscription(5000))) {      //wait for signal
+        if (subscription == &sub_kp) {                         // if something new is detected on this topic
+          String sdata = (char*)sub_kp.lastread;   // Function to analize the string
+          PID_Kp_write(sdata.toFloat());
+          UART_PIDsendToSlave();
+          break;
+        }//end if
+        if (subscription == &sub_ki)  {                           // if something new is detected on this topic
+          String sdata = (char*)sub_ki.lastread;   // Function to analize the string
+          PID_Ki_write(sdata.toFloat());
+          UART_PIDsendToSlave();
+          break;
+        }//end if  
+        if (subscription == &sub_kd)  {                           // if something new is detected on this topic
+          String sdata = (char*)sub_kd.lastread;   // Function to analize the string
+          PID_Kd_write(sdata.toFloat());
+          UART_PIDsendToSlave();
+          break;
+        }//end if  
+        if (subscription == &sub_pump1pwm)  {                           // if something new is detected on this topic
+          String sdata = (char*)sub_pump1pwm.lastread;   // Function to analize the string
+          float sfloat = (float)(sdata.toInt()/100);
+          pump1_wifiChange(sfloat);
+          break;
+        }//end if
+        if (subscription == &sub_pump2pwm)  {                           // if something new is detected on this topic
+          String sdata = (char*)sub_pump2pwm.lastread;   // Function to analize the string
+          float sfloat = (float)(sdata.toInt()/100);
+          pump1_wifiChange(sfloat);
+          break;
+        }//end if
+        if (subscription == &sub_relay01)  {                           // if something new is detected on this topic
+           String sdata = (char*)sub_relay01.lastread;   // Function to analize the string
+           if (sdata=="ON") {
+             relay01(ON);
+             break;
+           } else if (sdata=="OFF") {
+             relay01(OFF);
+             break;
+           }//end if else
+       }//end if
+       if (subscription == &sub_relay02)  {                           // if something new is detected on this topic
+           String sdata = (char*)sub_relay02.lastread;   // Function to analize the string
+           if (sdata=="ON") {
+             relay02(ON);
+             break;
+           } else if (sdata=="OFF") {
+             relay02(OFF);
+             break;
+           }//end if else
+       }//end if
+       if (subscription == &sub_relay03)  {                           // if something new is detected on this topic
+           String sdata = (char*)sub_relay03.lastread;   // Function to analize the string
+           if (sdata=="ON") {
+             relay03(ON);
+             break;
+           } else if (sdata=="OFF") {
+             relay03(OFF);
+             break;
+           }//end if else
+       }//end if
+      }//end while
+    }//end if
+}//end MQTT_subscribe
+//------------------------------------------
 void publishNow(Adafruit_MQTT_Publish topicPub,const char* MQTTmessage, bool retained, const char* failed, const char* sucess) {//--------SELF CREATED QOS1 --make sure the packet made it to the broker
   char pub=1;
   while (!topicPub.publish(MQTTmessage,retained)) {Serial.println(F(failed));delay(PUB_WAIT);if (pub++>(PUB_RETRIES-1)) break;} 
@@ -72,6 +174,12 @@ void publishNow(Adafruit_MQTT_Publish topicPub,const char* MQTTmessage, bool ret
 }//end publishNow
 //------------------------------------------
 void publishNow(Adafruit_MQTT_Publish topicPub,int MQTTmessage, bool retained, const char* failed, const char* sucess) {//--------SELF CREATED QOS1 --make sure the packet made it to the broker
+  char pub=1;
+  while (!topicPub.publish(MQTTmessage,retained)) {Serial.println(F(failed));delay(PUB_WAIT);if (pub++>(PUB_RETRIES-1)) break;} 
+  if (pub<(PUB_RETRIES)) {Serial.println(F(sucess));}
+}//end publishNow
+//------------------------------------------
+void publishNow(Adafruit_MQTT_Publish topicPub,float MQTTmessage, bool retained, const char* failed, const char* sucess) {//--------SELF CREATED QOS1 --make sure the packet made it to the broker
   char pub=1;
   while (!topicPub.publish(MQTTmessage,retained)) {Serial.println(F(failed));delay(PUB_WAIT);if (pub++>(PUB_RETRIES-1)) break;} 
   if (pub<(PUB_RETRIES)) {Serial.println(F(sucess));}
@@ -103,9 +211,9 @@ bool Wifi_begin() {
 //------------------------------------------
 bool MQTT_connect() {// Ensure the connection to the MQTT server is alive (this will make the first connection and automatically reconnect when disconnected).
   if (WiFi.status() == WL_CONNECTED) { //if wifi is connected
-    if (mqtt.connected()) {digitalWrite(LED_BUILTIN,HIGH);return true;} // Stop if already connected, turn on indicating LED
+    if (mqtt.connected()) {/*digitalWrite(LED_BUILTIN,HIGH);*/return true;} // Stop if already connected, turn on indicating LED
 
-    digitalWrite(LED_BUILTIN,LOW); //if not connected, indicate by a LED
+    //digitalWrite(LED_BUILTIN,LOW); //if not connected, indicate by a LED
     Serial.println(F("Connecting to MQTT... "));
     int8_t ret, waitTimes;
     while (((ret = mqtt.connect()) != 0)&&(waitTimes++<3))  {         // connect will return 0 for connected

@@ -17,17 +17,22 @@
 // ------ Private function prototypes -------------------------
 
 // ------ Private variables -----------------------------------
-float previous_error = 0;
-uint32_t lastTime = millis();
+float previous_error;
+uint32_t lastTime;
 //PID constants:
-float kp = 2.4;
-float ki = 1.3;
-float kd = 0.8;
+float kp,ki,kd;
 // ------ PUBLIC variable definitions -------------------------
 
 //--------------------------------------------------------------
 // FUNCTION DEFINITIONS
 //--------------------------------------------------------------
+void PID_init() {
+  kp = NVS_read_Kp();
+  ki = NVS_read_Ki();
+  kd = NVS_read_Kd();
+  lastTime = millis();
+  previous_error = 0;
+}//end PID_init
 float PID_Kp_read() {
   return kp;
 }//end PID_Kp_read
@@ -42,14 +47,17 @@ float PID_Kd_read() {
 //------------------------------------
 void PID_Kp_write(float PIDval) {
   kp = PIDval;
+  NVS_PID_write(kp,ki,kd);
 }//end PID_Kp_write
 //------------------------------------
 void PID_Ki_write(float PIDval) {
   ki = PIDval;
+  NVS_PID_write(kp,ki,kd);
 }//end PID_Ki_write
 //------------------------------------
 void PID_Kd_write(float PIDval) {
   kd = PIDval;
+  NVS_PID_write(kp,ki,kd);
 }//end PID_Kd_write
 //------------------------------------
 float PIDcal(int setVal,int realVal) {

@@ -137,6 +137,14 @@ Make Pump2 slower (in % but not exceed the limit percentage of the pump)
 **/
 void pump2_slower(float);
 /**
+Change pwm frequency of pump1 directly through internet
+**/
+void pump1_wifiChange(float);
+/**
+Change pwm frequency of pump2 directly through internet
+**/
+void pump2_wifiChange(float);
+/**
 Turn OFF Pump1
 **/
 void pump1_OFF();

@@ -67,12 +67,19 @@ void UART_masterReady() {
   }//end while
 }//end UART_masterReady
 //------------------------------------------------------------
- void UART_sendToSlave() {//command: t|T1|T2|T3|T4_f|F1|F2
+ void UART_sendToSlave() {//command: T|T1|T2|T3|T4_F|F1|F2
   char Smes[60];
   snprintf(Smes,60,"T|%d|%d|%d|%d_F|%d|%d",tempSen01_read(),tempSen02_read(),tempSen03_read(),tempSen04_read(),flowSen01_read(),flowSen02_read());
   Serial.println(Smes);
 }// end UART_sendToSlave
-void UART_getFromSlave() {// p|Kp|Ki|Kd or t|T1|T2|T3|T4 or f|F1|F2
+//------------------------------------------------------------
+ void UART_PIDsendToSlave() {//command: P|Kp|Ki|Kd
+  char Smes[60];
+  snprintf(Smes,60,"P|%f|%f|%f",NVS_read_Kp(),NVS_read_Ki(),NVS_read_Kd());
+  Serial.println(Smes);
+}// end UART_sendToSlave
+//------------------------------------------------------------
+void UART_getFromSlave() {// P|Kp|Ki|Kd or T|T1|T2|T3|T4 or F|F1|F2
   if( Serial.available()) {//if something appear in the serial monitor
     char charBuf = Serial.read();
     if (charBuf=='P') {
@@ -89,6 +96,9 @@ void UART_getFromSlave() {// p|Kp|Ki|Kd or t|T1|T2|T3|T4 or f|F1|F2
         bKi=rec.substring(p2+1,p3);//get the string out
         bKd=rec.substring(p3+1);//get the string out
         NVS_PID_write(bKp.toFloat(),bKi.toFloat(),bKd.toFloat());
+        publishNow(pub_kp,NVS_read_Kp(),RETAIN,"Kp Failed!","Kp updated!");delay(300);
+        publishNow(pub_ki,NVS_read_Ki(),RETAIN,"Ki Failed!","Ki updated!");delay(300);
+        publishNow(pub_kd,NVS_read_Kd(),RETAIN,"Kd Failed!","Kd updated!");
         D_PRINTLN(F("pid saved!"));
       } else {
          D_PRINTLN(F("Not recognized command!"));

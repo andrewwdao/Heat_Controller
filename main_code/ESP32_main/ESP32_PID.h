@@ -11,7 +11,7 @@
 #ifndef __ESP32_PID_H
 #define __ESP32_PID_H
 #include <WiFi.h>
-
+#include "ESP32_NVS.h"
 // ------ Public constants ------------------------------------
 
 // ------ Public function prototypes --------------------------
@@ -30,15 +30,15 @@ float PID_Kd_read();
 /**
 Fix Kp value
 */
-float PID_Kp_write();
+void PID_Kp_write(float);
 /**
 Fix Ki value
 */
-float PID_Ki_write();
+void PID_Ki_write(float);
 /**
 Fix Kd value
 */
-float PID_Kd_write();
+void PID_Kd_write(float);
 /**
 PID calculation, return value from 0.01 to 1.
 */

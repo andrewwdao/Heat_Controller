@@ -12,6 +12,7 @@
 #include <WiFi.h>
 #include "ESP32_ADC.h"
 #include "ESP32_NVS.h"
+#include "ESP32_MQTT.h"
 #include "debugConfig.h"
 //#include "config.h"
 
@@ -30,6 +31,10 @@ void UART_masterReady();
 Send current temp and flow values to slave to display to the LCD
 **/
 void UART_sendToSlave();
+/**
+Send current PID values to slave to display to the LCD
+**/
+void UART_PIDsendToSlave();
 /**
 Get the PID parameters, or the set temperatures, or the set flow sensor values from the slave
 **/

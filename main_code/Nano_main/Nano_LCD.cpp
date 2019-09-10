@@ -490,4 +490,10 @@ void changeSetVal(float* vPID,uint16_t* vTemp,uint16_t* vFlow) {
   *(sFlow+1) = *(vFlow+1);  //F2
 }//end changeSetVal
 //----------------------------
+void changeSetVal(float* vPID) {
+  *PID = *vPID;         //Kp
+  *(PID+1) = *(vPID+1); //Ki
+  *(PID+2) = *(vPID+2); //Kd
+}//end changeSetVal
+//----------------------------
 #endif //__NANO_LCD_CPP

@@ -115,6 +115,16 @@ void pump2_slower() {
   ledcWrite(PWM_CHANNEL_2, pump2_output); //output signal to the pump
 }//end pump1_slower
 //------------------------------------
+void pump1_wifiChange(float valPump) {
+  pump1_output = valPump*PWM_RESOLUTION; //directly put it to what % the user want
+  ledcWrite(PWM_CHANNEL_1, pump1_output); //output signal to the pump
+}//end pump1_wifiChange
+//------------------------------------
+void pump2_wifiChange(float valPump) {
+  pump2_output = valPump*PWM_RESOLUTION; //directly put it to what % the user want
+  ledcWrite(PWM_CHANNEL_2, pump2_output); //output signal to the pump
+}//end pump1_wifiChange
+//------------------------------------
 void pump1_OFF() {
   ledcWrite(PWM_CHANNEL_1,OFF_MODE);
 }//end pump1_OFF

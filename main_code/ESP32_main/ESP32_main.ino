@@ -16,14 +16,20 @@
 #include "ESP32_MQTT.h"
 #include "ESP32_NVS.h"
 #include "ESP32_FET.h"
+#include "ESP32_core0.h"
+
+SemaphoreHandle_t baton; //baton to make a core waiting for another core when needed
 ///////////////////////////////////////MAIN FUNCTION/////////////////////////////////////
 void setup() 
 {
+  vSemaphoreCreateBinary(baton); //initialize binary semaphore //baton = xSemaphoreCreateBinary(); //this works too but not as good as the current use
+  xSemaphoreTake(baton, portMAX_DELAY); // ( TickType_t ) and portTICK_PERIOD_MS is also available , view: http://esp32.info/docs/esp_idf/html/d1/d19/group__xSemaphoreTake.html 
   UART_init();
   ADC_init();
   pump1_init();
   pump2_init();
   relay_init();
+  core0_init(); //must stand above MQTT init
   MQTT_init();
 
   UART_masterReady();

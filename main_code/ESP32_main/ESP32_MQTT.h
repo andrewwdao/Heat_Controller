@@ -13,6 +13,11 @@
 #include <WiFi.h> //for esp32
 #include "Adafruit_MQTT.h"
 #include "Adafruit_MQTT_Client.h"
+#include "ESP32_NVS.h"
+#include "ESP32_PID.h"
+#include "ESP32_relay.h"
+#include "ESP32_PWM_Pump.h"
+#include "ESP32_UART.h"
 //#include "config.h"
 
 // ------ Public constants ------------------------------------
@@ -36,10 +41,18 @@
 //MQTT_CONN_KEEPALIVE is defined inside the Adafruit_MQTT.h (default 5 minutes) --> need to change to 15 min (900)
 //CLEAN_SESSION is defined as TRUE as always clean the session
 
-#define TEMP1_FEED  "heatcontroller2019/feeds/temp01"   //command feed, chang it to yours
-#define TEMP2_FEED  "heatcontroller2019/feeds/temp02"   //command feed, chang it to yours
-#define TEMP3_FEED  "heatcontroller2019/feeds/temp03"   //command feed, chang it to yours
-#define TEMP4_FEED  "heatcontroller2019/feeds/temp04"   //command feed, chang it to yours
+#define KP_FEED         "heatcontroller2019/feeds/kp"   //command feed, chang it to yours
+#define KI_FEED         "heatcontroller2019/feeds/ki"   //command feed, chang it to yours
+#define KD_FEED         "heatcontroller2019/feeds/kd"   //command feed, chang it to yours
+#define TEMP1_FEED      "heatcontroller2019/feeds/temp01"   //command feed, chang it to yours
+#define TEMP2_FEED      "heatcontroller2019/feeds/temp02"   //command feed, chang it to yours
+#define TEMP3_FEED      "heatcontroller2019/feeds/temp03"   //command feed, chang it to yours
+#define TEMP4_FEED      "heatcontroller2019/feeds/temp04"   //command feed, chang it to yours
+#define PUMP1PWM_FEED   "heatcontroller2019/feeds/pump01pwm"   //command feed, chang it to yours
+#define PUMP2PWM_FEED   "heatcontroller2019/feeds/pump02pwm"   //command feed, chang it to yours
+#define RELAY01_FEED    "heatcontroller2019/feeds/relay01"   //command feed, chang it to yours
+#define RELAY02_FEED    "heatcontroller2019/feeds/relay02"   //command feed, chang it to yours
+#define RELAY03_FEED    "heatcontroller2019/feeds/relay03"   //command feed, chang it to yours
 
 #define PING_WAIT   55000
 #define PING_TIMES  10
@@ -54,15 +67,37 @@ Keep the MQTT connection even if no data was sent to the broker
 **/
 void MQTT_maintain();
 /**
+MQTT subscribe task. wait for signal from the server
+**/
+void MQTT_subscribe();
+/**
 publish the wanted value to the broker (self-created QOS1)-- make sure the packet made it to the broker
 **/
 void publishNow(Adafruit_MQTT_Publish,const char*,bool,const char*,const char*);
 void publishNow(Adafruit_MQTT_Publish,int, bool,const char*,const char*);
-
+void publishNow(Adafruit_MQTT_Publish,float, bool,const char*,const char*);
 // ------ Public variable -------------------------------------
+extern SemaphoreHandle_t baton; //declared in core0 cpp
+//PUBLISH
+extern Adafruit_MQTT_Publish pub_kp;
+extern Adafruit_MQTT_Publish pub_ki;
+extern Adafruit_MQTT_Publish pub_kd;
 extern Adafruit_MQTT_Publish temp01;
 extern Adafruit_MQTT_Publish temp02;
 extern Adafruit_MQTT_Publish temp03;
 extern Adafruit_MQTT_Publish temp04;
-
+extern Adafruit_MQTT_Publish pub_pump1pwm;
+extern Adafruit_MQTT_Publish pub_pump2pwm;
+extern Adafruit_MQTT_Publish pub_relay01;
+extern Adafruit_MQTT_Publish pub_relay02;
+extern Adafruit_MQTT_Publish pub_relay03;
+//SUBCRIBE
+extern Adafruit_MQTT_Subscribe sub_kp;
+extern Adafruit_MQTT_Subscribe sub_ki;
+extern Adafruit_MQTT_Subscribe sub_kd;
+extern Adafruit_MQTT_Subscribe sub_pump1pwm;
+extern Adafruit_MQTT_Subscribe sub_pump2pwm;
+extern Adafruit_MQTT_Subscribe sub_relay01;
+extern Adafruit_MQTT_Subscribe sub_relay02;
+extern Adafruit_MQTT_Subscribe sub_relay03;
 #endif // __ESP32_MQTT_H
