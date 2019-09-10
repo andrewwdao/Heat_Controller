@@ -148,6 +148,9 @@ void UART_isMasterReady() {
           mpid[0] = mKp.toFloat(); //Kp
           mpid[1] = mKi.toFloat(); //Ki
           mpid[2] = mKd.toFloat(); //Kd
+          Serial.println(mpid[0]);
+          Serial.println(mpid[1]);
+          Serial.println(mpid[2]);
 			    changeSetVal(mpid);
 			    return;
         } else {

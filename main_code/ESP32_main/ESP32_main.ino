@@ -26,13 +26,14 @@ void setup()
   xSemaphoreTake(baton, portMAX_DELAY); // ( TickType_t ) and portTICK_PERIOD_MS is also available , view: http://esp32.info/docs/esp_idf/html/d1/d19/group__xSemaphoreTake.html 
   UART_init();
   ADC_init();
+  PID_init();
   pump1_init();
   pump2_init();
   relay_init();
+  UART_masterReady();
   core0_init(); //must stand above MQTT init
   MQTT_init();
 
-  UART_masterReady();
     //publishNow(temp01,134,RETAIN,"Temp01 Failed!","Temp01 updated!");
     //publishNow(temp02,216,RETAIN,"Temp02 Failed!","Temp02 updated!");
     //publishNow(temp03,368,RETAIN,"Temp03 Failed!","Temp03 updated!");

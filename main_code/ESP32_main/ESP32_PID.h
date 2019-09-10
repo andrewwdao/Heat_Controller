@@ -16,6 +16,10 @@
 
 // ------ Public function prototypes --------------------------
 /**
+PID initialize
+*/
+void PID_init();
+/**
 Read Kp value
 */
 float PID_Kp_read();
