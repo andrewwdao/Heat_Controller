@@ -31,14 +31,5 @@ void core0_init();
 
 // ------ Public variable -------------------------
 extern SemaphoreHandle_t baton; //declared in core0 cpp
-//SUBCRIBE
-extern Adafruit_MQTT_Subscribe sub_kp;
-extern Adafruit_MQTT_Subscribe sub_ki;
-extern Adafruit_MQTT_Subscribe sub_kd;
-extern Adafruit_MQTT_Subscribe sub_pump1pwm;
-extern Adafruit_MQTT_Subscribe sub_pump2pwm;
-extern Adafruit_MQTT_Subscribe sub_relay01;
-extern Adafruit_MQTT_Subscribe sub_relay02;
-extern Adafruit_MQTT_Subscribe sub_relay03;
 
 #endif //__ESP32_CORE0_H

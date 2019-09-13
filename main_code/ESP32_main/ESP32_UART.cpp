@@ -96,10 +96,10 @@ void UART_getFromSlave() {// P|Kp|Ki|Kd or T|T1|T2|T3|T4 or F|F1|F2
         bKi=rec.substring(p2+1,p3);//get the string out
         bKd=rec.substring(p3+1);//get the string out
         NVS_PID_write(bKp.toFloat(),bKi.toFloat(),bKd.toFloat());
-        publishNow(pub_kp,NVS_read_Kp(),RETAIN,"Kp Failed!","Kp updated!");delay(300);
-        publishNow(pub_ki,NVS_read_Ki(),RETAIN,"Ki Failed!","Ki updated!");delay(300);
-        publishNow(pub_kd,NVS_read_Kd(),RETAIN,"Kd Failed!","Kd updated!");
-        D_PRINTLN(F("pid saved!"));
+        MQTT_Kp_pub(NVS_read_Kp());delay(300);
+        MQTT_Ki_pub(NVS_read_Ki());delay(300);
+        MQTT_Kd_pub(NVS_read_Kd());
+        D_PRINTLN(F("PID saved!"));
       } else {
          D_PRINTLN(F("Not recognized command!"));
       }// end if else

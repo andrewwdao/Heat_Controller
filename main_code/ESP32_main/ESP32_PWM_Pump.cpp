@@ -49,6 +49,14 @@ void pump2_init() {
    pump2_output = VAR_MINSPEED;
 }//end pump2_init
 //------------------------------------
+float pump1pwm_read() {
+  return (float)((float)pump1_output/PWM_RESOLUTION);
+}//end pump1pwm_read
+//------------------------------------
+float pump2pwm_read() {
+  return (float)((float)pump2_output/PWM_RESOLUTION);
+}//end pump2pwm_read
+//------------------------------------
 void pump1_status() {
     p1_pulseLength = pulseIn(PUMP1_IN_PIN, LOW, 15000);//Pin, start to count when catch a high pulse, wait for 15ms before return 0 (75Hz~13,33ms)
     S_PRINTLN(p1_pulseLength);

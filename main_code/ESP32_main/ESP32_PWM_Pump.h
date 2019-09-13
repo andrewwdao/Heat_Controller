@@ -97,6 +97,14 @@ Initialize Pump2
 **/
 void pump2_init();
 /**
+Read pwm freq of pump1
+**/
+float pump1pwm_read();
+/**
+Read pwm freq of pump2
+**/
+float pump2pwm_read();
+/**
 Pump1 current Status
 **/
 void pump1_status();

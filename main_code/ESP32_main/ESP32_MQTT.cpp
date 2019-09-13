@@ -25,8 +25,6 @@ Connect to the MQTT broker
 **/
 bool MQTT_connect();
 // ------ Private variables -----------------------------------
-uint32_t lastmillis;
-// ------ PUBLIC variable definitions -------------------------
 WiFiClient client; // Create an ESP32/ESP8266 WiFiClient class to connect to the MQTT server.
 Adafruit_MQTT_Client mqtt(&client, SERVER, PORT, CLIENT_ID, USERNAME, PASS); // Setup the MQTT client class by passing in the WiFi client and MQTT server and login details.
 //PUBLISH
@@ -53,6 +51,10 @@ Adafruit_MQTT_Subscribe sub_pump2pwm = Adafruit_MQTT_Subscribe(&mqtt,PUMP2PWM_FE
 Adafruit_MQTT_Subscribe sub_relay01 = Adafruit_MQTT_Subscribe(&mqtt,RELAY01_FEED,MQTT_QOS_1);
 Adafruit_MQTT_Subscribe sub_relay02 = Adafruit_MQTT_Subscribe(&mqtt,RELAY02_FEED,MQTT_QOS_1);
 Adafruit_MQTT_Subscribe sub_relay03 = Adafruit_MQTT_Subscribe(&mqtt,RELAY03_FEED,MQTT_QOS_1);
+
+uint32_t lastmillis;
+// ------ PUBLIC variable definitions -------------------------
+
 //--------------------------------------------------------------
 // FUNCTION DEFINITIONS
 //--------------------------------------------------------------
@@ -185,6 +187,54 @@ void publishNow(Adafruit_MQTT_Publish topicPub,float MQTTmessage, bool retained,
   if (pub<(PUB_RETRIES)) {Serial.println(F(sucess));}
 }//end publishNow
 //------------------------------------------
+void MQTT_Kp_pub(float mqttKp) {
+  publishNow(pub_kp,mqttKp,RETAIN,"Kp Failed!","Kp updated!");
+}//end MQTT_Kp_pub
+//------------------------------------------
+void MQTT_Ki_pub(float mqttKi) {
+  publishNow(pub_ki,mqttKi,RETAIN,"Ki Failed!","Ki updated!");
+}//end MQTT_Ki_pub
+//------------------------------------------
+void MQTT_Kd_pub(float mqttKd) {
+  publishNow(pub_kd,mqttKd,RETAIN,"Kd Failed!","Kd updated!");
+}//end MQTT_Kd_pub
+//------------------------------------------
+void MQTT_T1_pub(int mTemp1) {
+  publishNow(temp01,mTemp1,RETAIN,"Temp01 Failed!","Temp01 updated!");
+}//end MQTT_T1_pub
+//------------------------------------------
+void MQTT_T2_pub(int mTemp2) {
+  publishNow(temp02,mTemp2,RETAIN,"Temp02 Failed!","Temp02 updated!");
+}//end MQTT_T2_pub
+//------------------------------------------
+void MQTT_T3_pub(int mTemp3) {
+  publishNow(temp03,mTemp3,RETAIN,"Temp03 Failed!","Temp03 updated!");
+}//end MQTT_T3_pub
+//------------------------------------------
+void MQTT_T4_pub(int mTemp4) {
+  publishNow(temp04,mTemp4,RETAIN,"Temp04 Failed!","Temp04 updated!");
+}//end MQTT_T4_pub
+//------------------------------------------
+void MQTT_Pump1pwm_pub(float pwmVal) {
+  publishNow(pub_pump1pwm,(int)(pwmVal*100),RETAIN,"Pump1 pwm Failed!","Pump1 pwm updated!");
+}//end MQTT_Pump1pwm_pub
+//------------------------------------------
+void MQTT_Pump2pwm_pub(float pwmVal) {
+  publishNow(pub_pump2pwm,(int)(pwmVal*100),RETAIN,"Pump2 pwm Failed!","Pump2 pwm updated!");
+}//end MQTT_Pump2pwm_pub
+//------------------------------------------
+void MQTT_relay01_pub(bool Rstate) {
+  publishNow(pub_relay01,(Rstate==ON)?("ON"):("OFF"),RETAIN,"Relay01 Failed!","Relay01 updated!");
+}//end MQTT_relay01_pub
+//------------------------------------------
+void MQTT_relay02_pub(bool Rstate) {
+  publishNow(pub_relay02,(Rstate==ON)?("ON"):("OFF"),RETAIN,"Relay02 Failed!","Relay02 updated!");
+}//end MQTT_relay01_pub
+//------------------------------------------
+void MQTT_relay03_pub(bool Rstate) {
+  publishNow(pub_relay03,(Rstate==ON)?("ON"):("OFF"),RETAIN,"Relay03 Failed!","Relay03 updated!");
+}//end MQTT_relay01_pub
+//------------------------------------------
 bool Wifi_begin() {
   // Connect to WiFi access point.
   Serial.println(); Serial.println();
@@ -215,7 +265,8 @@ bool MQTT_connect() {// Ensure the connection to the MQTT server is alive (this 
 
     //digitalWrite(LED_BUILTIN,LOW); //if not connected, indicate by a LED
     Serial.println(F("Connecting to MQTT... "));
-    int8_t ret, waitTimes;
+    int8_t ret;
+    int8_t waitTimes=0;
     while (((ret = mqtt.connect()) != 0)&&(waitTimes++<3))  {         // connect will return 0 for connected
       Serial.println(mqtt.connectErrorString(ret));
       Serial.println(F("Retrying MQTT connection in 3 seconds..."));

@@ -60,4 +60,5 @@ void relay03(bool Status) {
   else        {sendData&=~0x08;}
   HC595_sendByte(sendData);
 }//end relay03
+//------------------------------------------
 #endif //__ESP32_RELAY_CPP

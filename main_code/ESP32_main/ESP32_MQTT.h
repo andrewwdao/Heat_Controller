@@ -71,6 +71,42 @@ MQTT subscribe task. wait for signal from the server
 **/
 void MQTT_subscribe();
 /**
+Publish the Kp value to the server
+**/
+void MQTT_Kp_pub(float);
+/**
+Publish the Ki value to the server
+**/
+void MQTT_Ki_pub(float);
+/**
+Publish the Kd value to the server
+**/
+void MQTT_Kd_pub(float);
+/**
+Publish the T1 value to the server
+**/
+void MQTT_T1_pub(int);
+/**
+Publish the T2 value to the server
+**/
+void MQTT_T2_pub(int);
+/**
+Publish the T3 value to the server
+**/
+void MQTT_T3_pub(int);
+/**
+Publish the T4 value to the server
+**/
+void MQTT_T4_pub(int);
+/**
+Publish the pwm freq of Pump1 to the server
+**/
+void MQTT_Pump1pwm_pub(float);
+/**
+Publish the pwm freq of Pump2 to the server
+**/
+void MQTT_Pump2pwm_pub(float);
+/**
 publish the wanted value to the broker (self-created QOS1)-- make sure the packet made it to the broker
 **/
 void publishNow(Adafruit_MQTT_Publish,const char*,bool,const char*,const char*);
@@ -78,26 +114,5 @@ void publishNow(Adafruit_MQTT_Publish,int, bool,const char*,const char*);
 void publishNow(Adafruit_MQTT_Publish,float, bool,const char*,const char*);
 // ------ Public variable -------------------------------------
 extern SemaphoreHandle_t baton; //declared in core0 cpp
-//PUBLISH
-extern Adafruit_MQTT_Publish pub_kp;
-extern Adafruit_MQTT_Publish pub_ki;
-extern Adafruit_MQTT_Publish pub_kd;
-extern Adafruit_MQTT_Publish temp01;
-extern Adafruit_MQTT_Publish temp02;
-extern Adafruit_MQTT_Publish temp03;
-extern Adafruit_MQTT_Publish temp04;
-extern Adafruit_MQTT_Publish pub_pump1pwm;
-extern Adafruit_MQTT_Publish pub_pump2pwm;
-extern Adafruit_MQTT_Publish pub_relay01;
-extern Adafruit_MQTT_Publish pub_relay02;
-extern Adafruit_MQTT_Publish pub_relay03;
-//SUBCRIBE
-extern Adafruit_MQTT_Subscribe sub_kp;
-extern Adafruit_MQTT_Subscribe sub_ki;
-extern Adafruit_MQTT_Subscribe sub_kd;
-extern Adafruit_MQTT_Subscribe sub_pump1pwm;
-extern Adafruit_MQTT_Subscribe sub_pump2pwm;
-extern Adafruit_MQTT_Subscribe sub_relay01;
-extern Adafruit_MQTT_Subscribe sub_relay02;
-extern Adafruit_MQTT_Subscribe sub_relay03;
+
 #endif // __ESP32_MQTT_H

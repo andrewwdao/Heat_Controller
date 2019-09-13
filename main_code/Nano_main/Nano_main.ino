@@ -14,16 +14,12 @@ void setup()
   LCD_init();
   RTC_init();
   SD_init();
-   Serial.println("begin");
- // UART_isMasterReady();
-  Serial.println(" ready");
+  
+  UART_isMasterReady();
 }// end setup
 
 void loop() 
 {
-// LCD_display();
-// UART_getFromMaster();
- RTC_getTime();
- Serial.println(" end");
-// Serial.println(rtcData);
+ LCD_display();
+ UART_getFromMaster();
 }//end loop

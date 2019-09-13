@@ -35,7 +35,6 @@ void UART_isMasterReady() {
   while (notReady) {
      if( Serial.available()) {//if something appear in the serial monitor
         if (Serial.read()=='K') {
-          Serial.println(" IN uart");
           String buff=Serial.readString();
           if (buff==AUTHORIZED_KEY) {
             D_PRINTLN(F("Give me the set values"));
@@ -98,55 +97,53 @@ void UART_isMasterReady() {
  void UART_getFromMaster() //command: T|T1|T2|T3|T4_F|F1|F2 or P|Kp|Ki|Kd
 {
   if( Serial.available()) //if something appear in the serial monitor
-  { char Ctemp = Serial.read();
+  { 
+    char Ctemp = Serial.read();
     if (Ctemp=='T') { //if command is T|T1|T2|T3|T4_F|F1|F2
-      uint16_t t1,t2,t3,t4,f1,f2;
-      String buff1="",buff2="",buff3="",buff4="",rec="";
-      Serial.println("da nhan T");
-      rec=Serial.readString();
-      t1=rec.indexOf("T",0); //search for initial signal - t for temperature
-      f1=rec.indexOf("F",0); //search for initial signal - f for flow
-      if((t1>=0)&&(f1>=0)) // if exist signal "t" a|nd "f"
-      {
-        //temperature
-        t1=rec.indexOf("|",0);    //position of temp1
-        t2=rec.indexOf("|",t1+1); //position of temp2
-        t3=rec.indexOf("|",t2+1); //position of temp3
-        t4=rec.indexOf("|",t3+1); //position of temp4
-        buff1=rec.substring(t1+1,t2);//get the string out
-        buff2=rec.substring(t2+1,t3);//get the string out
-        buff3=rec.substring(t3+1,t4);//get the string out
-        buff4=rec.substring(t4+1);   //get the string out
-        t1=buff1.toInt(); //temp1
-        t2=buff2.toInt(); //temp2
-        t3=buff3.toInt(); //temp3
-        t4=buff4.toInt(); //temp4
-        //flow
-        f1=rec.indexOf("|",f1);      //position of flow1
-        f2=rec.indexOf("|",f1+1);   //position of flow2
-        buff1=rec.substring(f1+1,f2); //get the string out
-        buff2=rec.substring(f2+1);  //get the string out
-        f1=buff1.toInt(); //flow1
-        f2=buff2.toInt(); //flow2
-        changeVal(t1,t2,t3,t4,f1,f2); //change it in the LCD screen
-        sendSD(t1,t2,t3,t4,f1,f2);//save it to the SD card
-        Serial.println(" da gui den the nho");
-      } else {// no exist signal "t" and "f" at the same time
-       // D_PRINTLN(F("Not recognized command!"));
-      }// end if else
-    } else if (Ctemp=='P') { //if command is P|Kp|Ki|Kd
-        Serial.println(" da nhan P");
-        uint16_t p1,p2,p3;
-        float mpid[3]={0,0,0};
-        String mKp="",mKi="",mKd="",rec="";
+		  uint16_t t1,t2,t3,t4,f1,f2;
+		  String buff1="",buff2="",buff3="",buff4="",rec="";
+		  rec=Serial.readString();
+		  t1=rec.indexOf("T",0); //search for initial signal - t for temperature
+		  f1=rec.indexOf("F",0); //search for initial signal - f for flow
+		  if((t1>=0)&&(f1>=0)) // if exist signal "t" and "f"
+		  {
+			  //temperature
+			  t1=rec.indexOf("|",0);    //position of temp1
+			  t2=rec.indexOf("|",t1+1); //position of temp2
+			  t3=rec.indexOf("|",t2+1); //position of temp3
+			  t4=rec.indexOf("|",t3+1); //position of temp4
+			  buff1=rec.substring(t1+1,t2);//get the string out
+			  buff2=rec.substring(t2+1,t3);//get the string out
+			  buff3=rec.substring(t3+1,t4);//get the string out
+			  buff4=rec.substring(t4+1);   //get the string out
+			  t1=buff1.toInt(); //temp1
+			  t2=buff2.toInt(); //temp2
+			  t3=buff3.toInt(); //temp3
+			  t4=buff4.toInt(); //temp4
+			  //flow
+			  f1=rec.indexOf("|",f1);      //position of flow1
+			  f2=rec.indexOf("|",f1+1);   //position of flow2
+			  buff1=rec.substring(f1+1,f2); //get the string out
+			  buff2=rec.substring(f2+1);  //get the string out
+			  f1=buff1.toInt(); //flow1
+			  f2=buff2.toInt(); //flow2
+			  changeVal(t1,t2,t3,t4,f1,f2); //change it in the LCD screen
+			  sendSD(t1,t2,t3,t4,f1,f2);//save it to the SD card
+		  } else {// no exist signal "t" and "f" at the same time
+			  D_PRINTLN(F("Not recognized command!"));
+		  }// end if else
+	  } else if (Ctemp=='P') { //if command is P|Kp|Ki|Kd
+		    uint16_t p1,p2,p3;
+		    float mpid[3]={0,0,0};
+		    String mKp="",mKi="",mKd="",rec="";
         rec=Serial.readString();
         p1 = rec.indexOf("|",0); //search for initial signal
         if (p1>=0) { //has the correct signal
-          //set pid
+			    //set pid
           p1=rec.indexOf("|",0);    //position of Kp
           p2=rec.indexOf("|",p1+1); //position of Ki
           p3=rec.indexOf("|",p2+1); //position of Kd
-          mKp=rec.substring(p1+1,p2);//get the string out
+			    mKp=rec.substring(p1+1,p2);//get the string out
           mKi=rec.substring(p2+1,p3);//get the string out
           mKd=rec.substring(p3+1);//get the string out
           mpid[0] = mKp.toFloat(); //Kp
@@ -155,14 +152,14 @@ void UART_isMasterReady() {
           Serial.println(mpid[0]);
           Serial.println(mpid[1]);
           Serial.println(mpid[2]);
-          changeSetVal(mpid);
-          return;
+			    changeSetVal(mpid);
+			    return;
         } else {
           D_PRINTLN(F("Not recognized command!"));
         }// end if else
-      } else {// not recognized command
-        D_PRINTLN(F("Not recognized command!"));
-      }// end if else
+	    } else {// not recognized command
+		    D_PRINTLN(F("Not recognized command!"));
+	    }// end if else
     }//end if
 }// end getFromMaster
 //--------------------------------
