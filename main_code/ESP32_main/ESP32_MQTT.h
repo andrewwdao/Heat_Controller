@@ -21,14 +21,14 @@
 //#include "config.h"
 
 // ------ Public constants ------------------------------------
-#define WLAN_SSID     "Home"
-#define WLAN_PASS     "12345678"
+#define WLAN_SSID     "Thanh Tam"
+#define WLAN_PASS     "19980115"
 
 /******** MQTT Client Setup **********/
 #define SERVER        "io.adafruit.com"                   //change it to your server
 #define PORT          1883                                // use 8883 for SSL - change it to your port
 #define USERNAME      "heatcontroller2019"                //change it to your username
-#define PASS          "36374516bd4246869ce62deac0924c15"  //change it to your password
+#define PASS          "def9f50546334d019a3c58a4a908d1e7"  //change it to your password 36374516bd4246869ce62deac0924c15
 #define CLIENT_ID     "HC01"
 
 #define LWT_TOPIC     "heatcontroller2019/feeds/availability" //change it to your last will topic

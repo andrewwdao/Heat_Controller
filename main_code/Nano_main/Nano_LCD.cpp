@@ -12,23 +12,23 @@
 #include "Nano_LCD.h"
 
 // ------ Private constants -----------------------------------
-#define LCD_ADRESS 	0x27
-#define LCD_WIDTH 	16
-#define LCD_HEIGHT	2
-#define BUTTON_PIN	A1
-#define	ERROR		9999
+#define LCD_ADRESS   0x27
+#define LCD_WIDTH   16
+#define LCD_HEIGHT  2
+#define BUTTON_PIN  A1
+#define ERROR   9999
 typedef enum {
-	BUT_LEFT=1,
-	BUT_DOWN,
-	BUT_CONFIRM,
-	BUT_RIGHT,
-	BUT_UP
+  BUT_LEFT=1,
+  BUT_DOWN,
+  BUT_CONFIRM,
+  BUT_RIGHT,
+  BUT_UP
 } ButtonState;
 typedef enum {
-	MAIN_STATE,
-	PID_STATE,
-	TEMP_STATE,
-	FLOW_STATE,
+  MAIN_STATE,
+  PID_STATE,
+  TEMP_STATE,
+  FLOW_STATE,
   SET_TEMP,
   SET_FLOW,
 } LCDstate;
@@ -77,82 +77,82 @@ LiquidCrystal_I2C lcd(LCD_ADRESS, LCD_WIDTH, LCD_HEIGHT);
 //--------------------------------------------------------------
 void LCD_init() 
 {
-	currentState=MAIN_STATE;
-	lcd.init();
-	lcd.backlight();
+  currentState=MAIN_STATE;
+  lcd.init();
+  lcd.backlight();
   lcd.clear();
   lcd.setCursor(0,0); lcd.print("SYSTEM STARTING");
   lcd.setCursor(7,1); lcd.print("...");
 }//end LCD_init
 //--------------------------------
 void LCD_display() {
-	switch (currentState) {
-	  case MAIN_STATE: 	{LCD_menu();break;}
-	  case PID_STATE: 	{PIDdisplay_editor();break;}
-	  case TEMP_STATE: 	{LCD_temp();break;}
-	  case FLOW_STATE: 	{LCD_flow();break;}
+  switch (currentState) {
+    case MAIN_STATE:  {LCD_menu();break;}
+    case PID_STATE:   {PIDdisplay_editor();break;}
+    case TEMP_STATE:  {LCD_temp();break;}
+    case FLOW_STATE:  {LCD_flow();break;}
     case SET_TEMP:    {TempEditor(); break;}
     case SET_FLOW:    {FlowEditor(); break;}
-	  case ERROR: 		  {break;}
-	}//end switch
+    case ERROR:       {break;}
+  }//end switch
 }//end LCD_display
 //--------------------------------
 int buttonRead()
 {
-	int adc_buttons=analogRead(BUTTON_PIN);
-	delay(150); //debounce
-	if(adc_buttons<50) //button 1 --have to change this in every power supply if buttons do not work
-	{
-		return BUT_LEFT;
-	}
-	if(adc_buttons>50& adc_buttons<150) //button 2 --have to change this in every power supply if buttons do not work
-	{
-		return BUT_DOWN;
-	}
-	if(adc_buttons>170& adc_buttons<400) //button 3 --have to change this in every power supply if buttons do not work
+  int adc_buttons=analogRead(BUTTON_PIN);
+  delay(150); //debounce
+  if(adc_buttons<50) //button 1 --have to change this in every power supply if buttons do not work
   {
-		return BUT_CONFIRM;
-	}
-	if(adc_buttons>410& adc_buttons<600) //button 4 --have to change this in every power supply if buttons do not work
+    return BUT_LEFT;
+  }
+  if(adc_buttons>50& adc_buttons<150) //button 2 --have to change this in every power supply if buttons do not work
+  {
+    return BUT_DOWN;
+  }
+  if(adc_buttons>170& adc_buttons<400) //button 3 --have to change this in every power supply if buttons do not work
+  {
+    return BUT_CONFIRM;
+  }
+  if(adc_buttons>410& adc_buttons<600) //button 4 --have to change this in every power supply if buttons do not work
   { 
-		return BUT_RIGHT;
+    return BUT_RIGHT;
   }
-	if (adc_buttons >=750 & adc_buttons<900)  //button 5 --have to change this in every power supply if buttons do not work
-	{
-		return BUT_UP;
+  if (adc_buttons >=750 & adc_buttons<900)  //button 5 --have to change this in every power supply if buttons do not work
+  {
+    return BUT_UP;
   }
-	return ERROR; //error
+  return ERROR; //error
 }//end buttonRead
 //--------------------------------
 void LCD_menu()
 {
  //------------------------------Display user interface------------------
-	lcd.setCursor(1,0); lcd.print("PID ");
+  lcd.setCursor(1,0); lcd.print("PID ");
   //lcd.setCursor(1,1); lcd.print(analogRead(BUTTON_PIN));lcd.print("    ");  <-- this line used for determine the ADC value when power suppy changes
-	lcd.setCursor(6,0); lcd.print("TEMP");
-	lcd.setCursor(6,1); lcd.print("FLOW");
+  lcd.setCursor(6,0); lcd.print("TEMP");
+  lcd.setCursor(6,1); lcd.print("FLOW");
   lcd.setCursor(11,0);lcd.print("sTEMP");
   lcd.setCursor(11,1);lcd.print("sFLOW");
   
-	if (LCDpointer==1) {
-		lcd.setCursor(0,0);   lcd.print(">");
-		lcd.setCursor(5,0);   lcd.print(" ");
+  if (LCDpointer==1) {
+    lcd.setCursor(0,0);   lcd.print(">");
+    lcd.setCursor(5,0);   lcd.print(" ");
     lcd.setCursor(5,1);   lcd.print(" ");
-		lcd.setCursor(10,0);  lcd.print(" ");
+    lcd.setCursor(10,0);  lcd.print(" ");
     lcd.setCursor(10,1);  lcd.print(" ");
-	} else if(LCDpointer==2) {
+  } else if(LCDpointer==2) {
     lcd.setCursor(0,0);   lcd.print(" ");
     lcd.setCursor(5,0);   lcd.print(">");
     lcd.setCursor(5,1);   lcd.print(" ");
     lcd.setCursor(10,0);  lcd.print(" ");
     lcd.setCursor(10,1);  lcd.print(" ");
-	} else if(LCDpointer==3) {
+  } else if(LCDpointer==3) {
     lcd.setCursor(0,0);   lcd.print(" ");
     lcd.setCursor(5,0);   lcd.print(" ");
     lcd.setCursor(5,1);   lcd.print(">");
     lcd.setCursor(10,0);  lcd.print(" ");
     lcd.setCursor(10,1);  lcd.print(" ");
-	} else if(LCDpointer==4)  {
+  } else if(LCDpointer==4)  {
     lcd.setCursor(0,0);   lcd.print(" ");
     lcd.setCursor(5,0);   lcd.print(" ");
     lcd.setCursor(5,1);   lcd.print(" ");
@@ -167,97 +167,97 @@ void LCD_menu()
   }//end if else
  //----------------------------------------------------------------------
  
-	switch (buttonRead()) {
-	  case BUT_UP: 
-	  {
+  switch (buttonRead()) {
+    case BUT_UP: 
+    {
       if(LCDpointer<2)  LCDpointer=5;
       else              LCDpointer--;
-		  break;
-	  }
-	  case BUT_DOWN: 
-	  {
+      break;
+    }
+    case BUT_DOWN: 
+    {
       if(LCDpointer>4)  LCDpointer=1;
       else              LCDpointer++;
-		  break;
-	  }
-	  case BUT_RIGHT: {break;}
-	  case BUT_LEFT:  {break;}
-	  case BUT_CONFIRM: 
-	  {
-		  switch (LCDpointer) {
-		    case 1: {currentState=PID_STATE;LCDpointer=1;lcd.clear();return;}
-		    case 2:	{currentState=TEMP_STATE;LCDpointer=1;lcd.clear();return;}
-		    case 3:	{currentState=FLOW_STATE;LCDpointer=1;lcd.clear();return;}
+      break;
+    }
+    case BUT_RIGHT: {break;}
+    case BUT_LEFT:  {break;}
+    case BUT_CONFIRM: 
+    {
+      switch (LCDpointer) {
+        case 1: {currentState=PID_STATE;LCDpointer=1;lcd.clear();return;}
+        case 2: {currentState=TEMP_STATE;LCDpointer=1;lcd.clear();return;}
+        case 3: {currentState=FLOW_STATE;LCDpointer=1;lcd.clear();return;}
         case 4: {currentState=SET_TEMP; LCDpointer=1;lcd.clear();return;}
         case 5: {currentState=SET_FLOW; LCDpointer=1;lcd.clear();return;}
-		  }//end switch case
-	  }
-	  case ERROR:     {break;}
-	}//end switch
-	return;
+      }//end switch case
+    }
+    case ERROR:     {break;}
+  }//end switch
+  return;
 }//end LCD_menu
 //--------------------------------
 void PIDdisplay_editor()
 {
-	//------------------------------Display user interface------------------
+  //------------------------------Display user interface------------------
   lcd.setCursor(1,0);lcd.print("Kp:");
   lcd.setCursor(4,0);lcd.print(PID[0]);
   lcd.setCursor(9,0);lcd.print("Ki:");
   lcd.setCursor(12,0);lcd.print(PID[1]);
   lcd.setCursor(1,1);lcd.print("Kd:");
   lcd.setCursor(4,1);lcd.print(PID[2]); 
-	
-	if  (LCDpointer==1) {
-		lcd.setCursor(0,0); lcd.print(">");
-		lcd.setCursor(8,0); lcd.print(" ");
-		lcd.setCursor(0,1); lcd.print(" ");
-	} else if(LCDpointer==2)  {
-		lcd.setCursor(0,0); lcd.print(" ");
-		lcd.setCursor(8,0); lcd.print(">");
-		lcd.setCursor(0,1); lcd.print(" ");
-	} else if(LCDpointer==3)  {
-		lcd.setCursor(0,0); lcd.print(" ");
-		lcd.setCursor(8,0); lcd.print(" ");
-		lcd.setCursor(0,1); lcd.print(">");
-	}//end if
+  
+  if  (LCDpointer==1) {
+    lcd.setCursor(0,0); lcd.print(">");
+    lcd.setCursor(8,0); lcd.print(" ");
+    lcd.setCursor(0,1); lcd.print(" ");
+  } else if(LCDpointer==2)  {
+    lcd.setCursor(0,0); lcd.print(" ");
+    lcd.setCursor(8,0); lcd.print(">");
+    lcd.setCursor(0,1); lcd.print(" ");
+  } else if(LCDpointer==3)  {
+    lcd.setCursor(0,0); lcd.print(" ");
+    lcd.setCursor(8,0); lcd.print(" ");
+    lcd.setCursor(0,1); lcd.print(">");
+  }//end if
   //----------------------------------------------------------------------
 
-	switch (buttonRead()) {
-	  case BUT_UP: 
+  switch (buttonRead()) {
+    case BUT_UP: 
     {
       if(LCDpointer<2)  LCDpointer=3;
       else              LCDpointer--;
       break;
     }
     case BUT_DOWN: 
-	  {
-		  if(LCDpointer>2)   LCDpointer=1;
+    {
+      if(LCDpointer>2)   LCDpointer=1;
       else              LCDpointer++;
       break;
-	  }
-	  case BUT_RIGHT: 
-	  {
-		  PID[LCDpointer-1]+=0.1;
+    }
+    case BUT_RIGHT: 
+    {
+      PID[LCDpointer-1]+=0.1;
       break;
-	  }
-	  case BUT_LEFT: 
-	  {
-		  PID[LCDpointer-1]-=(PID[LCDpointer-1]<=0)?(0):(0.1);
+    }
+    case BUT_LEFT: 
+    {
+      PID[LCDpointer-1]-=(PID[LCDpointer-1]<=0)?(0):(0.1);
       break;
-	  }
-	  case BUT_CONFIRM: 
-	  {
+    }
+    case BUT_CONFIRM: 
+    {
       PIDsendToMaster(PID); //send new PID vals to master
-		  currentState=MAIN_STATE;
+      currentState=MAIN_STATE;
       LCDpointer=1;lcd.clear();
-		  return;//back
-	  }
-	  case ERROR:
-	  {
-		  break;
-	  }
-	}//end switch
-	return;
+      return;//back
+    }
+    case ERROR:
+    {
+      break;
+    }
+  }//end switch
+  return;
 }//PIDdisplay_editor
 //----------------------------
 void TempEditor()
@@ -488,12 +488,6 @@ void changeSetVal(float* vPID,uint16_t* vTemp,uint16_t* vFlow) {
   *(sTemp+3) = *(vTemp+3);  //T4
   *sFlow = *vFlow;          //F1
   *(sFlow+1) = *(vFlow+1);  //F2
-}//end changeSetVal
-//----------------------------
-void changeSetVal(float* vPID) {
-  *PID = *vPID;         //Kp
-  *(PID+1) = *(vPID+1); //Ki
-  *(PID+2) = *(vPID+2); //Kd
 }//end changeSetVal
 //----------------------------
 #endif //__NANO_LCD_CPP

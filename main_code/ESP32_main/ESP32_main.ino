@@ -34,10 +34,10 @@ void setup()
   core0_init(); //must stand above MQTT init
   MQTT_init();
 
-    //publishNow(temp01,134,RETAIN,"Temp01 Failed!","Temp01 updated!");
-    //publishNow(temp02,216,RETAIN,"Temp02 Failed!","Temp02 updated!");
-    //publishNow(temp03,368,RETAIN,"Temp03 Failed!","Temp03 updated!");
-    //publishNow(temp04,489,RETAIN,"Temp04 Failed!","Temp04 updated!");
+    publishNow(temp01,134,RETAIN,"Temp01 Failed!","Temp01 updated!");
+    publishNow(temp02,216,RETAIN,"Temp02 Failed!","Temp02 updated!");
+    publishNow(temp03,368,RETAIN,"Temp03 Failed!","Temp03 updated!");
+    publishNow(temp04,489,RETAIN,"Temp04 Failed!","Temp04 updated!");
 //    Serial.println(NVS_read_Kp());
 //    Serial.println(NVS_read_Ki());
 //    Serial.println(NVS_read_Kd());
@@ -55,6 +55,7 @@ void loop()
   UART_getFromSlave();
 
   mainRoutine();
+ 
   //UART_sendToSlave();
   //relay01(ON);
 //  relay03(OFF);
