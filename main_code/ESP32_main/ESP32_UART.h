@@ -29,8 +29,9 @@ Send signal to the slave when master is ready
 void UART_masterReady();
 /**
 Send current temp and flow values to slave to display to the LCD
+This function has one parameter: the time (in second) interval in which you want to send the data 
 **/
-void UART_sendToSlave();
+void UART_sendToSlave(int);
 /**
 Send current PID values to slave to display to the LCD
 **/

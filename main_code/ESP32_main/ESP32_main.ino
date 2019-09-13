@@ -71,7 +71,7 @@ void loop()
   MQTT_maintain();
   UART_getFromSlave();
   mainRoutine();
-  UART_sendToSlave();
+  UART_sendToSlave(10); //send data to slave every 10 second - you can change the interval as you want
 }//end loop
 
 /*put your code here to fit your system*/

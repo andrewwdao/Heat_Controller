@@ -16,7 +16,7 @@
 // ------ Private function prototypes -------------------------
 
 // ------ Private variables -----------------------------------
-
+uint32_t uartLastMillis;
 // ------ PUBLIC variable definitions -------------------------
 
 //--------------------------------------------------------------
@@ -25,6 +25,7 @@
 void UART_init()
 {
   Serial.begin(57600);
+  uartLastMillis = millis();
 }
 //------------------------------------------------------------
 void UART_masterReady() {
@@ -67,10 +68,14 @@ void UART_masterReady() {
   }//end while
 }//end UART_masterReady
 //------------------------------------------------------------
- void UART_sendToSlave() {//command: T|T1|T2|T3|T4_F|F1|F2
-  char Smes[60];
-  snprintf(Smes,60,"T|%d|%d|%d|%d_F|%d|%d",tempSen01_read(),tempSen02_read(),tempSen03_read(),tempSen04_read(),flowSen01_read(),flowSen02_read());
-  Serial.println(Smes);
+ void UART_sendToSlave(int timeInterval) {//command: T|T1|T2|T3|T4_F|F1|F2
+  if ((millis()-uartLastMillis)>timeInterval*1000) {
+    uartLastMillis = millis();
+    char Smes[60];
+    snprintf(Smes,60,"T|%d|%d|%d|%d_F|%d|%d",tempSen01_read(),tempSen02_read(),tempSen03_read(),tempSen04_read(),flowSen01_read(),flowSen02_read());
+    D_PRINTLN(Smes);
+  }//end if
+  
 }// end UART_sendToSlave
 //------------------------------------------------------------
  void UART_PIDsendToSlave() {//command: P|Kp|Ki|Kd
