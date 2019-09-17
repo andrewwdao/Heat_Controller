@@ -73,15 +73,15 @@ void MQTT_init() {
     if (MQTT_connect()) {
       lastmillis = millis();
       publishNow(availability,"online",RETAIN,"Status Failed!","Status updated!");
-      delay(300);
+      delay(500);
       publishNow(pub_kp,NVS_read_Kp(),RETAIN,"Kp Failed!","Kp updated!");
-      delay(300);
+      delay(500);
       publishNow(pub_ki,NVS_read_Ki(),RETAIN,"Ki Failed!","Ki updated!");
-      delay(300);
+      delay(500);
       publishNow(pub_kd,NVS_read_Kd(),RETAIN,"Kd Failed!","Kd updated!");
     }//end if
   }//end if
-  xSemaphoreGive(baton);
+  
   //pinMode(LED_BUILTIN,OUTPUT);
   //digitalWrite(LED_BUILTIN,LOW);
 }//end MQTT_init
@@ -100,72 +100,82 @@ void MQTT_maintain() {//keep the MQTT connection
 //------------------------------------------
 void MQTT_subscribe() {
    if (WiFi.status() == WL_CONNECTED) {
-      MQTT_connect();
-      //SUBCRIBE:
-      // this is our 'wait for incoming subscription packets' busy subloop. Max is 15 subs at a time, change at Adafruit_MQTT.h, #define MAXSUBSCRIPTIONS 15
-      Adafruit_MQTT_Subscribe *subscription;                  
-      while ((subscription = mqtt.readSubscription(5000))) {      //wait for signal
-        if (subscription == &sub_kp) {                         // if something new is detected on this topic
-          String sdata = (char*)sub_kp.lastread;   // Function to analize the string
-          PID_Kp_write(sdata.toFloat());
-          UART_PIDsendToSlave();
-          break;
-        }//end if
-        if (subscription == &sub_ki)  {                           // if something new is detected on this topic
-          String sdata = (char*)sub_ki.lastread;   // Function to analize the string
-          PID_Ki_write(sdata.toFloat());
-          UART_PIDsendToSlave();
-          break;
-        }//end if  
-        if (subscription == &sub_kd)  {                           // if something new is detected on this topic
-          String sdata = (char*)sub_kd.lastread;   // Function to analize the string
-          PID_Kd_write(sdata.toFloat());
-          UART_PIDsendToSlave();
-          break;
-        }//end if  
-        if (subscription == &sub_pump1pwm)  {                           // if something new is detected on this topic
-          String sdata = (char*)sub_pump1pwm.lastread;   // Function to analize the string
-          float sfloat = (float)(sdata.toInt()/100);
-          pump1_wifiChange(sfloat);
-          break;
-        }//end if
-        if (subscription == &sub_pump2pwm)  {                           // if something new is detected on this topic
-          String sdata = (char*)sub_pump2pwm.lastread;   // Function to analize the string
-          float sfloat = (float)(sdata.toInt()/100);
-          pump1_wifiChange(sfloat);
-          break;
-        }//end if
-        if (subscription == &sub_relay01)  {                           // if something new is detected on this topic
-           String sdata = (char*)sub_relay01.lastread;   // Function to analize the string
-           if (sdata=="ON") {
-             relay01(ON);
-             break;
-           } else if (sdata=="OFF") {
-             relay01(OFF);
-             break;
-           }//end if else
-       }//end if
-       if (subscription == &sub_relay02)  {                           // if something new is detected on this topic
-           String sdata = (char*)sub_relay02.lastread;   // Function to analize the string
-           if (sdata=="ON") {
-             relay02(ON);
-             break;
-           } else if (sdata=="OFF") {
-             relay02(OFF);
-             break;
-           }//end if else
-       }//end if
-       if (subscription == &sub_relay03)  {                           // if something new is detected on this topic
-           String sdata = (char*)sub_relay03.lastread;   // Function to analize the string
-           if (sdata=="ON") {
-             relay03(ON);
-             break;
-           } else if (sdata=="OFF") {
-             relay03(OFF);
-             break;
-           }//end if else
-       }//end if
-      }//end while
+      if (MQTT_connect()) {
+        //SUBCRIBE:
+        // this is our 'wait for incoming subscription packets' busy subloop. Max is 15 subs at a time, change at Adafruit_MQTT.h, #define MAXSUBSCRIPTIONS 15
+        Adafruit_MQTT_Subscribe *subscription;                  
+        while ((subscription = mqtt.readSubscription(5000))) {      //wait for signal
+          if (subscription == &sub_kp) {                         // if something new is detected on this topic
+            String sdata = (char*)sub_kp.lastread;   // Function to analize the string
+            float sfloat = sdata.toFloat();
+            if (sfloat!=NVS_read_Kp()) {
+              PID_Kp_write(sfloat);
+              UART_PIDsendToSlave();
+            }//end if
+            break;
+          }//end if
+          if (subscription == &sub_ki)  {                           // if something new is detected on this topic
+            String sdata = (char*)sub_ki.lastread;   // Function to analize the string
+            float sfloat = sdata.toFloat();
+            if (sfloat!=NVS_read_Ki()) {
+              PID_Ki_write(sfloat);
+              UART_PIDsendToSlave();
+            }//end if
+            break;
+          }//end if  
+          if (subscription == &sub_kd)  {                           // if something new is detected on this topic
+            String sdata = (char*)sub_kd.lastread;   // Function to analize the string
+            float sfloat = sdata.toFloat();
+            if (sfloat!=NVS_read_Kd()) {
+              PID_Kd_write(sfloat);
+              UART_PIDsendToSlave();
+            }//end if
+            break;
+          }//end if  
+          if (subscription == &sub_pump1pwm)  {                           // if something new is detected on this topic
+            String sdata = (char*)sub_pump1pwm.lastread;   // Function to analize the string
+            float sfloat = (float)(sdata.toInt()/100);
+            pump1_wifiChange(sfloat);
+            break;
+          }//end if
+          if (subscription == &sub_pump2pwm)  {                           // if something new is detected on this topic
+            String sdata = (char*)sub_pump2pwm.lastread;   // Function to analize the string
+            float sfloat = (float)(sdata.toInt()/100);
+            pump1_wifiChange(sfloat);
+            break;
+          }//end if
+          if (subscription == &sub_relay01)  {                           // if something new is detected on this topic
+            String sdata = (char*)sub_relay01.lastread;   // Function to analize the string
+            if (sdata=="ON") {
+              relay01(ON);
+              break;
+            } else if (sdata=="OFF") {
+              relay01(OFF);
+              break;
+            }//end if else
+          }//end if
+          if (subscription == &sub_relay02)  {                           // if something new is detected on this topic
+            String sdata = (char*)sub_relay02.lastread;   // Function to analize the string
+            if (sdata=="ON") {
+              relay02(ON);
+              break;
+            } else if (sdata=="OFF") {
+              relay02(OFF);
+              break;
+            }//end if else
+          }//end if
+          if (subscription == &sub_relay03)  {                           // if something new is detected on this topic
+            String sdata = (char*)sub_relay03.lastread;   // Function to analize the string
+            if (sdata=="ON") {
+              relay03(ON);
+              break;
+            } else if (sdata=="OFF") {
+              relay03(OFF);
+              break;
+            }//end if else
+          }//end if
+        }//end while
+      }//end if
     }//end if
 }//end MQTT_subscribe
 //------------------------------------------
@@ -267,11 +277,12 @@ bool MQTT_connect() {// Ensure the connection to the MQTT server is alive (this 
     Serial.println(F("Connecting to MQTT... "));
     int8_t ret;
     int8_t waitTimes=0;
-    while (((ret = mqtt.connect()) != 0)&&(waitTimes++<3))  {         // connect will return 0 for connected
+    while (((ret = mqtt.connect()) != 0)&&(waitTimes<4))  {         // connect will return 0 for connected
+      waitTimes++;
       Serial.println(mqtt.connectErrorString(ret));
-      Serial.println(F("Retrying MQTT connection in 3 seconds..."));
+      Serial.println(F("Retrying MQTT connection in 5 seconds..."));
       mqtt.disconnect();
-      delay(3000);  // wait 3 seconds
+      delay(5000);  // wait 5 seconds
     }//end while
     if (waitTimes<3) {
       Serial.println(F("MQTT Connected!"));Serial.println();

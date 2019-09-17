@@ -73,9 +73,8 @@ void UART_masterReady() {
     uartLastMillis = millis();
     char Smes[60];
     snprintf(Smes,60,"T|%d|%d|%d|%d_F|%d|%d",tempSen01_read(),tempSen02_read(),tempSen03_read(),tempSen04_read(),flowSen01_read(),flowSen02_read());
-    D_PRINTLN(Smes);
+    Serial.println(Smes);
   }//end if
-  
 }// end UART_sendToSlave
 //------------------------------------------------------------
  void UART_PIDsendToSlave() {//command: P|Kp|Ki|Kd

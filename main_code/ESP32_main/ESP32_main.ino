@@ -24,7 +24,6 @@ void setup()
 {
  //---------------------------------- SETUP PROTOCOL -------------------------------------------
   vSemaphoreCreateBinary(baton); //initialize binary semaphore //baton = xSemaphoreCreateBinary(); //this works too but not as good as the current use
-  xSemaphoreTake(baton, portMAX_DELAY); // ( TickType_t ) and portTICK_PERIOD_MS is also available , view: http://esp32.info/docs/esp_idf/html/d1/d19/group__xSemaphoreTake.html 
   UART_init();
   ADC_init();
   PID_init();
@@ -33,27 +32,15 @@ void setup()
   relay_init();
   UART_masterReady();
   core0_init(); //must stand above MQTT init
-  MQTT_init();
+  xSemaphoreTake(baton, portMAX_DELAY); // ( TickType_t ) and portTICK_PERIOD_MS is also available , view: http://esp32.info/docs/esp_idf/html/d1/d19/group__xSemaphoreTake.html 
+  xSemaphoreGive(baton);
  //------------------------------- END SETUP PROTOCOL --------------------------------------------
-
-    //PUBLISH THE TEMPERATURE LIKE THIS
-    MQTT_T1_pub(tempSen01_read());
-    MQTT_T2_pub(tempSen02_read());
-    MQTT_T3_pub(tempSen03_read());
-    MQTT_T4_pub(tempSen04_read());
-    //you can put any value as you want like this
-    //MQTT_T1_pub(123); 
-
-    //PUBLISH THE PUMP PWM FREQ LIKE THIS
-    MQTT_Pump1pwm_pub(pump1pwm_read());
-    MQTT_Pump1pwm_pub(pump2pwm_read());
-
-
+  
     //CONTROL RELAY LIKE THIS
-    //relay01(ON);
-    //relay02(OFF);
-    //relay03(OFF);
-
+    relay01(ON);
+    relay02(OFF);
+    relay03(OFF);
+    
     //READ VALUE FROM THE FLASH LIKE THIS
 //    Serial.println(NVS_read_Kp());
 //    Serial.println(NVS_read_Ki());
@@ -64,14 +51,26 @@ void setup()
 //    Serial.println(NVS_read_T4());
 //    Serial.println(NVS_read_F1());
 //    Serial.println(NVS_read_F2());
+  delay(5000);
+    //PUBLISH THE TEMPERATURE LIKE THIS
+    MQTT_T1_pub(tempSen01_read());
+    MQTT_T2_pub(tempSen02_read());
+    MQTT_T3_pub(tempSen03_read());
+    MQTT_T4_pub(tempSen04_read());
+    //you can put any value as you want like this
+    //MQTT_T1_pub(123); 
+
+    //PUBLISH THE PUMP PWM FREQ LIKE THIS
+//    MQTT_Pump1pwm_pub(pump1pwm_read());
+//    MQTT_Pump2pwm_pub(pump2pwm_read());
+
 }// end setup
 
 void loop() 
 {
-  MQTT_maintain();
   UART_getFromSlave();
   mainRoutine();
-  UART_sendToSlave(10); //send data to slave every 10 second - you can change the interval as you want
+  //UART_sendToSlave(10); //send data to slave every 10 second - you can change the interval as you want
 }//end loop
 
 /*put your code here to fit your system*/

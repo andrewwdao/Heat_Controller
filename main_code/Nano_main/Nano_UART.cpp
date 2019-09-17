@@ -72,6 +72,9 @@ void UART_isMasterReady() {
                     mpid[0] = mKp.toFloat(); //Kp
                     mpid[1] = mKi.toFloat(); //Ki
                     mpid[2] = mKd.toFloat(); //Kd
+//                    Serial.println(mpid[0]);
+//                    Serial.println(mpid[1]);
+//                    Serial.println(mpid[2]);
                     mtemp[0] = mT1.toInt(); //T1
                     mtemp[1] = mT2.toInt(); //T2
                     mtemp[2] = mT3.toInt(); //T3
@@ -138,7 +141,7 @@ void UART_isMasterReady() {
 		    String mKp="",mKi="",mKd="",rec="";
         rec=Serial.readString();
         p1 = rec.indexOf("|",0); //search for initial signal
-        if (p1>=0) { //has the correct signal
+        if (p1==0) { //has the correct signal
 			    //set pid
           p1=rec.indexOf("|",0);    //position of Kp
           p2=rec.indexOf("|",p1+1); //position of Ki
@@ -146,12 +149,10 @@ void UART_isMasterReady() {
 			    mKp=rec.substring(p1+1,p2);//get the string out
           mKi=rec.substring(p2+1,p3);//get the string out
           mKd=rec.substring(p3+1);//get the string out
+          Serial.println("Fuck");
           mpid[0] = mKp.toFloat(); //Kp
           mpid[1] = mKi.toFloat(); //Ki
           mpid[2] = mKd.toFloat(); //Kd
-          Serial.println(mpid[0]);
-          Serial.println(mpid[1]);
-          Serial.println(mpid[2]);
 			    changeSetVal(mpid);
 			    return;
         } else {
@@ -165,7 +166,16 @@ void UART_isMasterReady() {
 //--------------------------------
 void PIDsendToMaster(float* Mpid) { //p|Kp|Ki|Kd
   char Smes[30];
-  snprintf(Smes,30,"P|%d.%d|%d.%d|%d.%d",(int)*Mpid,(int)((*Mpid)*10)-((int)*Mpid)*10,(int)*(Mpid+1),(int)((*(Mpid+1))*10)-((int)*(Mpid+1))*10,(int)*(Mpid+2),(int)((*(Mpid+2))*10)-((int)*(Mpid+2))*10);
+//  snprintf(Smes,30,"P|%d.%d|%d.%d|%d.%d",
+//           (int)*Mpid,    (int)((*Mpid)*10)-((int)*Mpid)*10,          //Kp
+//           (int)*(Mpid+1),(int)((*(Mpid+1))*10)-((int)*(Mpid+1))*10,  //Ki
+//           (int)*(Mpid+2),(int)((*(Mpid+2))*10)-((int)*(Mpid+2))*10   //Kd
+//           ); //end function
+sprintf(Smes,"P|%d.%d|%d.%d|%d.%d",
+           (int)*Mpid,    (int)((*Mpid)*10)-((int)*Mpid)*10,          //Kp
+           (int)*(Mpid+1),(int)((*(Mpid+1))*10)-((int)*(Mpid+1))*10,  //Ki
+           (int)*(Mpid+2),(int)((*(Mpid+2))*10)-((int)*(Mpid+2))*10   //Kd
+           ); //end function
   Serial.println(Smes);
 }//end PIDsendToMaster
 //--------------------------------

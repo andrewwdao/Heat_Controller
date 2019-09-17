@@ -32,6 +32,17 @@ typedef enum {
   SET_TEMP,
   SET_FLOW,
 } LCDstate;
+
+#define CONFIRM_MAX 350
+#define CONFIRM_MIN 170
+#define UP_MAX      900 
+#define UP_MIN      710 
+#define DOWN_MAX    150
+#define DOWN_MIN    60
+#define LEFT_MAX    50
+#define LEFT_MIN    0
+#define RIGHT_MAX   450
+#define RIGHT_MIN   350
 // ------ Private function prototypes -------------------------
 /**
 Read the buttons
@@ -101,23 +112,23 @@ int buttonRead()
 {
 	int adc_buttons=analogRead(BUTTON_PIN);
 	delay(150); //debounce
-	if(adc_buttons<50) //button 1 --have to change this in every power supply if buttons do not work
+	if(adc_buttons<LEFT_MAX) //button 1 --have to change this in every power supply if buttons do not work
 	{
 		return BUT_LEFT;
 	}
-	if(adc_buttons>50& adc_buttons<150) //button 2 --have to change this in every power supply if buttons do not work
+	if(adc_buttons>DOWN_MIN & adc_buttons<DOWN_MAX) //button 2 --have to change this in every power supply if buttons do not work
 	{
 		return BUT_DOWN;
 	}
-	if(adc_buttons>170& adc_buttons<400) //button 3 --have to change this in every power supply if buttons do not work
+	if(adc_buttons>CONFIRM_MIN& adc_buttons<CONFIRM_MAX) //button 3 --have to change this in every power supply if buttons do not work
   {
 		return BUT_CONFIRM;
 	}
-	if(adc_buttons>410& adc_buttons<600) //button 4 --have to change this in every power supply if buttons do not work
+	if(adc_buttons>RIGHT_MIN& adc_buttons<RIGHT_MAX) //button 4 --have to change this in every power supply if buttons do not work
   { 
 		return BUT_RIGHT;
   }
-	if (adc_buttons >=750 & adc_buttons<900)  //button 5 --have to change this in every power supply if buttons do not work
+	if (adc_buttons >=UP_MIN & adc_buttons<UP_MAX)  //button 5 --have to change this in every power supply if buttons do not work
 	{
 		return BUT_UP;
   }
@@ -128,7 +139,7 @@ void LCD_menu()
 {
  //------------------------------Display user interface------------------
 	lcd.setCursor(1,0); lcd.print("PID ");
-  //lcd.setCursor(1,1); lcd.print(analogRead(BUTTON_PIN));lcd.print("    ");  <-- this line used for determine the ADC value when power suppy changes
+  //lcd.setCursor(1,1); lcd.print(analogRead(BUTTON_PIN));lcd.print("    ");  //<-- this line used for determine the ADC value when power suppy changes
 	lcd.setCursor(6,0); lcd.print("TEMP");
 	lcd.setCursor(6,1); lcd.print("FLOW");
   lcd.setCursor(11,0);lcd.print("sTEMP");

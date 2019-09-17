@@ -22,4 +22,5 @@ void loop()
 {
  LCD_display();
  UART_getFromMaster();
+ //Serial.println(analogRead(A1));
 }//end loop

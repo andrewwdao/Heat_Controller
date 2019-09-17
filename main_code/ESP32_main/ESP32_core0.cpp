@@ -43,9 +43,11 @@ void core0_init() {
 
 static void Core0Task( void * parameter ) {//usual task run on core0 
   xSemaphoreTake(baton, portMAX_DELAY); // ( TickType_t ) and portTICK_PERIOD_MS is also available , view: http://esp32.info/docs/esp_idf/html/d1/d19/group__xSemaphoreTake.html 
+  MQTT_init();
   xSemaphoreGive(baton);
 //////////////////////////////LOOP////////////////////////////////////////////////////
   while (1) {
+    MQTT_maintain();
     MQTT_subscribe();
   }//end while loop
 }//end Core0Task
