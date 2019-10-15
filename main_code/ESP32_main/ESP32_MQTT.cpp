@@ -134,13 +134,13 @@ void MQTT_subscribe() {
           }//end if  
           if (subscription == &sub_pump1pwm)  {                           // if something new is detected on this topic
             String sdata = (char*)sub_pump1pwm.lastread;   // Function to analize the string
-            float sfloat = (float)(sdata.toInt()/100);
+            float sfloat = sdata.toFloat()/100;
             pump1_wifiChange(sfloat);
             break;
           }//end if
           if (subscription == &sub_pump2pwm)  {                           // if something new is detected on this topic
             String sdata = (char*)sub_pump2pwm.lastread;   // Function to analize the string
-            float sfloat = (float)(sdata.toInt()/100);
+            float sfloat = sdata.toFloat()/100;
             pump1_wifiChange(sfloat);
             break;
           }//end if

@@ -48,6 +48,7 @@ void UART_isMasterReady() {
                   uint16_t mflow[2]={0,0};
                   String mKp="",mKi="",mKd="",mT1="",mT2="",mT3="",mT4="",mF1="",mF2="",rec="";
                   rec=Serial.readString();
+                  Serial.println(rec);
                   t1 = rec.indexOf("|",0); //search for initial signal
                   if (t1>=0) { //has the correct signal
                   //set pid - flow values - temperature
@@ -72,9 +73,9 @@ void UART_isMasterReady() {
                     mpid[0] = mKp.toFloat(); //Kp
                     mpid[1] = mKi.toFloat(); //Ki
                     mpid[2] = mKd.toFloat(); //Kd
-//                    Serial.println(mpid[0]);
-//                    Serial.println(mpid[1]);
-//                    Serial.println(mpid[2]);
+                    Serial.println(mpid[0]);
+                    Serial.println(mpid[1]);
+                    Serial.println(mpid[2]);
                     mtemp[0] = mT1.toInt(); //T1
                     mtemp[1] = mT2.toInt(); //T2
                     mtemp[2] = mT3.toInt(); //T3

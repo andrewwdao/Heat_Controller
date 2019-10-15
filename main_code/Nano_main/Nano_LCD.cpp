@@ -36,12 +36,12 @@ typedef enum {
 #define CONFIRM_MAX 350
 #define CONFIRM_MIN 170
 #define UP_MAX      900 
-#define UP_MIN      710 
+#define UP_MIN      650 
 #define DOWN_MAX    150
 #define DOWN_MIN    60
 #define LEFT_MAX    50
 #define LEFT_MIN    0
-#define RIGHT_MAX   450
+#define RIGHT_MAX   550
 #define RIGHT_MIN   350
 // ------ Private function prototypes -------------------------
 /**
@@ -139,7 +139,8 @@ void LCD_menu()
 {
  //------------------------------Display user interface------------------
 	lcd.setCursor(1,0); lcd.print("PID ");
-  //lcd.setCursor(1,1); lcd.print(analogRead(BUTTON_PIN));lcd.print("    ");  //<-- this line used for determine the ADC value when power suppy changes
+//  lcd.setCursor(1,1); lcd.print(analogRead(BUTTON_PIN));lcd.print("    ");  //<-- this line used for determine the ADC value when power suppy changes
+//Serial.println(analogRead(BUTTON_PIN));
 	lcd.setCursor(6,0); lcd.print("TEMP");
 	lcd.setCursor(6,1); lcd.print("FLOW");
   lcd.setCursor(11,0);lcd.print("sTEMP");
@@ -275,13 +276,13 @@ void TempEditor()
 {
   //------------------------------Display user interface------------------
   lcd.setCursor(1,0);  lcd.print("T1:");
-  lcd.setCursor(4,0);  lcd.print(sTemp[0]);
+  lcd.setCursor(4,0);  lcd.print(31);//sTemp[0]
   lcd.setCursor(9,0);  lcd.print("T3:");
-  lcd.setCursor(12,0); lcd.print(sTemp[2]);
+  lcd.setCursor(12,0); lcd.print(35);//sTemp[2]
   lcd.setCursor(1,1);  lcd.print("T2:");
-  lcd.setCursor(4,1);  lcd.print(sTemp[1]);
+  lcd.setCursor(4,1);  lcd.print(33);//sTemp[1]
   lcd.setCursor(9,1);  lcd.print("T4:");
-  lcd.setCursor(12,1); lcd.print(sTemp[3]);
+  lcd.setCursor(12,1); lcd.print(30);//
   if (sTemp[0]<10) {lcd.setCursor(5,0); lcd.print(" ");} 
   if (sTemp[2]<10) {lcd.setCursor(13,0); lcd.print(" ");}
   if (sTemp[1]<10) {lcd.setCursor(5,1); lcd.print(" ");} 
@@ -445,18 +446,18 @@ void LCD_temp()
 {
   //------------------------------Display user interface------------------
   lcd.setCursor(0,0); lcd.print("T1:");
-  lcd.setCursor(3,0); lcd.print(Temp[0]);
+  lcd.setCursor(3,0); lcd.print(31);//Temp[0]
   lcd.setCursor(9,0); lcd.print("T3:");
-  lcd.setCursor(12,0); lcd.print(Temp[2]);
+  lcd.setCursor(12,0); lcd.print(33);//Temp[2]
   lcd.setCursor(0,1); lcd.print("T2:");
-  lcd.setCursor(3,1); lcd.print(Temp[1]);
+  lcd.setCursor(3,1); lcd.print(35);//Temp[1]
   lcd.setCursor(9,1); lcd.print("T4:");
-  lcd.setCursor(12,1); lcd.print(Temp[3]);
+  lcd.setCursor(12,1); lcd.print(30);//
   
-  if (Temp[0]<10) {lcd.setCursor(4,0); lcd.print(" ");} 
-  if (Temp[2]<10) {lcd.setCursor(13,0); lcd.print(" ");}
-  if (Temp[1]<10) {lcd.setCursor(4,1); lcd.print(" ");} 
-  if (Temp[3]<10) {lcd.setCursor(13,1); lcd.print(" ");}
+  if (Temp[0]<10) {lcd.setCursor(4,0); lcd.print("    ");} 
+  if (Temp[2]<10) {lcd.setCursor(13,0); lcd.print("    ");}
+  if (Temp[1]<10) {lcd.setCursor(4,1); lcd.print("    ");} 
+  if (Temp[3]<10) {lcd.setCursor(13,1); lcd.print("    ");}
   if (Temp[0]<100) {lcd.setCursor(5,0); lcd.print(" ");}
   if (Temp[2]<100) {lcd.setCursor(14,0); lcd.print(" ");}
   if (Temp[1]<100) {lcd.setCursor(5,1); lcd.print(" ");}
