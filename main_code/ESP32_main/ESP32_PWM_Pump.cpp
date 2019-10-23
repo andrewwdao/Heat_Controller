@@ -110,20 +110,20 @@ void pump1_faster(float valPump) { //valPump goes from 0.01 to 1 (1% to 100%)
   ledcWrite(PWM_CHANNEL_1, pump1_output); //output signal to the pump
 }//end pump1_faster
 //------------------------------------
-void pump2_faster() {
-  pump2_output += (pump2_output>=(VAR_MAXSPEED-1))?(0):(0.01)*PWM_RESOLUTION; //plus 1% of duty cycle each time this function is called if maximum value is not exceeded.
+void pump2_faster(float valPump) { //valPump goes from 0.01 to 1 (1% to 100%)
+  pump2_output += (pump2_output>=(VAR_MAXSPEED-1))?(0):(valPump)*PWM_RESOLUTION; //plus 1% of duty cycle each time this function is called if maximum value is not exceeded.
   ledcWrite(PWM_CHANNEL_2, pump2_output); //output signal to the pump
-}//end pump1_faster
+}//end pump2_faster
 //------------------------------------
 void pump1_slower(float valPump) {//valPump goes from 0.01 to 1 (1% to 100%)
   pump1_output -= (pump1_output<=(VAR_MINSPEED+1))?(0):(valPump)*PWM_RESOLUTION; //plus 1% of duty cycle each time this function is called if maximum value is not exceeded.
   ledcWrite(PWM_CHANNEL_1, pump1_output); //output signal to the pump
 }//end pump1_slower
 //------------------------------------
-void pump2_slower() {
-  pump2_output -= (pump2_output<=(VAR_MINSPEED+1))?(0):(0.01)*PWM_RESOLUTION; //plus 1% of duty cycle each time this function is called if maximum value is not exceeded.
+void pump2_slower(float valPump) { //valPump goes from 0.01 to 1 (1% to 100%)
+  pump2_output -= (pump2_output<=(VAR_MINSPEED+1))?(0):(valPump)*PWM_RESOLUTION; //plus 1% of duty cycle each time this function is called if maximum value is not exceeded.
   ledcWrite(PWM_CHANNEL_2, pump2_output); //output signal to the pump
-}//end pump1_slower
+}//end pump2_slower
 //------------------------------------
 void pump1_wifiChange(float valPump) {
   pump1_output = valPump*PWM_RESOLUTION; //directly put it to what % the user want

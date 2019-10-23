@@ -12,12 +12,12 @@
 
 
 
-//#define ESP32_DEBUG
+//#define SYSTEM_DEBUG
 
 
 
 
-#ifdef ESP32_DEBUG // When this is active, every log will be execute.
+#ifdef SYSTEM_DEBUG // When this is active, every log will be execute.
   #ifndef SERIAL_OUTPUT
     #define SERIAL_OUTPUT
   #endif

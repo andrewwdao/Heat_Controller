@@ -89,7 +89,7 @@ int tempSen01_read() {
     int es_senVal1 = filter1.updateEstimate(es_senVal1);   
   }//end for
   //------------------------------Kalman filter done
-  int t1= map(es_senVal1,398,2047,lowVal,maxVal);   
+  int t1= map(es_senVal1,398,2047,TEMP_MIN,TEMP_MAX);   
   return t1;
 }//end tempSen01_read
 //------------------------------------------
@@ -101,7 +101,7 @@ int tempSen02_read() {
     es_senVal2 = filter2.updateEstimate(es_senVal2);   
   }//end for
   //------------------------------Kalman filter done
-  int t2=map(es_senVal2,398,2047,lowVal,maxVal); 
+  int t2=map(es_senVal2,398,2047,TEMP_MIN,TEMP_MAX); 
   return t2;
 }//end tempSen02_read
 //------------------------------------------
@@ -113,7 +113,7 @@ int tempSen03_read() {
     es_senVal3 = filter3.updateEstimate(es_senVal3);   
   }//end for
   //------------------------------Kalman filter done
-  int t3=map(es_senVal3,398,2047,lowVal,maxVal); 
+  int t3=map(es_senVal3,398,2047,TEMP_MIN,TEMP_MAX); 
   return t3;
 }//end tempSen03_read
 //------------------------------------------
@@ -124,7 +124,7 @@ int tempSen04_read() {
   for (int a=1;a<FILTER_LAYER; a++) {        // next layers (if possible)
     es_senVal4 = filter4.updateEstimate(es_senVal4);   
   }//end for
-  int t4=map(es_senVal4,398,2047,lowVal,maxVal); 
+  int t4=map(es_senVal4,398,2047,TEMP_MIN,TEMP_MAX); 
   return t4;
 }//end tempSen04_read
 //------------------------------------------

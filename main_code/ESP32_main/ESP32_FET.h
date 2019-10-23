@@ -60,7 +60,7 @@ void FET2_OFF();
 /**
 create pulse for FET 2 - goes from 0 to 100
 */
-void FET2pwm_write(int PWMpercentage);
+void FET2pwm_write(int);
 // ------ Public variable -------------------------------------
 
 #endif //__ESP32_FET_H
