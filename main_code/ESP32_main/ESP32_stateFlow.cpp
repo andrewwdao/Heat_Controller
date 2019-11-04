@@ -157,7 +157,7 @@ void mainRoutine() {
       pump2_maxspeed(); //PWM_2=1
       relay01(OFF); //Valve=0
       //-------------NEED TO BE FIX HERE!----------------
-      float temp = PIDcal(NVS_read_T2(),tempSen02_read());
+      float temp = PIDcal(NVS_read_T1(),tempSen01_read());
       //-------------------------------------------------
       if (temp<0) {pump1_slower(-temp);} //PWM_1 = PWM1_in
       else        {pump1_faster(temp);} //PWM_1 = PWM1_in
@@ -174,7 +174,7 @@ void mainRoutine() {
       pump2_OFF(); //PWM_2=0
       relay01(OFF); //Valve=0
       //-------------NEED TO BE FIX HERE!----------------
-      float temp = PIDcal(NVS_read_T2(),tempSen02_read());
+      float temp = PIDcal(NVS_read_T1(),tempSen01_read());
       //-------------------------------------------------
       if (temp<0) {pump1_slower(-temp);} //PWM_1 = PWM1_in
       else        {pump1_faster(temp);} //PWM_1 = PWM1_in
@@ -201,12 +201,12 @@ void mainRoutine() {
       S_PRINTLN("Run 02 State");
       relay01(ON); //Valve=1
       //-------------NEED TO BE FIX HERE!----------------
-      float temp1 = PIDcal(NVS_read_T2(),tempSen02_read());
+      float temp1 = PIDcal(NVS_read_T1(),tempSen01_read());
       //-------------------------------------------------
       if (temp1<0) {pump1_slower(-temp1);} //PWM_1 = PWM1_in
       else         {pump1_faster(temp1);} //PWM_1 = PWM1_in
       //-------------NEED TO BE FIX HERE!----------------
-      float temp2 = PIDcal(NVS_read_T2(),tempSen02_read());
+      float temp2 = PIDcal(NVS_read_T1(),tempSen01_read());
       //-------------------------------------------------
       if (temp2<0) {pump2_slower(-temp2);} //PWM_2 = PWM2_in
       else         {pump2_faster(temp2);} //PWM_2 = PWM2_in
