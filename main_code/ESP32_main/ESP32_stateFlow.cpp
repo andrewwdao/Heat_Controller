@@ -67,6 +67,7 @@ void mainRoutine() {
       if (tempSen01_read()>60) { // T_collector >60
         lastMillis = millis();
         CurrentState = STATE_READY_1; // STATE_B
+        break;
       }//end if
 
       break;
@@ -84,16 +85,19 @@ void mainRoutine() {
             if ((millis()-lastMillis)>5000) { //after 5secs
               lastMillis = millis();
               CurrentState = STATE_STARTUP; // STATE_C
+              break;
             }//end if
       } else {lastMillis = millis();}
 
       if (tempSen01_read()<50) { // T_collector <50
         CurrentState = STATE_INIT; // STATE_A
+        break;
       }//end if
 
       if (tempSen04_read()<21) { // T_h <21
         lastMillis = millis();
         CurrentState = STATE_READY_2; // STATE_B1
+        break;
       }//end if
 
       break;
@@ -107,11 +111,13 @@ void mainRoutine() {
 
       if (tempSen01_read()<50) { // T_collector <50
         CurrentState = STATE_INIT; // STATE_A
+        break;
       }//end if
 
       if (tempSen04_read()>21) { // T_h >21
         lastMillis = millis();
         CurrentState = STATE_READY_1; // STATE_B
+        break;
       }//end if
       
       if ((tempSen02_read()<80)&& //T_Buffer1 < 80
@@ -120,6 +126,7 @@ void mainRoutine() {
             if ((millis()-lastMillis)>5000) { //after 5secs
               lastMillis = millis();
               CurrentState = STATE_STARTUP_PUMP2; // STATE_C1
+              break;
             }//end if
       } else {lastMillis = millis();}
 
@@ -134,6 +141,7 @@ void mainRoutine() {
       
       if ((millis()-lastMillis)>30000) { // after 30s 
         CurrentState = STATE_RUN_1; //STATE_D
+        break;
       }//end if
 
       break;
@@ -147,6 +155,7 @@ void mainRoutine() {
       
       if ((millis()-lastMillis)>30000) { // after 30s
         CurrentState = STATE_RUN_2; //STATE_D1
+        break;
       }//end if
 
       break;
@@ -164,6 +173,7 @@ void mainRoutine() {
 
       if ((millis()-lastMillis)>30000) { // after 30s
         CurrentState = STATE_RUN_2; //STATE_D1
+        break;
       }//end if
       
       break;
@@ -183,15 +193,18 @@ void mainRoutine() {
           (tempSen03_read()>50)|| //T_Buffer2 > 50
           (tempSen03_read()>tempSen01_read())) { //T_Buffer2>T_collector
             CurrentState = STATE_READY_1; // STATE_B
+            break;
       }//end if
 
       if (tempSen01_read()<50) { // T_collector <50
         CurrentState = STATE_INIT; // STATE_A
+        break;
       }//end if
 
       if (tempSen04_read()<21) { // T_h <21
         lastMillis = millis();
         CurrentState = STATE_TRANSITION; // STATE_C2
+        break;
       }//end if
 
       break;
@@ -213,6 +226,7 @@ void mainRoutine() {
       
       if (tempSen04_read()<21) { // T_h <21
         CurrentState = STATE_RUN_1; // STATE_D
+        break;
       }//end if
 
       if ((tempSen02_read()>80)|| //T_Buffer1 > 80
@@ -220,10 +234,12 @@ void mainRoutine() {
           (tempSen03_read()>tempSen01_read())) { //T_Buffer2>T_collector
             lastMillis = millis();
             CurrentState = STATE_READY_2; // STATE_B1
+            break;
       }//end if
 
       if (tempSen01_read()<50) { // T_collector <50
         CurrentState = STATE_INIT; // STATE_A
+        break;
       }//end if
 
       break;
